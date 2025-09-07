@@ -1,0 +1,57 @@
+/* Sección Inicio */
+#inicio h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+#inicio p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Contenido principal */
+.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 140px;
+  padding: 0 40px;
+  gap: 60px;
+}
+
+.content-left {
+  flex: 1;
+  max-width: 600px;
+}
+
+.main-title {
+  font-size: 56px;
+  font-weight: bold;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  scroll-margin-top: 100px;
+}
+
+.main-subtitle {
+  font-size: 18px;
+  color: white;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  opacity: 0.95;
+}
+
+.content-right {
+  flex: 1;
+  max-width: 500px;
+}
+
+/* Sección de descarga */
+.download-section {
+  text-align: center;
+  margin-top: 80px;
+  padding: 60px 0;
+}
