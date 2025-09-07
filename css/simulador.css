@@ -1,0 +1,144 @@
+.clearcounts-section {
+  padding: 40px 30px;
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  min-height: 500px;
+}
+
+.clearcounts-section .content-left {
+  flex: 1.2; /* Se le da más espacio a la sección izquierda */
+  max-width: 400px;
+}
+
+.clearcounts-section .main-title {
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 40px;
+  line-height: 1.2;
+}
+
+.clearcounts-section .description {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.clearcounts-section .features-box {
+  background-color: #0D2A4D;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+.clearcounts-section .feature-item {
+  color: white;
+  font-size: 16px;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.clearcounts-section .feature-item:last-child {
+  margin-bottom: 0;
+}
+
+.clearcounts-section .feature-number {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.clearcounts-section .bottom-text {
+  color: white;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.clearcounts-section .form-container {
+  flex: none; /* Evita que se expanda automáticamente */
+  width: 320px; /* Tamaño fijo más pequeño */
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: none;
+  border: 2px solid #0D2A4D;
+  max-height: 450px;
+  overflow-y: auto;
+  margin-left: 420px;
+}
+
+
+
+.clearcounts-section .form-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ccc;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Formulario dentro del cuadro blanco */
+#simulador {
+  width: 100%;
+  max-width: 320px; /* Más compacto */
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  font-family: 'Arial', sans-serif;
+  padding: 15px;
+  background-color: transparent;
+  scroll-margin-top: 100px;
+}
+
+#simulador h2 {
+  font-size: 20px;
+  color: #0550AA;
+  text-align: center;
+  margin-bottom: 8px;
+  scroll-margin-top: 100px;
+}
+
+#simulador label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+#simulador input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+#simulador button {
+  background: #0550AA;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(5, 80, 170, 0.2);
+}
+
+#simulador button:hover {
+  background: #043d8a;
+}
+
+#resultado {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f0f8ff;
+  font-size: 13px;
+  color: #0550AA;
+  border: 1px solid #00BBFE;
+}

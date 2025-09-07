@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClearCounts - Controla tus finanzas</title>
+  <link rel="stylesheet" href="css/styleCLAU.css" />
+</head>
+<body>
+  <div include-html="components/navbar.html"></div>
+  <div include-html="components/hero.html"></div>
+  <div include-html="components/producto.html"></div>
+  <div include-html="components/simulador.html"></div>
+  <div include-html="components/equipo.html"></div>
+  <div include-html="components/compania.html"></div>
+  <div include-html="components/footer.html"></div>
+
+  <!-- Scripts -->
+  <script src="js/include.js"></script>
+  <script src="js/formatInputs.js"></script>
+  <script>
+    // Esperar a que include.js termine antes de cargar simulador.js
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const script = document.createElement("script");
+        script.src = "js/simulador.js";
+        document.body.appendChild(script);
+      }, 300);
+    });
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

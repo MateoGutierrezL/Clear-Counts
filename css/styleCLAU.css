@@ -1,0 +1,28 @@
+/* Archivo principal que importa todos los demás archivos CSS */
+
+/* Estilos base (reset, body, variables, utilidades) */
+@import 'base.css';
+
+/* Navegación y header */
+@import 'navbar.css';
+
+/* Sección hero/inicio */
+@import 'hero.css';
+
+/* Sección producto y características */
+@import 'producto.css';
+
+/* Simulador y sección ClearCounts */
+@import 'simulador.css';
+
+/* Sección equipo/desarrolladores */
+@import 'equipo.css';
+
+/* Secciones de compañía (about, misión, visión) */
+@import 'compania.css';
+
+/* Footer */
+@import 'footer.css';
+
+/* Media queries responsive */
+@import 'responsive.css';
