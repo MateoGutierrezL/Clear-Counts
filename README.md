@@ -1,11 +1,11 @@
-**Clear Counts - Página Web Informativa**
+# Clear Counts - Página Web Informativa
 
 Clear Counts es una aplicación de gestión financiera que ayuda a las personas a organizar sus ingresos, gastos, ahorros e impuestos de manera sencilla.  
 Este repositorio corresponde a la página web informativa del proyecto, desarrollada con HTML, CSS y JavaScript.
 
 ---
 
-**Secciones principales**
+## Secciones principales
 
 - **Inicio** → Presentación general de la aplicación.
   
@@ -21,7 +21,7 @@ Este repositorio corresponde a la página web informativa del proyecto, desarrol
 
 ---
 
-**Tecnologías utilizadas**
+## Tecnologías utilizadas 
 
 - **HTML5** → estructura de la página  
 - **CSS3** → diseño y estilos visuales  
