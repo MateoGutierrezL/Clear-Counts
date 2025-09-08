@@ -1,11 +1,11 @@
-**Clear Counts - Aplicación Móvil (Android)**
+# Clear Counts - Aplicación Móvil (Android)
 
 Clear Counts es una aplicación móvil de gestión de finanzas personales diseñada para ayudar a los usuarios a organizar sus ingresos, gastos, ahorros e impuestos de forma clara y sencilla.  
 Este repositorio corresponde a la versión Android, actualmente en fase de documentación y planificación.
 
 ---
 
-**Estado del proyecto**
+## Estado del proyecto
 
 **En desarrollo (fase inicial)**  
 Por el momento, el repositorio contiene principalmente configuraciones iniciales.  
@@ -13,7 +13,7 @@ Próximamente se integrarán las primeras funciones en Kotlin.
 
 ---
 
-**Objetivo de la aplicación**
+## Objetivo de la aplicación
 
 - Permitir a los usuarios registrar y visualizar sus ingresos y gastos.  
 - Generar reportes claros y visuales sobre el estado financiero.  
@@ -22,7 +22,7 @@ Próximamente se integrarán las primeras funciones en Kotlin.
 
 ---
 
-**Tecnologías y herramientas**
+## Tecnologías y herramientas
 
 - **Kotlin** → lenguaje principal para el desarrollo Android.  
 - **Gradle** → sistema de construcción y dependencias.  
@@ -32,7 +32,7 @@ Próximamente se integrarán las primeras funciones en Kotlin.
 
 ---
 
-**Instalación y uso (pendiente)**
+## Instalación y uso (pendiente)
 
 En futuras versiones se incluirán instrucciones para:  
 - Clonar el proyecto y abrirlo en **Android Studio**.  
