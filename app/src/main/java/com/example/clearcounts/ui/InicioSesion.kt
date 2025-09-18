@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicSecureTextField
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -62,6 +63,16 @@ fun PantallaInicioSesion(navController: NavController){
             TextField(value = contrasena, onValueChange = { contrasena= it },
                 placeholder = {Text("Contraseña")}
             )
+
+            Button(
+
+                onClick = {navController.navigate("Inicio")}
+
+            ) {
+
+                Text("Iniciar sesión")
+
+            }
 
             //Texto para navegar hacia la pantalla de registro
             val annotatedString = buildAnnotatedString {

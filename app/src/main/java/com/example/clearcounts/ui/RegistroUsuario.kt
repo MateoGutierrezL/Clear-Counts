@@ -66,6 +66,12 @@ fun PantallaRegistro(navController: NavController){
                 placeholder = {Text("Contraseña")}
             )
 
+            Button(onClick = {navController.navigate("InicioSesion")}) {
+
+                Text("Registrarse")
+
+            }
+
             //Texto para navegar hacia la pantalla de inicio de sesion
 
             val annotatedString = buildAnnotatedString {
