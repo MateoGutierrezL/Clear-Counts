@@ -55,7 +55,7 @@ fun PantallaRegistro(navController: NavController){
             )
 
             TextField(value = telefono, onValueChange = { telefono= it },
-                placeholder = {Text("Contraseña")}
+                placeholder = {Text("Telefono")}
             )
 
             TextField(value = correoUsuario, onValueChange = { correoUsuario= it },
