@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.clearcounts.ui.PantallaInicio
+import com.example.clearcounts.ui.HomeScreen
+import com.example.clearcounts.ui.MainScreen
 import com.example.clearcounts.ui.PantallaInicioSesion
 import com.example.clearcounts.ui.PantallaRegistro
 
@@ -40,7 +41,7 @@ fun InicioUsuario(){
         }
 
         composable ("Inicio"){
-            PantallaInicio()
+            MainScreen()
         }
 
 
