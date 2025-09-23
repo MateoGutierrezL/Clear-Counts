@@ -1,6 +1,8 @@
 package com.example.clearcounts.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -37,6 +40,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.wear.compose.material3.MaterialTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -49,45 +53,33 @@ fun HomeScreen(paddingValues: PaddingValues) {
         Text("Esta es la pantalla de inicio")
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val drawerState = rememberDrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerContent = {
-            // Aquí puedes colocar el contenido de tu menú lateral
+            ModalDrawerSheet {
+                // Llama al componente que creaste, que ahora manejará todo el contenido
+                NavigationDrawer(
+                    name = "Mateo Gutierrez",
+                    email = "mateo@gmail.com",
+                    items = DrawerItem.values().toList(),
 
-            NavigationDrawer(
-                name = "Mateo Gutierrez",
-                email = "mateo@gmail.com",
-                items = DrawerItem.values().toList()) {
-
-                when(it){
-                    DrawerItem.ABOUT -> {
-
-                        //Aqui se añade cada una de las rutas para los diferentes
-                        //apartados de pantallas ya sea settings o recent y demas
+                ) {
+                    when (it) {
+                        DrawerItem.ABOUT -> {}
+                        DrawerItem.SETTINGS -> {}
+                        DrawerItem.RECENT -> {}
+                        DrawerItem.ACCOUNT -> {}
                     }
-                    DrawerItem.SETTINGS -> {
-
+                    scope.launch {
+                        drawerState.close()
                     }
-                    DrawerItem.RECENT -> {
-
-                    }
-                    DrawerItem.ACCOUNT -> {
-
-                    }
-
                 }
-                scope.launch {
-                    drawerState.close()
-                }
-
             }
-            Text("Contenido del menú lateral")
         },
         drawerState = drawerState
     ) {
@@ -111,8 +103,13 @@ fun MainScreen() {
 @Composable
 fun TopBar(onMenuClick: () -> Unit) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+        ),
         title = {
-            Text(text = "Navigation Frawe 123")
+            Text(text = "Navigation Drawer 123", style = MaterialTheme.typography.titleLarge)
         },
         navigationIcon = {
             IconButton(onClick = onMenuClick) {
@@ -124,7 +121,6 @@ fun TopBar(onMenuClick: () -> Unit) {
         }
     )
 }
-
 @Composable
 fun NavigationDrawer(
     name: String,
@@ -132,22 +128,35 @@ fun NavigationDrawer(
     items: List<DrawerItem>,
     modifier: Modifier = Modifier,
     onItemClick: (DrawerItem) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Encabezado del cajón de navegación
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = name, style = MaterialTheme.typography.titleLarge)
+            Text(text = email, style = MaterialTheme.typography.bodyMedium)
+        }
 
-){
-    Column(modifier = Modifier.fillMaxWidth()){
-        Text(text = name)
-        Text(text = email)
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.weight(1f))
-
+        // Elementos del menú
         items.forEach {
-            Row(modifier = Modifier.fillMaxWidth().clickable{
-                onItemClick(it)
-            }.padding(16.dp), verticalAlignment = CenterVertically ){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onItemClick(it) }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(imageVector = it.icon, contentDescription = it.text)
                 Spacer(modifier = Modifier.width(32.dp))
                 Text(text = it.text)
-            } }
+            }
+        }
     }
 }
 
