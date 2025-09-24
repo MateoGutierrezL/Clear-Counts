@@ -43,6 +43,9 @@ fun PantallaInicioSesion(navController: NavController){
 
     var correoUsuario by remember { mutableStateOf("") }
 
+    //Variable para manejar la alerta de campos vacios
+    var showDialog by remember { mutableStateOf(false) }
+
     //Contenedor box que abarca toda la pantalla del celular y centra el contenido
 
     Box(modifier = Modifier.fillMaxSize(),
@@ -57,21 +60,38 @@ fun PantallaInicioSesion(navController: NavController){
             Text("Inicio de sesión", fontSize = 30.sp)
 
             TextField(value = correoUsuario, onValueChange = { correoUsuario= it },
-                placeholder = {Text("Correo electronico")}
+                placeholder = {Text("Correo electronico")},
+                singleLine = true
             )
 
             TextField(value = contrasena, onValueChange = { contrasena= it },
-                placeholder = {Text("Contraseña")}
+                placeholder = {Text("Contraseña")},
+                singleLine = true
             )
 
-            Button(
+            /*Button(
 
-                onClick = {navController.navigate("Inicio")}
+                onClick = {
+
+                    navController.navigate("Inicio")
+
+                }
 
             ) {
 
                 Text("Iniciar sesión")
 
+            }*/
+
+            //Verficacion de que todo este debidamente diligenciado
+            Button(onClick = {
+                if (correoUsuario.isBlank() || contrasena.isBlank()) {
+                    showDialog = true // Muestra la alerta
+                } else {
+                    navController.navigate("Inicio")
+                }
+            }) {
+                Text("Iniciar sesión")
             }
 
             //Texto para navegar hacia la pantalla de registro
@@ -95,4 +115,10 @@ fun PantallaInicioSesion(navController: NavController){
 
         }
     }
+
+    // Llama a la Alerta solo si la variable de estado es true
+    if (showDialog) {
+        AlertaCamposVacios(onDismiss = { showDialog = false }, "inicio de sesión")
+    }
+
 }
