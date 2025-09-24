@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--Modificado por la pantalla de carga -->
+    <style name="Theme.App.Start" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="postSplashScreenTheme">@style/Theme.ClearCounts</item>
+    </style>
+
     <style name="Theme.ClearCounts" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

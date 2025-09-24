@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,10 +14,23 @@ import com.example.clearcounts.ui.HomeScreen
 import com.example.clearcounts.ui.MainScreen
 import com.example.clearcounts.ui.PantallaInicioSesion
 import com.example.clearcounts.ui.PantallaRegistro
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //Manejo de la pantalla de carga
+        val splashScreen = installSplashScreen()
+        var showSplashScreen = true
+        splashScreen.setKeepOnScreenCondition { showSplashScreen }
+
+        lifecycleScope.launch{
+            delay(2000)
+            showSplashScreen = false
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
