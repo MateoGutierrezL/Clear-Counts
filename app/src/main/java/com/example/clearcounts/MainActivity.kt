@@ -10,10 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.clearcounts.ui.HomeScreen
-import com.example.clearcounts.ui.MainScreen
-import com.example.clearcounts.ui.PantallaInicioSesion
-import com.example.clearcounts.ui.PantallaRegistro
+import com.example.clearcounts.ui.Inicio.AppNavigation
+import com.example.clearcounts.ui.Inicio.MainScreen
+import com.example.clearcounts.ui.InicioSesion.PantallaInicioSesion
+import com.example.clearcounts.ui.InicioSesion.PantallaRegistro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -56,7 +56,7 @@ fun InicioUsuario(){
         }
 
         composable ("Inicio"){
-            MainScreen()
+            AppNavigation()
         }
 
 
