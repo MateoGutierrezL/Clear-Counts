@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.example.clearcounts.ui.theme.AzulClear
+import com.example.clearcounts.ui.theme.AzulEncabezado
 
 @Composable
 fun Presupuesto(){
@@ -18,7 +18,7 @@ fun Presupuesto(){
             .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Presupuesto", fontSize = 30.sp, color = AzulClear)
+            Text(text = "Presupuesto", fontSize = 30.sp, color = AzulEncabezado)
         }
     }
 }

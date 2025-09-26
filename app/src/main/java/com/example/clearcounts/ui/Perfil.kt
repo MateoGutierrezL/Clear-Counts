@@ -8,8 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.colorspace.WhitePoint
 import androidx.compose.ui.unit.sp
-import com.example.clearcounts.ui.theme.AzulClear
+import com.example.clearcounts.ui.theme.Pink40
 
 @Composable
 fun Perfil(){
@@ -18,7 +19,7 @@ fun Perfil(){
             .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Perfil", fontSize = 30.sp, color = AzulClear)
+            Text(text = "Perfil", fontSize = 30.sp, color = Pink40)
         }
     }
 }

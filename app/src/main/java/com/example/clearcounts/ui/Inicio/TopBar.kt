@@ -10,18 +10,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material3.MaterialTheme
+import com.example.clearcounts.ui.theme.AzulEncabezado
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(onMenuClick: () -> Unit) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = AzulEncabezado,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         title = {
-            Text(text = "Navigation Drawer 123", style = MaterialTheme.typography.titleLarge)
+            Text(text = "ClearCounts", style = MaterialTheme.typography.titleLarge)
         },
         navigationIcon = {
             IconButton(onClick = onMenuClick) {
