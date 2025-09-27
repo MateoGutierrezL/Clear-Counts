@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clearcounts.ui.Inicio.AppNavigation
-import com.example.clearcounts.ui.Inicio.MainScreen
 import com.example.clearcounts.ui.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.InicioSesion.PantallaRegistro
 import com.example.clearcounts.ui.Pantallas

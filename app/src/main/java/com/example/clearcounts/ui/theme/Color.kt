@@ -13,3 +13,9 @@ val Pink40 = Color(0xFF7D5260)
 val AzulEncabezado = Color(0xFF3488FC)
 
 val AzulBotones = Color(0xFF6699FF)
+
+val blanco = Color(0xFFFFFFFF)
+
+val negro = Color(0xFF000000)
+
+val gris = Color(0xFF808080)

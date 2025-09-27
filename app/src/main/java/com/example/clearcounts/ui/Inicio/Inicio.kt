@@ -55,49 +55,6 @@ fun HomeScreen(paddingValues: PaddingValues) {
         Text("Esta es la pantalla de inicio")
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MainScreen() {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(
-        drawerContent = {
-            ModalDrawerSheet {
-                NavigationDrawer(
-                    name = "Mateo Gutierrez",
-                    email = "mateo@gmail.com",
-                    items = DrawerItem.entries,
-                ) {
-                    when (it) {
-                        DrawerItem.ABOUT -> {}
-                        DrawerItem.SETTINGS -> {}
-                        DrawerItem.RECENT -> {}
-                        DrawerItem.ACCOUNT -> {}
-                    }
-                    scope.launch {
-                        drawerState.close()
-                    }
-                }
-            }
-        },
-        drawerState = drawerState
-    ) {
-        Scaffold(
-            topBar = {
-                TopBar(
-                    onMenuClick = {
-                        scope.launch {
-                            drawerState.apply { if (isClosed) open() else close() }
-                        }
-                    }
-                )
-            }
-        ) { paddingValues ->
-            HomeScreen(paddingValues)
-        }
-    }
-}
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
 @OptIn(ExperimentalMaterial3Api::class)
