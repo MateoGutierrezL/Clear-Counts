@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,7 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.theme.AzulEncabezado
+import com.example.clearcounts.ui.theme.gris
 import com.example.clearcounts.ui.theme.negro
+import com.example.clearcounts.utils.AlertaCamposVacios
+import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Composable
 fun PantallaRegistro(navController: NavController) {
@@ -51,6 +57,12 @@ fun PantallaRegistro(navController: NavController) {
     // Visibilidad de la alerta
     var showDialog by remember { mutableStateOf(false) }
 
+    //Variable para manejar los colores del outlinedText, viene de la carpeta utils
+    val coloresOutlined = OutlinedTextFieldColors(
+        focusedBorder = AzulEncabezado,
+        unfocusedBorder = AzulEncabezado
+    )
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -62,7 +74,18 @@ fun PantallaRegistro(navController: NavController) {
             Image(painter = painterResource(id = R.drawable.logo_clear_counts),
                 contentDescription = "Logo de Clear Counts")
 
-            Text("Registrar nueva cuenta", fontSize = 30.sp)
+            Text(
+                text = "___________________________________________",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = AzulEncabezado,
+                modifier = Modifier.padding(bottom = 2.dp)
+                    .align(Alignment.Start),
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text("Registrar nueva cuenta", fontSize = 25.sp)
 
             Column {
                 Text(
@@ -79,14 +102,15 @@ fun PantallaRegistro(navController: NavController) {
                     onValueChange = { nombreUsuario = it },
                     placeholder = { Text("Ingrese su nombre") },
                     singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = coloresOutlined
                 )
             }
 
             Column {
 
                 Text(
-                    text = "Numero de celular",
+                    text = "Número de celular",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = negro,
@@ -97,10 +121,11 @@ fun PantallaRegistro(navController: NavController) {
                 OutlinedTextField(
                     value = telefono,
                     onValueChange = { telefono = it },
-                    placeholder = { Text("Telefono") },
+                    placeholder = { Text("Ingrese su número") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = coloresOutlined
                 )
 
             }
@@ -119,9 +144,10 @@ fun PantallaRegistro(navController: NavController) {
                 OutlinedTextField(
                     value = correoUsuario,
                     onValueChange = { correoUsuario = it },
-                    placeholder = { Text("Ingrese su correo electronico") },
+                    placeholder = { Text("Ingrese su correo electrónico") },
                     singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = coloresOutlined
                 )
             }
 
@@ -139,10 +165,11 @@ fun PantallaRegistro(navController: NavController) {
                 OutlinedTextField(
                     value = contrasena,
                     onValueChange = { contrasena = it },
-                    placeholder = { Text("Contraseña") },
+                    placeholder = { Text("Ingrese su contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = coloresOutlined
                 )
 
             }
@@ -192,18 +219,5 @@ fun PantallaRegistro(navController: NavController) {
     }
 }
 
-//Funcion de la alerta
-@Composable
-fun AlertaCamposVacios(onDismiss: () -> Unit, mensaje: String) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Llenar todos los campos") },
-        text = { Text(text = "Para poder realizar el $mensaje es necesario diligenciar todos los campos.") },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Aceptar")
-            }
-        }
-    )
-}
+
 
