@@ -1,27 +1,15 @@
 package com.example.clearcounts.ui.Inicio
 
-import android.graphics.drawable.Icon
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.example.clearcounts.ui.Pantallas
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
@@ -35,135 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.Graficas
-import com.example.clearcounts.ui.Perfil
-import com.example.clearcounts.ui.Presupuesto
 import com.example.clearcounts.ui.theme.AzulBotones
 import com.example.clearcounts.ui.theme.AzulEncabezado
-
-/*
-@Composable
-fun CustomBottomAppBar(
-    selectedIcon: MutableState<ImageVector>,
-    navigationController: NavHostController
-) {
-    val context = LocalContext.current.applicationContext
-
-    BottomAppBar(containerColor = AzulEncabezado) {
-        //Home
-        NavigationBarItem(
-            selected = selectedIcon.value == Icons.Default.Home, // Estado de selección
-            onClick = {
-                selectedIcon.value = Icons.Default.Home
-                navigationController.navigate(Pantallas.Inicio.pantalla) {
-                    popUpTo(0)
-                }
-            },
-            // 1. Icono (Home)
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Inicio",
-                    // El color del icono se maneja por 'colors' o por el esquema de color del tema
-                    // Se recomienda usar el color seleccionado/no seleccionado de NavigationBarItemDefaults
-                    // Si quieres forzar el color, usa 'tint' pero cuidado con el tema
-                )
-            },
-            // 2. Etiqueta de Texto (Inicio)
-            label = {
-                Text(
-                    text = "Inicio",
-                    fontSize = 12.sp, // Tamaño de letra pequeño
-                    color = if (selectedIcon.value == Icons.Default.Home) Color.White else Color.Black
-                )
-            })
-
-        //Graficas
-        IconButton(
-            onClick = {
-                selectedIcon.value = Icons.Default.Search
-                navigationController.navigate(Pantallas.Graficas.pantalla) {
-                    popUpTo(0)
-                }
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null,
-                modifier = Modifier.size(26.dp),
-                tint = if (selectedIcon.value == Icons.Default.Search) Color.White else Color.Black
-            )
-
-        }
-
-        // Boton + del centro
-        Box(
-            modifier = Modifier
-                .weight(2f)
-                .padding(14.dp),
-            contentAlignment = Alignment.Center,
-
-
-        ) {
-            FloatingActionButton(
-                onClick = {
-                    Toast.makeText(
-                        context,
-                        "Botón de Añadir presionado",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-                containerColor = AzulBotones
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Añadir",
-                    tint = Color.White
-                )
-            }
-        }
-
-        //Presupuesto
-        IconButton(
-            onClick = {
-                selectedIcon.value = Icons.Default.Done
-                navigationController.navigate(Pantallas.Presupuesto.pantalla) {
-                    popUpTo(0)
-                }
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Done,
-                contentDescription = null,
-                modifier = Modifier.size(26.dp),
-                tint = if (selectedIcon.value == Icons.Default.Done) Color.White else Color.Black
-            )
-        }
-
-        //Perfil
-        IconButton(
-            onClick = {
-                selectedIcon.value = Icons.Default.Person
-                navigationController.navigate(Pantallas.Perfil.pantalla) {
-                    popUpTo(0)
-                }
-            },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier.size(26.dp),
-                tint = if (selectedIcon.value == Icons.Default.Person) Color.White else Color.Black
-            )
-        }
-    }
-}*/
 
 @Composable
 fun CustomBottomAppBar(
