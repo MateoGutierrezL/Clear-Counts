@@ -1,0 +1,7 @@
+[submodule "Pagina-web-frontend"]
+    path = Pagina-web-frontend
+    url = https://github.com/MateoGutierrezL/Pagina-web-frontend.git
+
+[submodule "Pagina-web-backend"]
+    path = Pagina-web-backend
+    url = https://github.com/MateoGutierrezL/Pagina-web-backend.git 
