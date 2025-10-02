@@ -74,14 +74,6 @@ fun PantallaRegistro(navController: NavController) {
             Image(painter = painterResource(id = R.drawable.logo_clear_counts),
                 contentDescription = "Logo de Clear Counts")
 
-            Text(
-                text = "___________________________________________",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = AzulEncabezado,
-                modifier = Modifier.padding(bottom = 2.dp)
-                    .align(Alignment.Start),
-            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
