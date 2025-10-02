@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Inicio
+package com.example.clearcounts.ui.Barras
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

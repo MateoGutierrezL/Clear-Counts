@@ -21,13 +21,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.clearcounts.R
+import com.example.clearcounts.ui.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.Pink40
 import com.example.clearcounts.ui.theme.negro
 
 @Composable
-fun Perfil(){
+fun Perfil(navController: NavController){
 
     //Variables de los datos del usuario
 
@@ -92,7 +94,11 @@ fun Perfil(){
                     .align(Alignment.CenterHorizontally),
             )
 
-            Button(onClick = {""},
+            Button(onClick = {
+
+                navController.navigate(Pantallas.EditarPerfil.pantalla)
+
+            },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AzulEncabezado)
             )

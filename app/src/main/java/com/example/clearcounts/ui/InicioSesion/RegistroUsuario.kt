@@ -100,7 +100,7 @@ fun PantallaRegistro(navController: NavController) {
                 OutlinedTextField(
                     value = nombreUsuario,
                     onValueChange = { nombreUsuario = it },
-                    placeholder = { Text("Ingrese su nombre") },
+                    placeholder = { Text("Ingrese su nombre completo") },
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
                     colors = coloresOutlined

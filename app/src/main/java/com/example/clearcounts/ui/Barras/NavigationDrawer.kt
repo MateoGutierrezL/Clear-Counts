@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Inicio
+package com.example.clearcounts.ui.Barras
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
+import com.example.clearcounts.ui.Barras.DrawerItem
 
 @Composable
 fun NavigationDrawer(

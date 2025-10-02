@@ -20,8 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.clearcounts.ui.Barras.CustomBottomAppBar
+import com.example.clearcounts.ui.Barras.DrawerItem
+import com.example.clearcounts.ui.Barras.NavigationDrawer
+import com.example.clearcounts.ui.Barras.TopBar
 import com.example.clearcounts.ui.Graficas
 import com.example.clearcounts.ui.Pantallas
+import com.example.clearcounts.ui.Perfil.EditarPerfil
 import com.example.clearcounts.ui.Perfil.Perfil
 import com.example.clearcounts.ui.Presupuesto
 import kotlinx.coroutines.launch
@@ -36,67 +41,6 @@ fun HomeScreen(paddingValues: PaddingValues) {
     }
 }
 
-//Funcion que maneja el topappbar bottombar y la barra desplegable
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppNavigation() {
-    val navigationController = rememberNavController()
-    val selectedIcon = remember { mutableStateOf("home") }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(
-        drawerContent = {
-            ModalDrawerSheet {
-                NavigationDrawer(
-                    name = "Mateo Gutierrez",
-                    email = "mateo@gmail.com",
-                    items = DrawerItem.entries,
-                ) {
-                    when (it) {
-                        DrawerItem.ABOUT -> {}
-                        DrawerItem.SETTINGS -> {}
-                        DrawerItem.RECENT -> {}
-                        DrawerItem.ACCOUNT -> {}
-                    }
-                    scope.launch {
-                        drawerState.close()
-                    }
-                }
-            }
-        },
-        drawerState = drawerState
-    ) {
-        Scaffold(
-            topBar = {
-                TopBar(
-                    onMenuClick = {
-                        scope.launch {
-                            drawerState.apply { if (isClosed) open() else close() }
-                        }
-                    }
-                )
-            },
-            bottomBar = {
-                CustomBottomAppBar(
-                    selectedIcon = selectedIcon,
-                    navigationController = navigationController
-                )
-            }
-        ) { paddingValues ->
-            NavHost(
-                navController = navigationController,
-                startDestination = Pantallas.Inicio.pantalla,
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                composable(Pantallas.Inicio.pantalla) { HomeScreen(paddingValues) }
-                composable(Pantallas.Graficas.pantalla) { Graficas() }
-                composable(Pantallas.Perfil.pantalla) { Perfil() }
-                composable(Pantallas.Presupuesto.pantalla) { Presupuesto() }
-            }
-        }
-    }
-}
 
 
 
