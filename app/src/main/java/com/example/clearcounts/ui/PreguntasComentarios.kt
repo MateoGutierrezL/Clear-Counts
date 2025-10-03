@@ -12,13 +12,13 @@ import androidx.compose.ui.unit.sp
 import com.example.clearcounts.ui.theme.AzulEncabezado
 
 @Composable
-fun Notificaciones(){
+fun PreguntasComentarios(){
     Box(modifier = Modifier.fillMaxSize()){
         Column(modifier = Modifier.fillMaxSize()
             .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Pantalla de notificaciones", fontSize = 30.sp, color = AzulEncabezado)
+            Text(text = "Pantalla de comentarios", fontSize = 30.sp, color = AzulEncabezado)
         }
     }
 }

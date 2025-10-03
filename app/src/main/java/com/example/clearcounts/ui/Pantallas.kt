@@ -7,4 +7,8 @@ sealed class Pantallas (val pantalla: String){
     data object Presupuesto: Pantallas("presupuesto")
     data object EditarPerfil: Pantallas("editarPerfil")
 
+    data object Notificaciones: Pantallas("notificaciones")
+
+    data object PreguntasComentarios: Pantallas("preguntasComentarios")
+
 }

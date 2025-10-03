@@ -103,6 +103,7 @@ fun AppNavigation() {
 
                     Graficas()
                 }
+
                 composable(Pantallas.Perfil.pantalla) {
 
                     DisposableEffect(Unit) {
@@ -130,6 +131,26 @@ fun AppNavigation() {
                     }
 
                     EditarPerfil(navigationController)
+                }
+
+                composable(Pantallas.PreguntasComentarios.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    PreguntasComentarios()
+                }
+
+                composable(Pantallas.Notificaciones.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    Notificaciones()
                 }
 
             }

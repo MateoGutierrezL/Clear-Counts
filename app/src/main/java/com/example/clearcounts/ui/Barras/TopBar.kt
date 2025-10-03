@@ -34,106 +34,6 @@ import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.negro
 
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(
-    onMenuClick: () -> Unit,
-    selectedIcon: MutableState<String>,
-    navigationController: NavController
-) {
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = AzulEncabezado,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = blanco
-        ),
-        title = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopStart
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = negro)) {
-                            append("Clear")
-                        }
-                        withStyle(style = SpanStyle(color = blanco)) {
-                            append("Counts")
-                        }
-                    },
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = onMenuClick) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Menu Drawer",
-                    tint = negro
-                )
-            }
-        },
-        actions = {
-            // Icono de mensajes
-            NavigationBarItem(
-                selected = selectedIcon.value == "pqr",
-                onClick = {
-                    selectedIcon.value = "pqr"
-                    navigationController.navigate(Pantallas.Perfil.pantalla) {
-                        popUpTo(0)
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.customer_service),
-                        contentDescription = "preguntas y comentarios",
-                        modifier = Modifier.size(30.dp),
-                        tint = if (selectedIcon.value == "pqr") Color.White else Color.Black
-                    )
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White,
-                    unselectedIconColor = Color.Black,
-                    selectedTextColor = Color.White,
-                    unselectedTextColor = Color.Black,
-                    indicatorColor = Color.Transparent
-                )
-            )
-
-            // Icono de notificaciones
-            NavigationBarItem(
-                selected = selectedIcon.value == "notification",
-                onClick = {
-                    selectedIcon.value = "notification"
-                    navigationController.navigate(Pantallas.Perfil.pantalla) {
-                        popUpTo(0)
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.notification),
-                        contentDescription = "Notificaciones",
-                        modifier = Modifier.size(30.dp),
-                        tint = if (selectedIcon.value == "notification") Color.White else Color.Black
-                    )
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White,
-                    unselectedIconColor = Color.Black,
-                    selectedTextColor = Color.White,
-                    unselectedTextColor = Color.Black,
-                    indicatorColor = Color.Transparent
-                )
-            )
-        }
-    )
-}
-
- */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
@@ -177,11 +77,11 @@ fun TopBar(
         },
         // Los iconos de acciones ya están a la derecha por defecto.
         actions = {
-            // CAMBIO 1: Reemplazar NavigationBarItem por IconButton para el icono de mensajes
+            //Icono de las preguntas y comentarios
             IconButton(
                 onClick = {
                     selectedIcon.value = "pqr"
-                    navigationController.navigate(Pantallas.Perfil.pantalla) {
+                    navigationController.navigate(Pantallas.PreguntasComentarios.pantalla) {
                         popUpTo(0)
                     }
                 }
@@ -190,16 +90,15 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.customer_service),
                     contentDescription = "preguntas y comentarios",
                     modifier = Modifier.size(30.dp),
-                    // Usamos el estado para el color de tint
                     tint = if (selectedIcon.value == "pqr") Color.White else Color.Black
                 )
             }
 
-            // CAMBIO 2: Reemplazar NavigationBarItem por IconButton para el icono de notificaciones
+            //Icono de notificaciones
             IconButton(
                 onClick = {
                     selectedIcon.value = "notification"
-                    navigationController.navigate(Pantallas.Perfil.pantalla) {
+                    navigationController.navigate(Pantallas.Notificaciones.pantalla) {
                         popUpTo(0)
                     }
                 }
@@ -208,7 +107,6 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.notification),
                     contentDescription = "Notificaciones",
                     modifier = Modifier.size(30.dp),
-                    // Usamos el estado para el color de tint
                     tint = if (selectedIcon.value == "notification") Color.White else Color.Black
                 )
             }
