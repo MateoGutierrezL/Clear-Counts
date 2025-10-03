@@ -65,7 +65,9 @@ fun AppNavigation() {
                         scope.launch {
                             drawerState.apply { if (isClosed) open() else close() }
                         }
-                    }
+                    },
+                    selectedIcon = selectedIcon,
+                    navigationController = navigationController
                 )
             },
             bottomBar = {

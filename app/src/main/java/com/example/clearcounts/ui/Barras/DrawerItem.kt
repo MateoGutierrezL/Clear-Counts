@@ -11,8 +11,9 @@ enum class DrawerItem (
     val icon: ImageVector,
     val text: String
 ){
-    ABOUT(Icons.Default.Info, "About"),
+    ABOUT(Icons.Default.Info, "Exportar PDF/CSV"),
     SETTINGS(Icons.Default.Settings, "Settings"),
     RECENT(Icons.Default.DateRange, "Recent"),
-    ACCOUNT(Icons.Default.AccountCircle, "Account"),
+    ACCOUNT(Icons.Default.AccountCircle, "Account")
+
 }
