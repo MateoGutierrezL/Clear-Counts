@@ -1,28 +1,22 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  # Servicio para el Backend
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
-    container_name: pagina_backend
-    restart: always
-    ports:
-      - "3000:3000" # Mapea el puerto 3000 del contenedor al puerto 3000 del host
+      context: ./Pagina-web-backend
+      dockerfile: Dockerfile
     environment:
-      # Variables de entorno para el backend (ej. conexión a base de datos)
-      NODE_ENV: production
-      PORT: 3000
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    restart: unless-stopped
 
-  # Servicio para el Frontend (Servido por Nginx)
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: pagina_frontend
-    restart: always
-    depends_on:
-      - backend # Asegura que el backend inicie antes (opcional, pero útil)
+      context: ./Pagina-web-frontend
+      dockerfile: Dockerfile
     ports:
-      - "80:80" # Mapea el puerto 80 del contenedor (Nginx) al puerto 80 del host
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
