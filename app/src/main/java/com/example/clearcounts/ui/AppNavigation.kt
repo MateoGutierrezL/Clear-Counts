@@ -146,7 +146,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false //Aqui tambien ocultamos la barra inferior
-                        topBarVisible.value = false
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
