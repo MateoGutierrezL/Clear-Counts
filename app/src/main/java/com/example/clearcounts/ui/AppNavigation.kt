@@ -21,6 +21,7 @@ import com.example.clearcounts.ui.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.Barras.DrawerItem
 import com.example.clearcounts.ui.Barras.NavigationDrawer
 import com.example.clearcounts.ui.Barras.TopBar
+import com.example.clearcounts.ui.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.Inicio.HomeScreen
 import com.example.clearcounts.ui.Perfil.EditarPerfil
 import com.example.clearcounts.ui.Perfil.Perfil
@@ -35,6 +36,7 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
+    val topBarVisible = rememberSaveable { mutableStateOf(true) }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -60,15 +62,17 @@ fun AppNavigation() {
     ) {
         Scaffold(
             topBar = {
-                TopBar(
-                    onMenuClick = {
-                        scope.launch {
-                            drawerState.apply { if (isClosed) open() else close() }
-                        }
-                    },
-                    selectedIcon = selectedIcon,
-                    navigationController = navigationController
-                )
+                if (topBarVisible.value) {
+                    TopBar(
+                        onMenuClick = {
+                            scope.launch {
+                                drawerState.apply { if (isClosed) open() else close() }
+                            }
+                        },
+                        selectedIcon = selectedIcon,
+                        navigationController = navigationController
+                    )
+                }
             },
             bottomBar = {
                 if (bottomBarVisible.value) {
@@ -89,6 +93,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -98,6 +103,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -108,6 +114,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -117,6 +124,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -127,6 +135,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false // Ocultar barra inferior
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -136,7 +145,8 @@ fun AppNavigation() {
                 composable(Pantallas.PreguntasComentarios.pantalla) {
 
                     DisposableEffect(Unit) {
-                        bottomBarVisible.value = true
+                        bottomBarVisible.value = false //Aqui tambien ocultamos la barra inferior
+                        topBarVisible.value = false
                         onDispose {}
                     }
 
@@ -147,6 +157,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 

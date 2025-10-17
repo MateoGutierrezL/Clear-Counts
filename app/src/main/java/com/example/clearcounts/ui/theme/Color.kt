@@ -19,3 +19,7 @@ val blanco = Color(0xFFFFFFFF)
 val negro = Color(0xFF000000)
 
 val gris = Color(0xFF808080)
+
+val grisBotones  = Color(0xFFCFC8C8)
+
+val fondo = Color(0xFFFFFBFE)
