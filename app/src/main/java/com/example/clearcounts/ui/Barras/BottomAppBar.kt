@@ -158,7 +158,7 @@ fun CustomBottomAppBar(
             label = {
                 Text(
                     text = "Presupuesto",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     color = if (selectedIcon.value == "budget") Color.White else Color.Black
                 )
             },
