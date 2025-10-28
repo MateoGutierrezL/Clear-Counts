@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -63,6 +66,9 @@ fun PantallaInicioSesion(navController: NavController){
     //Variable para manejar la alerta de campos vacios
     var showDialog by remember { mutableStateOf(false) }
 
+    //Instanciar la clase de LocalFocusManager
+    val focusManager = LocalFocusManager.current
+
     //Variable para manejar los colores del outlinedText, viene de la carpeta utils
     val coloresOutlined = OutlinedTextFieldColors(
         focusedBorder = AzulEncabezado,
@@ -70,9 +76,15 @@ fun PantallaInicioSesion(navController: NavController){
     )
 
     //Contenedor box que abarca toda la pantalla del celular y centra el contenido
-
     Box(modifier = Modifier
-        .fillMaxSize(),
+        .fillMaxSize().
+        pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
+            detectTapGestures(onTap = {
+
+                // Al detectar un toque (tap), limpiar el foco
+                focusManager.clearFocus()
+            })
+        },
         contentAlignment = Alignment.Center
 
         )

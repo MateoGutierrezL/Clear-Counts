@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui.Perfil
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,9 +54,17 @@ fun EditarPerfil(navController: NavController){
         unfocusedBorder = AzulEncabezado
     )
 
+    //Instanciar la clase de LocalFocusManager
+    val focusManager = LocalFocusManager.current
 
     Box(modifier = Modifier
-        .fillMaxSize(),
+        .fillMaxSize().
+        pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
+            detectTapGestures(onTap = {
+
+                focusManager.clearFocus()
+            })
+        },
         contentAlignment = Alignment.Center,
 
     )
