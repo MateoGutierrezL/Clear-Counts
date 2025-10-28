@@ -23,3 +23,7 @@ val gris = Color(0xFF808080)
 val grisBotones  = Color(0xFFCFC8C8)
 
 val fondo = Color(0xFFFFFBFE)
+
+val AzulOscuro = Color(0xFF143B74)
+val Rojo = Color(0xFF0000)
+val grisClaro = Color(0xFF5B84B2)

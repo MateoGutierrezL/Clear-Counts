@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalDrawerSheet
@@ -14,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -40,17 +42,19 @@ fun AppNavigation() {
 
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet (
+                modifier = Modifier.width(290.dp) //Tamaño de la barra leteral desplegable
+            ){
                 NavigationDrawer(
                     name = "Mateo Gutierrez",
                     email = "mateo@gmail.com",
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
-                        DrawerItem.ABOUT -> {}
-                        DrawerItem.SETTINGS -> {}
-                        DrawerItem.RECENT -> {}
-                        DrawerItem.ACCOUNT -> {}
+                        DrawerItem.EXPORT_PDF -> {}
+                        DrawerItem.PERSONALIZACION -> {}
+                        DrawerItem.CONTACT -> {}
+                        DrawerItem.TUTORIAL -> {}
                     }
                     scope.launch {
                         drawerState.close()

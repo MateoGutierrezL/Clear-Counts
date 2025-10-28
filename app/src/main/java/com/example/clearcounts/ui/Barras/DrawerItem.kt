@@ -6,14 +6,15 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.clearcounts.R
 
 enum class DrawerItem (
-    val icon: ImageVector,
+    val icon: Int,
     val text: String
 ){
-    ABOUT(Icons.Default.Info, "Exportar PDF/CSV"),
-    SETTINGS(Icons.Default.Settings, "Settings"),
-    RECENT(Icons.Default.DateRange, "Recent"),
-    ACCOUNT(Icons.Default.AccountCircle, "Account")
+    EXPORT_PDF(icon = R.drawable.documento, "Exportar PDF/CSV"),
+    PERSONALIZACION(icon = R.drawable.equalizer, text = "Personalización"),
+    CONTACT(icon = R.drawable.phone_call, text = "Contactanos"),
+    TUTORIAL(icon = R.drawable.question, text = "Tutorial")
 
 }
