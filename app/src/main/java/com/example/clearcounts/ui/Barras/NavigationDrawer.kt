@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
@@ -25,18 +26,30 @@ import com.example.clearcounts.ui.theme.AzulBotones
 
 @Composable
 fun NavigationDrawer(
+    profilePicture: Painter,
     name: String,
     email: String,
     items: List<DrawerItem>,
     modifier: Modifier = Modifier,
     onItemClick: (DrawerItem) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth()
+        .drawBehind {
+        // Obtenemos el tamaño del Composable
+        val strokeWidth = 2.dp.toPx()
+        val y = size.height - strokeWidth / 2
+
+        drawLine(
+            color = AzulBotones,
+            start = Offset(0f, y),
+            end = Offset(size.width, y),
+            strokeWidth = strokeWidth
+        )
+    }) {
         // Encabezado del cajón de navegación
         Column(
             modifier = Modifier
-                .fillMaxWidth().
-                drawBehind {
+                .fillMaxWidth().drawBehind {
                     // Obtenemos el tamaño del Composable
                     val strokeWidth = 2.dp.toPx()
                     val y = size.height - strokeWidth / 2 // Posición Y en la parte inferior
@@ -60,10 +73,11 @@ fun NavigationDrawer(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
+        //Elementos principales del menu
+        val mainItems = items.filter { it != DrawerItem.LOG_OUT }
 
         // Elementos del menú
-        items.forEach {
+        mainItems.forEach {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,13 +86,37 @@ fun NavigationDrawer(
                 verticalAlignment = CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = it.icon), // <-- Usar item.icon aquí
+                    painter = painterResource(id = it.icon), // Usar item.icon aquí
                     contentDescription = it.text,
-                    modifier = Modifier.size(30.dp)// O el color que desees
+                    modifier = Modifier.size(30.dp)
                 )
                 Spacer(modifier = Modifier.width(25.dp))
                 Text(text = it.text)
             }
-            }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+    }
+
+    Column {
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick(DrawerItem.LOG_OUT) }
+            .padding(16.dp),
+        verticalAlignment = CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = DrawerItem.LOG_OUT.icon), // <-- Usar item.icon aquí
+            contentDescription = DrawerItem.LOG_OUT.text,
+            modifier = Modifier.size(30.dp)
+        )
+        Spacer(modifier = Modifier.width(25.dp))
+        Text(text = DrawerItem.LOG_OUT.text)
+    } }
+
 }

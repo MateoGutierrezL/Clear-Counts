@@ -15,10 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.clearcounts.R
 import com.example.clearcounts.ui.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.Barras.DrawerItem
 import com.example.clearcounts.ui.Barras.NavigationDrawer
@@ -46,6 +48,7 @@ fun AppNavigation() {
                 modifier = Modifier.width(290.dp) //Tamaño de la barra leteral desplegable
             ){
                 NavigationDrawer(
+                    profilePicture = painterResource(id = R.drawable.user),
                     name = "Mateo Gutierrez",
                     email = "mateo@gmail.com",
                     items = DrawerItem.entries,
@@ -55,7 +58,8 @@ fun AppNavigation() {
                         DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {}
                         DrawerItem.TUTORIAL -> {}
-                    }
+                        DrawerItem.LOG_OUT -> {}
+                }
                     scope.launch {
                         drawerState.close()
                     }
