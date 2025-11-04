@@ -14,12 +14,8 @@ val AzulEncabezado = Color(0xFF3488FC)
 
 val AzulBotones = Color(0xFF6699FF)
 
-val AzulOscuro = Color(0xFF143B74)
-
 val blanco = Color(0xFFFFFFFF)
 
 val negro = Color(0xFF000000)
 
-val Rojo = Color(0xFF0000)
 val gris = Color(0xFF808080)
-val grisClaro = Color(0xFF5B84B2)

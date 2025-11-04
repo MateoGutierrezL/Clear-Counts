@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalDrawerSheet
@@ -14,13 +15,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.clearcounts.R
 import com.example.clearcounts.ui.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.Barras.DrawerItem
 import com.example.clearcounts.ui.Barras.NavigationDrawer
 import com.example.clearcounts.ui.Barras.TopBar
+import com.example.clearcounts.ui.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.Inicio.HomeScreen
 import com.example.clearcounts.ui.Perfil.EditarPerfil
 import com.example.clearcounts.ui.Perfil.Perfil
@@ -35,21 +40,26 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
+    val topBarVisible = rememberSaveable { mutableStateOf(true) }
 
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet (
+                modifier = Modifier.width(290.dp) //Tamaño de la barra leteral desplegable
+            ){
                 NavigationDrawer(
+                    profilePicture = painterResource(id = R.drawable.user),
                     name = "Mateo Gutierrez",
                     email = "mateo@gmail.com",
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
-                        DrawerItem.ABOUT -> {}
-                        DrawerItem.SETTINGS -> {}
-                        DrawerItem.RECENT -> {}
-                        DrawerItem.ACCOUNT -> {}
-                    }
+                        DrawerItem.EXPORT_PDF -> {}
+                        DrawerItem.PERSONALIZACION -> {}
+                        DrawerItem.CONTACT -> {}
+                        DrawerItem.TUTORIAL -> {}
+                        DrawerItem.LOG_OUT -> {}
+                }
                     scope.launch {
                         drawerState.close()
                     }
@@ -60,15 +70,17 @@ fun AppNavigation() {
     ) {
         Scaffold(
             topBar = {
-                TopBar(
-                    onMenuClick = {
-                        scope.launch {
-                            drawerState.apply { if (isClosed) open() else close() }
-                        }
-                    },
-                    selectedIcon = selectedIcon,
-                    navigationController = navigationController
-                )
+                if (topBarVisible.value) {
+                    TopBar(
+                        onMenuClick = {
+                            scope.launch {
+                                drawerState.apply { if (isClosed) open() else close() }
+                            }
+                        },
+                        selectedIcon = selectedIcon,
+                        navigationController = navigationController
+                    )
+                }
             },
             bottomBar = {
                 if (bottomBarVisible.value) {
@@ -89,6 +101,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -98,15 +111,18 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
                     Graficas()
                 }
+
                 composable(Pantallas.Perfil.pantalla) {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -116,6 +132,7 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
@@ -126,10 +143,33 @@ fun AppNavigation() {
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false // Ocultar barra inferior
+                        topBarVisible.value = true
                         onDispose {}
                     }
 
                     EditarPerfil(navigationController)
+                }
+
+                composable(Pantallas.PreguntasComentarios.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false //Aqui tambien ocultamos la barra inferior
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    PreguntasComentarios()
+                }
+
+                composable(Pantallas.Notificaciones.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    Notificaciones()
                 }
 
             }
