@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import com.example.clearcounts.ui.AppNavigation
 import com.example.clearcounts.ui.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.InicioSesion.PantallaRegistro
 import com.example.clearcounts.ui.Pantallas
+import com.example.clearcounts.ui.theme.ClearCountTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            InicioUsuario()
+            ClearCountTheme(darkTheme = isSystemInDarkTheme()) {
+                InicioUsuario()
+            }
         }
     }
 }
