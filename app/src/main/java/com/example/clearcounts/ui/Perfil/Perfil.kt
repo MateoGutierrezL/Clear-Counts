@@ -29,7 +29,9 @@ import com.example.clearcounts.ui.theme.Pink40
 import com.example.clearcounts.ui.theme.negro
 
 @Composable
-fun Perfil(navController: NavController){
+fun Perfil(
+    navegarPantallaEditarPerfil: () -> Unit
+){
 
     //Variables de los datos del usuario
 
@@ -95,9 +97,7 @@ fun Perfil(navController: NavController){
             )
 
             Button(onClick = {
-
-                navController.navigate(Pantallas.EditarPerfil.pantalla)
-
+                navegarPantallaEditarPerfil()
             },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AzulEncabezado)

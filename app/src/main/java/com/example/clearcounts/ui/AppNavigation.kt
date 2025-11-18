@@ -78,7 +78,17 @@ fun AppNavigation() {
                             }
                         },
                         selectedIcon = selectedIcon,
-                        navigationController = navigationController
+                        navegarPantallaNotificaciones = {
+
+                            navigationController.navigate(Pantallas.Notificaciones.pantalla) {
+                                popUpTo(0)
+                            }
+                        },
+                        navegarPantallaPreguntasComentarios = {
+                            navigationController.navigate(Pantallas.PreguntasComentarios.pantalla) {
+                                popUpTo(0)
+                            }
+                        }
                     )
                 }
             },
@@ -126,7 +136,11 @@ fun AppNavigation() {
                         onDispose {}
                     }
 
-                    Perfil(navigationController)
+                    Perfil(
+                        navegarPantallaEditarPerfil = {
+                            navigationController.navigate(Pantallas.EditarPerfil.pantalla)
+                        }
+                    )
                 }
                 composable(Pantallas.Presupuesto.pantalla) {
 
@@ -147,7 +161,11 @@ fun AppNavigation() {
                         onDispose {}
                     }
 
-                    EditarPerfil(navigationController)
+                    EditarPerfil(
+                        botonVolver = {
+                            navigationController.popBackStack()
+                        }
+                    )
                 }
 
                 composable(Pantallas.PreguntasComentarios.pantalla) {

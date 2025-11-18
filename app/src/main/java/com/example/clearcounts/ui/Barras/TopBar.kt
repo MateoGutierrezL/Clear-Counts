@@ -39,7 +39,8 @@ import com.example.clearcounts.ui.theme.negro
 fun TopBar(
     onMenuClick: () -> Unit,
     selectedIcon: MutableState<String>,
-    navigationController: NavController
+    navegarPantallaNotificaciones: () -> Unit,
+    navegarPantallaPreguntasComentarios: () -> Unit
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -81,9 +82,7 @@ fun TopBar(
             IconButton(
                 onClick = {
                     selectedIcon.value = "pqr"
-                    navigationController.navigate(Pantallas.PreguntasComentarios.pantalla) {
-                        popUpTo(0)
-                    }
+                    navegarPantallaPreguntasComentarios()
                 }
             ) {
                 Icon(
@@ -98,9 +97,7 @@ fun TopBar(
             IconButton(
                 onClick = {
                     selectedIcon.value = "notification"
-                    navigationController.navigate(Pantallas.Notificaciones.pantalla) {
-                        popUpTo(0)
-                    }
+                    navegarPantallaNotificaciones()
                 }
             ) {
                 Icon(

@@ -40,7 +40,9 @@ import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Composable
-fun EditarPerfil(navController: NavController){
+fun EditarPerfil(
+    botonVolver: () -> Unit
+){
 
     //Variables de los datos del usuario
 
@@ -71,7 +73,7 @@ fun EditarPerfil(navController: NavController){
     {
         IconButton(
             onClick = {
-                navController.popBackStack()
+                botonVolver()
             },
             modifier = Modifier
                 .align(Alignment.TopStart) // Lo alinea arriba y a la izquierda
