@@ -17,9 +17,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.Barras.DrawerItem
@@ -188,6 +190,21 @@ fun AppNavigation() {
                     }
 
                     Notificaciones()
+                }
+
+                composable(
+                    route = "ingresos/{icono}/{nombre}",
+                    arguments = listOf(
+                        navArgument("icono") { type = NavType.IntType },
+                        navArgument("nombre") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val icono = backStackEntry.arguments?.getInt("icono") ?: 0
+                    val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
+
+                    ingresos(navigationController,icono,nombre)
+
+
                 }
 
             }

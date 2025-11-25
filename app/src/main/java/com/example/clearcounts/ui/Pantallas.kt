@@ -11,4 +11,6 @@ sealed class Pantallas (val pantalla: String){
 
     data object PreguntasComentarios: Pantallas("preguntasComentarios")
 
+    data object ingresos: Pantallas("ingresos")
+
 }

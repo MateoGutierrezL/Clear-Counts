@@ -79,7 +79,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(paddingValues: PaddingValues) {
+fun HomeScreen(paddingValues: PaddingValues) { // paddingValues: PaddingValues
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -100,7 +100,6 @@ fun HomeScreen(paddingValues: PaddingValues) {
 
 }
 
-@Preview
 @Composable
 fun contenidoSuperior() {
     val infiniteTransition = rememberInfiniteTransition(label = "ProgressAnimation")
@@ -181,16 +180,14 @@ fun contenidoSuperior() {
     }
 }
 
-@Preview
+
 @Composable
 fun contenidoMedio() {
-
     Column(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp, top = 30.dp)
             .clip(RoundedCornerShape(10.dp))
             .width(382.dp),
-
         ) {
         Box(
             modifier = Modifier
