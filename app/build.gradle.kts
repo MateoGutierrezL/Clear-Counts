@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -40,6 +42,17 @@ android {
 }
 
 dependencies {
+
+    // Hilt - Implementaciones
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Room - Implementaciones
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    // Room
+    ksp(libs.room.ksp)
+
     // Requerida para usar Theme.Material3 en XML
     implementation("com.google.android.material:material:1.11.0") // Usar la última versión estable
 

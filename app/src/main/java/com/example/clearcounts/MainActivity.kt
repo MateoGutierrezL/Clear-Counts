@@ -16,10 +16,11 @@ import com.example.clearcounts.ui.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.InicioSesion.PantallaRegistro
 import com.example.clearcounts.ui.Pantallas
 import com.example.clearcounts.ui.theme.ClearCountTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
