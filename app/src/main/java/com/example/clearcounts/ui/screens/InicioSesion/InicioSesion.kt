@@ -56,12 +56,21 @@ import com.example.clearcounts.utils.AlertaCamposVacios
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
-fun PantallaInicioSesion(navController: NavController) {
+fun PantallaInicioSesion(
+    navegarRegistroUsuario:() -> Unit,
+    navegarOlvidoContrasena:() -> Unit,
+    navegarInicio:() -> Unit,
+    viewModel: ViewModelInicioSesion = hiltViewModel()
+) {
 
     //Variables que almacenan los datos que son proporcionados en cada uno de los textfield
+
     var contrasena by remember { mutableStateOf("") }
 
     var correoUsuario by remember { mutableStateOf("") }
@@ -77,6 +86,17 @@ fun PantallaInicioSesion(navController: NavController) {
         focusedBorder = AzulEncabezado,
         unfocusedBorder = AzulEncabezado
     )
+
+    val loginStatus by viewModel.loginStatus.collectAsState()
+
+    when(loginStatus){
+
+        is InicioSesionUiState.Error -> println("Error")
+        is InicioSesionUiState.Loading -> println("Cargando")
+        is InicioSesionUiState.Success -> navegarInicio()
+
+    }
+
         //Contenedor box que abarca toda la pantalla del celular y centra el contenido
         Box(
             modifier = Modifier
@@ -168,7 +188,8 @@ fun PantallaInicioSesion(navController: NavController) {
                     Text(
                         text = "¿Olvidó su clave?",
                         modifier = Modifier.clickable {
-                            navController.navigate("RecuperarClave") // Ajusta si tienes esta ruta
+
+                            navegarOlvidoContrasena()
                         },
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -199,7 +220,8 @@ fun PantallaInicioSesion(navController: NavController) {
                     Text(
                         text = annotatedString,
                         modifier = Modifier.clickable {
-                            navController.navigate("RegistroUsuario")
+
+                            navegarRegistroUsuario()
                         }
                     )
                 }
@@ -209,7 +231,7 @@ fun PantallaInicioSesion(navController: NavController) {
                         if (correoUsuario.isBlank() || contrasena.isBlank()) {
                             showDialog = true
                         } else {
-                            navController.navigate("Inicio")
+                            viewModel.validateUser(correoUsuario, contrasena)
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -225,6 +247,7 @@ fun PantallaInicioSesion(navController: NavController) {
             AlertaCamposVacios(onDismiss = { showDialog = false }, "inicio de sesión")
         }
 }
+
 
 
 

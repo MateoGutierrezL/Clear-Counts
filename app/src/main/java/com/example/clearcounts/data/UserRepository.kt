@@ -14,7 +14,7 @@ interface UserRepository {
     /**
      * Devuelve el usuario que tenga el correo especificado
      */
-    fun getUserStream(correo: String): Flow<UserEntity?>
+    fun getUserByEmailStream(correo: String): Flow<UserEntity?>
 
     /**
      * Inserta en la base de datos

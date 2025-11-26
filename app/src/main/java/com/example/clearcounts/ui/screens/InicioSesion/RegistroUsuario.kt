@@ -13,16 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -39,26 +34,20 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.UserEntity
-import com.example.clearcounts.ui.theme.AzulEncabezado
-import com.example.clearcounts.ui.theme.gris
-import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.AlertaCamposVacios
-import com.example.clearcounts.utils.OutlinedTextFieldColors
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
 fun PantallaRegistro(
-    navController: NavController,
-    viewModel: ViewModelRegistroUsuario = hiltViewModel()
+    navegarBotonRegistrarme:() -> Unit,
+    textoNavegarInicioSesion:() -> Unit,
+    viewModel: RegistroUsuarioViewModel = hiltViewModel()
 ) {
 
     // Variables para los campos de texto
@@ -217,21 +206,17 @@ fun PantallaRegistro(
                     } else {
 
                         val newUser = UserEntity(
-                            // Nota: Asumiendo que UserEntity tiene estos campos
-                            // y que el 'id' es 0 para que Room lo autogenere.
-                            id = 0, // Ajusta si la entidad no usa autogeneración
+                            id = 0,
                             nombre = nombreUsuario,
                             numero = numero,
                             correo = correoUsuario,
-                            contrasena = contrasena // Asegúrate de hashear la contraseña en un entorno de producción real
+                            contrasena = contrasena //Hashear contraseña
                         )
 
                         // 2. Llamar al ViewModel
                         viewModel.insertUser(newUser)
 
-                        navController.navigate("InicioSesion") {
-                            popUpTo("PantallaRegistro") { inclusive = true }
-                        }
+                        navegarBotonRegistrarme()
 
                     }
                 },
@@ -266,7 +251,7 @@ fun PantallaRegistro(
             Text(
                 text = annotatedString,
                 modifier = Modifier.clickable {
-                    navController.navigate("InicioSesion")
+                    textoNavegarInicioSesion()
                 }
             )
 

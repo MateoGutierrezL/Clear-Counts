@@ -1,33 +1,32 @@
-package com.example.clearcounts.ui.screens.InicioSesion
+package com.example.clearcounts.ui.screens.Perfil
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.data.database.entities.UserEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class ViewModelRegistroUsuario @Inject constructor(
+class EditarPerfilViewModel @Inject constructor(
 
     private val userRepository: UserRepository
 ): ViewModel() {
 
-    fun insertUser(userEntity: UserEntity){
+    fun updateUser(userEntity: UserEntity){
 
         viewModelScope.launch {
+
             try {
-                userRepository.insertUser(userEntity)
 
-                println("Usuario ingresado con exito")
+                userRepository.updateUser(userEntity)
 
-            }catch(e: Exception){
+                println("Usuario actualizado con exito")
 
-                println("Error al ingresar el usuario")
+            }catch (e: Exception){
 
+                println("Actualizacion de usuario denegada")
             }
         }
     }

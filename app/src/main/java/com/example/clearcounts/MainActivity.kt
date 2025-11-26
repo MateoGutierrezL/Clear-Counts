@@ -51,12 +51,35 @@ fun InicioUsuario(){
 
         composable("InicioSesion")
         {
-            PantallaInicioSesion(navController)
+            PantallaInicioSesion(
+
+                navegarRegistroUsuario = {
+                    navController.navigate("RegistroUsuario")
+                },
+                navegarInicio = {
+                    navController.navigate("Inicio")
+                },
+                navegarOlvidoContrasena = {
+                    navController.navigate("RecuperarClave")
+                }
+            )
         }
 
         composable("RegistroUsuario")
         {
-            PantallaRegistro(navController)
+            PantallaRegistro(
+
+                navegarBotonRegistrarme = {
+
+                    navController.navigate("InicioSesion") {
+                        popUpTo("PantallaRegistro") { inclusive = true }
+                    }
+                },
+                textoNavegarInicioSesion = {
+
+                    navController.navigate("InicioSesion")
+                }
+            )
         }
 
         composable ("Inicio"){

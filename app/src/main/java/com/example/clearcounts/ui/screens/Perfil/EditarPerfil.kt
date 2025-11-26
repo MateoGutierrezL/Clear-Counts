@@ -31,9 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material3.Icon
 import com.example.clearcounts.R
+import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.negro
@@ -41,7 +43,8 @@ import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Composable
 fun EditarPerfil(
-    botonVolver: () -> Unit
+    botonVolver: () -> Unit,
+    viewModel: EditarPerfilViewModel = hiltViewModel()
 ){
 
     //Variables de los datos del usuario
@@ -179,8 +182,8 @@ fun EditarPerfil(
 
             Button(onClick = {
 
-
-
+                //*TODO Funcion por implementar, es necesario realizar primero el inicio de sesion
+                //viewModel.updateUser()
             },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AzulEncabezado)
