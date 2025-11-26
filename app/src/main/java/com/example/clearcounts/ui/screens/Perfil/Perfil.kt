@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Perfil
+package com.example.clearcounts.ui.screens.Perfil
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.Pantallas
+import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.Pink40
 import com.example.clearcounts.ui.theme.negro

@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.InicioSesion
+package com.example.clearcounts.ui.screens.InicioSesion
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,23 +43,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.clearcounts.R
+import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.gris
 import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.AlertaCamposVacios
 import com.example.clearcounts.utils.OutlinedTextFieldColors
-
-
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
-fun PantallaRegistro(navController: NavController) {
+fun PantallaRegistro(
+    navController: NavController,
+    viewModel: ViewModelRegistroUsuario = hiltViewModel()
+) {
 
     // Variables para los campos de texto
     var nombreUsuario by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
+    var numero by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var correoUsuario by remember { mutableStateOf("") }
 
@@ -146,8 +150,8 @@ fun PantallaRegistro(navController: NavController) {
                 )
 
                 OutlinedTextField(
-                    value = telefono,
-                    onValueChange = { telefono = it },
+                    value = numero,
+                    onValueChange = { numero = it },
                     placeholder = { Text("Ingrese su número", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
@@ -208,10 +212,27 @@ fun PantallaRegistro(navController: NavController) {
             //Verficacion de que todo este debidamente diligenciado
             Button(
                 onClick = {
-                    if (nombreUsuario.isBlank() || telefono.isBlank() || correoUsuario.isBlank() || contrasena.isBlank()) {
+                    if (nombreUsuario.isBlank() || numero.isBlank() || correoUsuario.isBlank() || contrasena.isBlank()) {
                         showDialog = true // Muestra la alerta
                     } else {
-                        navController.navigate("InicioSesion")
+
+                        val newUser = UserEntity(
+                            // Nota: Asumiendo que UserEntity tiene estos campos
+                            // y que el 'id' es 0 para que Room lo autogenere.
+                            id = 0, // Ajusta si la entidad no usa autogeneración
+                            nombre = nombreUsuario,
+                            numero = numero,
+                            correo = correoUsuario,
+                            contrasena = contrasena // Asegúrate de hashear la contraseña en un entorno de producción real
+                        )
+
+                        // 2. Llamar al ViewModel
+                        viewModel.insertUser(newUser)
+
+                        navController.navigate("InicioSesion") {
+                            popUpTo("PantallaRegistro") { inclusive = true }
+                        }
+
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -258,186 +279,6 @@ fun PantallaRegistro(navController: NavController) {
     }
 }
 
-
-
-
-
-/*
-@Composable
-fun PantallaRegistro(navController: NavController) {
-
-    // Variables para los campos de texto
-    var nombreUsuario by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-    var correoUsuario by remember { mutableStateOf("") }
-
-    // Visibilidad de la alerta
-    var showDialog by remember { mutableStateOf(false) }
-
-    //Variable para manejar los colores del outlinedText, viene de la carpeta utils
-    val coloresOutlined = OutlinedTextFieldColors(
-        focusedBorder = AzulEncabezado,
-        unfocusedBorder = AzulEncabezado
-    )
-
-    //Instanciar la clase de LocalFocusManager
-    val focusManager = LocalFocusManager.current
-
-    Box(
-        modifier = Modifier.fillMaxSize().
-        pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
-            detectTapGestures(onTap = {
-
-                focusManager.clearFocus()
-            })
-        },
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            Image(painter = painterResource(id = R.drawable.logo_clear_counts),
-                contentDescription = "Logo de Clear Counts")
-
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text("Registrar nueva cuenta", fontSize = 25.sp)
-
-            Column {
-                Text(
-                    text = "Nombre",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = nombreUsuario,
-                    onValueChange = { nombreUsuario = it },
-                    placeholder = { Text("Ingrese su nombre completo") },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-            }
-
-            Column {
-
-                Text(
-                    text = "Número de celular",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = telefono,
-                    onValueChange = { telefono = it },
-                    placeholder = { Text("Ingrese su número") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-
-            }
-
-            Column {
-
-                Text(
-                    text = "Correo",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = correoUsuario,
-                    onValueChange = { correoUsuario = it },
-                    placeholder = { Text("Ingrese su correo electrónico") },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-            }
-
-            Column {
-
-                Text(
-                    text = "Contraseña",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = contrasena,
-                    onValueChange = { contrasena = it },
-                    placeholder = { Text("Ingrese su contraseña") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-
-            }
-
-
-
-            //Verficacion de que todo este debidamente diligenciado
-            Button(onClick = {
-                if (nombreUsuario.isBlank() || telefono.isBlank() || correoUsuario.isBlank() || contrasena.isBlank()) {
-                    showDialog = true // Muestra la alerta
-                } else {
-                    navController.navigate("InicioSesion")
-                }
-            },colors = ButtonDefaults.buttonColors(
-                containerColor = AzulEncabezado
-            )
-
-                ) {
-                Text("Registrarme")
-            }
-
-            //Texto para la navegación hacia el inicio de sesión
-            val annotatedString = buildAnnotatedString {
-                append("¿Ya tienes una cuenta? ")
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                    )
-                ) {
-                    append("Inicia sesión")
-                }
-            }
-
-            Text(
-                text = annotatedString,
-                modifier = Modifier.clickable {
-                    navController.navigate("InicioSesion")
-                }
-            )
-
-        }
-    }
-
-    // Llama a la Alerta solo si la variable de estado es true
-    if (showDialog) {
-        AlertaCamposVacios(onDismiss = { showDialog = false }, "Registro")
-    }
-}
-*/
 
 
 

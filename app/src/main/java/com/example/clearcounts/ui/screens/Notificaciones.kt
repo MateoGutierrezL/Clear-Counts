@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui
+package com.example.clearcounts.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,15 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.example.clearcounts.ui.theme.AzulEncabezado
 
-
 @Composable
-fun Graficas(){
+fun Notificaciones(){
     Box(modifier = Modifier.fillMaxSize()){
         Column(modifier = Modifier.fillMaxSize()
             .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Graficas", fontSize = 30.sp, color = AzulEncabezado)
+            Text(text = "Pantalla de notificaciones", fontSize = 30.sp, color = AzulEncabezado)
         }
     }
 }

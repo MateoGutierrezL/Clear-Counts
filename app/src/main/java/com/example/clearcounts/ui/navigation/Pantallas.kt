@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui
+package com.example.clearcounts.ui.navigation
 
 sealed class Pantallas (val pantalla: String){
     data object Inicio: Pantallas("inicio")

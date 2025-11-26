@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Barras
+package com.example.clearcounts.ui.screens.Barras
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,7 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.clearcounts.ui.Pantallas
+import com.example.clearcounts.ui.navigation.Pantallas
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -46,9 +46,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.CategoriaItemGastos
-import com.example.clearcounts.ui.CategoriaItemIngresos
-import com.example.clearcounts.ui.DataSource
+import com.example.clearcounts.ui.screens.CategoriaItemGastos
+import com.example.clearcounts.ui.screens.CategoriaItemIngresos
+import com.example.clearcounts.ui.screens.DataSource
 import com.example.clearcounts.ui.theme.AzulEncabezado
 
 

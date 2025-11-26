@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Barras
+package com.example.clearcounts.ui.screens.Barras
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material3.MaterialTheme
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.Pantallas
+import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.negro

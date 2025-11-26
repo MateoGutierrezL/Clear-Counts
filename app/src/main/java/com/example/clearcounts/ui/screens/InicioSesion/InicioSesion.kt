@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.InicioSesion
+package com.example.clearcounts.ui.screens.InicioSesion
 
 import android.graphics.Color
 import androidx.compose.foundation.Image

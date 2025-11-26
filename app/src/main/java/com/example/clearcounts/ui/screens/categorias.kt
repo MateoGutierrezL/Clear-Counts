@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui
+package com.example.clearcounts.ui.screens
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

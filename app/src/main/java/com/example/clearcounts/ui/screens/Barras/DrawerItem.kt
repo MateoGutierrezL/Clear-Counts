@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Barras
+package com.example.clearcounts.ui.screens.Barras
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle

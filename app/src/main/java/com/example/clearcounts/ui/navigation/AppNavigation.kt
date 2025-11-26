@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui
+package com.example.clearcounts.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -23,14 +23,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.Barras.CustomBottomAppBar
-import com.example.clearcounts.ui.Barras.DrawerItem
-import com.example.clearcounts.ui.Barras.NavigationDrawer
-import com.example.clearcounts.ui.Barras.TopBar
-import com.example.clearcounts.ui.PreguntasComentarios.PreguntasComentarios
-import com.example.clearcounts.ui.Inicio.HomeScreen
-import com.example.clearcounts.ui.Perfil.EditarPerfil
-import com.example.clearcounts.ui.Perfil.Perfil
+import com.example.clearcounts.ui.screens.Graficas
+import com.example.clearcounts.ui.screens.Notificaciones
+import com.example.clearcounts.ui.screens.Presupuesto
+import com.example.clearcounts.ui.screens.ingresos
+import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
+import com.example.clearcounts.ui.screens.Barras.DrawerItem
+import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
+import com.example.clearcounts.ui.screens.Barras.TopBar
+import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
+import com.example.clearcounts.ui.screens.Inicio.HomeScreen
+import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
+import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
@@ -202,7 +206,7 @@ fun AppNavigation() {
                     val icono = backStackEntry.arguments?.getInt("icono") ?: 0
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
 
-                    ingresos(navigationController,icono,nombre)
+                    ingresos(navigationController, icono, nombre)
 
 
                 }

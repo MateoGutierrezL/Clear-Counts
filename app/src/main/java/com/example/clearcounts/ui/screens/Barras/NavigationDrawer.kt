@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.Barras
+package com.example.clearcounts.ui.screens.Barras
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
-import com.example.clearcounts.ui.Barras.DrawerItem
 import com.example.clearcounts.ui.theme.AzulBotones
 
 @Composable
