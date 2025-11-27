@@ -18,6 +18,9 @@ interface UserDao{
     @Query("SELECT * FROM usuario WHERE correo = :correo")
     fun getByEmail(correo: String): Flow<UserEntity>
 
+    @Query("SELECT * FROM usuario where id = :id")
+    fun getUserById(id: Int): Flow<UserEntity?>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(userEntity: UserEntity)
 

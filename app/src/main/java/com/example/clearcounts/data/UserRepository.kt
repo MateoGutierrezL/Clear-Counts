@@ -31,4 +31,9 @@ interface UserRepository {
      */
     suspend fun updateUser(userEntity: UserEntity)
 
+    /**
+     * Obtiene el usuario por medio de su id
+     */
+    fun getUserByIdStream(id: Int): Flow<UserEntity?>
+
 }

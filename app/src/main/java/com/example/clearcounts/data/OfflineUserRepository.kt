@@ -13,6 +13,8 @@ class OfflineUserRepository @Inject constructor(
 
     override fun getUserByEmailStream(correo: String): Flow<UserEntity?> = userDao.getByEmail(correo)
 
+    override fun getUserByIdStream(id: Int): Flow<UserEntity?> = userDao.getUserById(id)
+
     override suspend fun insertUser(userEntity: UserEntity) = userDao.insert(userEntity)
 
     override suspend fun deleteUser(userEntity: UserEntity) = userDao.delete(userEntity)
