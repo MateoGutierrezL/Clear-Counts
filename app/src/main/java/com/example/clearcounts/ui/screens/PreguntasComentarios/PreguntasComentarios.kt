@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -138,7 +139,7 @@ fun BotonesContacto(){
                 shape = ButtonDefaults.shape
             ),
             colors = ButtonDefaults.buttonColors(
-                containerColor = fondo
+                containerColor = MaterialTheme.colorScheme.background
             )
         ) {
 
@@ -149,13 +150,15 @@ fun BotonesContacto(){
                     painter = painterResource(id = R.drawable.correo_electronico),
                     contentDescription = "Icono de Enviar correo",
                     modifier = Modifier.size(20.dp),
-                    tint = negro
+                    tint = MaterialTheme.colorScheme.onBackground
 
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text("Enviar correo", color = negro)
+                Text("Enviar correo",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
             }
         }

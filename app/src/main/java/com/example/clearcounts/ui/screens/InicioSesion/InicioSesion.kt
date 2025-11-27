@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -57,6 +58,7 @@ import com.example.clearcounts.utils.OutlinedTextFieldColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -122,14 +124,11 @@ fun PantallaInicioSesion(
                     contentDescription = "Logo de Clear Counts"
                 )
 
-                Text(
-                    text = "___________________________________________",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary,
+                HorizontalDivider(
                     modifier = Modifier
-                        .padding(bottom = 10.dp)
-                        .align(Alignment.Start)
+                        .padding(horizontal = 20.dp),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -244,7 +243,11 @@ fun PantallaInicioSesion(
         }
         // Llama a la Alerta
         if (showDialog) {
-            AlertaCamposVacios(onDismiss = { showDialog = false }, "inicio de sesión")
+            AlertaCamposVacios(
+                onDismiss = { showDialog = false },
+                titulo = "Llenar todos los campos",
+                mensaje = stringResource(R.string.llenar_campos)
+            )
         }
 }
 

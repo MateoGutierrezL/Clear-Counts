@@ -3,5 +3,6 @@
     <string name="Texto_comentarios">Nos gustaría hacer que la experiencia sea lo mejor posible, asi que por favor envía tus problemas, ideas o simplemente como mejorar la app.</string>
     <string name="categoria_comida">Comida</string>
     <string name="categoria_gasolina">Gasolina</string>
+    <string name="llenar_campos">Para poder realizar el registro es necesario llenar todos los campos</string>
 
 </resources>

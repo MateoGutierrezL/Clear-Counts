@@ -7,11 +7,11 @@ import androidx.compose.runtime.Composable
 
 //Funcion de la alerta
 @Composable
-fun AlertaCamposVacios(onDismiss: () -> Unit, mensaje: String) {
+fun AlertaCamposVacios(onDismiss: () -> Unit, titulo: String, mensaje: String) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Llenar todos los campos") },
-        text = { Text(text = "Para poder realizar el $mensaje es necesario diligenciar todos los campos.") },
+        title = { Text(text = titulo) },
+        text = { Text(text = mensaje) },
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text("Aceptar")

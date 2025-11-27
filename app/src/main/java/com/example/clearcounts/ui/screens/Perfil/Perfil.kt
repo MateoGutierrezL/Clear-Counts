@@ -1,6 +1,8 @@
 package com.example.clearcounts.ui.screens.Perfil
 
+import android.graphics.ColorFilter
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,12 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.navigation.Pantallas
-import com.example.clearcounts.ui.theme.AzulEncabezado
-import com.example.clearcounts.ui.theme.Pink40
-import com.example.clearcounts.ui.theme.negro
+import com.example.clearcounts.ui.theme.ClearCountTheme
+
 
 @Composable
 fun Perfil(
@@ -39,72 +40,80 @@ fun Perfil(
     var correoUsuario by remember { mutableStateOf("") }
 
 
-    Box(modifier = Modifier
-        .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    )
-    {
-        Column(modifier = Modifier.fillMaxSize()
-            .align(Alignment.TopCenter),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Mi perfil",
-                fontSize = 30.sp,
-                color = negro,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 20.dp)
-            )
+    ClearCountTheme {
 
-            Text(
-                text = "____________________",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = AzulEncabezado,
-                modifier = Modifier.padding(bottom = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 20.dp)
-            )
+        Box(modifier = Modifier
+            .fillMaxSize().
+            background(color = MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        )
+        {
+            Column(modifier = Modifier.fillMaxSize()
+                .align(Alignment.TopCenter),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Mi perfil",
+                    fontSize = 30.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 20.dp)
+                )
 
-            Image(painter = painterResource(id = R.drawable.user),
-                contentDescription = "Icono de usuario",
-                modifier = Modifier.padding(bottom = 20.dp).size(130.dp))
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = 100.dp)
+                        .padding(top = 20.dp)
+                        .padding(bottom = 40.dp),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.outline
+                )
 
-            //Aqui debe de ir el nombre de usuario con su correo
-            Text(
-                text = "Mateo Gutiérrez Laverde",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = negro,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.user),
+                    contentDescription = "Icono de usuario",
+                    modifier = Modifier.padding(bottom = 20.dp).size(130.dp),
+                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                )
 
-            Text(
-                text = "mateo@gmail.com",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = negro,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
+                //Aqui debe de ir el nombre de usuario con su correo
+                Text(
+                    text = "Mateo Gutiérrez Laverde",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(bottom = 6.dp)
+                )
 
-            Text(
-                text = "_________________________________________",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = AzulEncabezado,
-                modifier = Modifier.padding(bottom = 20.dp)
-                    .align(Alignment.CenterHorizontally),
-            )
+                Text(
+                    text = "mateo@gmail.com",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
 
-            Button(onClick = {
-                navegarPantallaEditarPerfil()
-            },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AzulEncabezado)
-            )
-            {
-                Text("Editar perfil")
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = 60.dp)
+                        .padding(bottom = 30.dp),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+                Button(onClick = {
+                    navegarPantallaEditarPerfil()
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary)
+                )
+                {
+                    Text("Editar perfil",
+                        color = MaterialTheme.colorScheme.onPrimary)
+                }
             }
         }
+
     }
+
 }

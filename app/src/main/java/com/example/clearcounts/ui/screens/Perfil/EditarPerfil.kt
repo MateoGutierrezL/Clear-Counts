@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui.screens.Perfil
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +15,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -38,6 +43,7 @@ import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
+import com.example.clearcounts.ui.theme.ClearCountTheme
 import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
@@ -62,136 +68,141 @@ fun EditarPerfil(
     //Instanciar la clase de LocalFocusManager
     val focusManager = LocalFocusManager.current
 
-    Box(modifier = Modifier
-        .fillMaxSize().
-        pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
-            detectTapGestures(onTap = {
+    ClearCountTheme {
 
-                focusManager.clearFocus()
-            })
-        },
-        contentAlignment = Alignment.Center,
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background).
+            pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
+                detectTapGestures(onTap = {
 
-    )
-    {
-        IconButton(
-            onClick = {
-                botonVolver()
+                    focusManager.clearFocus()
+                })
             },
-            modifier = Modifier
-                .align(Alignment.TopStart) // Lo alinea arriba y a la izquierda
-                .padding(top = 10.dp, start = 5.dp) // Añade un poco de margen para que no esté pegado
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Volver",
-                tint = negro, // O el color que desees para el icono
-                modifier = Modifier.size(30.dp)
+            contentAlignment = Alignment.Center,
+
             )
-        }
-
-        Column(modifier = Modifier.fillMaxSize()
-            .align(Alignment.TopCenter),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-
-            Text(
-                text = "Mi perfil",
-                fontSize = 30.sp,
-                color = negro,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 15.dp)
-            )
-
-            Text(
-                text = "____________________",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = AzulEncabezado,
-                modifier = Modifier.padding(bottom = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-
-            Image(painter = painterResource(id = R.drawable.user),
-                contentDescription = "Icono de usuario",
-                modifier = Modifier.size(120.dp))
-
-            Column {
-                Text(
-                    text = "Nombre",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(value = nombreUsuario,
-                    onValueChange = { nombreUsuario= it },
-                    placeholder = {Text("Ingrese su nombre completo")},
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-
-            }
-
-            Column {
-
-                Text(
-                    text = "Número de celular",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = telefono,
-                    onValueChange = { telefono = it },
-                    placeholder = { Text("Ingrese su número") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
-                )
-
-            }
-
-            Column {
-
-                Text(
-                    text = "Correo",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = negro,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                        .align(Alignment.Start),
-                )
-
-                OutlinedTextField(
-                    value = correoUsuario,
-                    onValueChange = { correoUsuario = it },
-                    placeholder = { Text("Ingrese su correo electrónico") },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined
+        {
+            IconButton(
+                onClick = {
+                    botonVolver()
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 10.dp, start = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.size(30.dp)
                 )
             }
 
-            Button(onClick = {
+            Column(modifier = Modifier.fillMaxSize()
+                .align(Alignment.TopCenter),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally) {
 
-                //*TODO Funcion por implementar, es necesario realizar primero el inicio de sesion
-                //viewModel.updateUser()
-            },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AzulEncabezado)
-            )
-            {
-                Text("Guardar")
+                Text(
+                    text = "Mi perfil",
+                    fontSize = 30.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 15.dp)
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = 80.dp)
+                        .padding(bottom = 10.dp),
+                    thickness = 2.dp,
+                    color = MaterialTheme.colorScheme.outline
+                )
+
+                Image(painter = painterResource(id = R.drawable.user),
+                    contentDescription = "Icono de usuario",
+                    modifier = Modifier.size(120.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                    )
+
+                Column {
+                    Text(
+                        text = "Nombre",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                            .align(Alignment.Start),
+                    )
+
+                    OutlinedTextField(value = nombreUsuario,
+                        onValueChange = { nombreUsuario= it },
+                        placeholder = {Text("Ingrese su nombre completo")},
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = coloresOutlined
+                    )
+
+                }
+
+                Column {
+
+                    Text(
+                        text = "Número de celular",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                            .align(Alignment.Start),
+                    )
+
+                    OutlinedTextField(
+                        value = telefono,
+                        onValueChange = { telefono = it },
+                        placeholder = { Text("Ingrese su número") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = coloresOutlined
+                    )
+
+                }
+
+                Column {
+
+                    Text(
+                        text = "Correo",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                            .align(Alignment.Start),
+                    )
+
+                    OutlinedTextField(
+                        value = correoUsuario,
+                        onValueChange = { correoUsuario = it },
+                        placeholder = { Text("Ingrese su correo electrónico") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = coloresOutlined
+                    )
+                }
+
+                Button(onClick = {
+
+                    //*TODO Funcion por implementar, es necesario realizar primero el inicio de sesion
+                    //viewModel.updateUser()
+                },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary)
+                )
+                {
+                    Text("Guardar",
+                        color = MaterialTheme.colorScheme.onPrimary)
+                }
             }
         }
     }
-
 }

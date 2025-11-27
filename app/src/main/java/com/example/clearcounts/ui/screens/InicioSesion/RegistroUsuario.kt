@@ -3,7 +3,9 @@ package com.example.clearcounts.ui.screens.InicioSesion
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +84,7 @@ fun PantallaRegistro(
             .fillMaxSize()
             // CAMBIO: Aseguramos que el fondo se adapte al tema
             .background(color = MaterialTheme.colorScheme.surface)
+            .verticalScroll(rememberScrollState())
             .pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
@@ -95,9 +101,6 @@ fun PantallaRegistro(
                 contentDescription = "Logo de Clear Counts"
             )
 
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             // CAMBIO: Color del texto usa onSurface para contraste
             Text(
                 "Registrar nueva cuenta",
@@ -112,7 +115,8 @@ fun PantallaRegistro(
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
                         .align(Alignment.Start),
                 )
 
@@ -134,7 +138,8 @@ fun PantallaRegistro(
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
                         .align(Alignment.Start),
                 )
 
@@ -158,7 +163,8 @@ fun PantallaRegistro(
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
                         .align(Alignment.Start),
                 )
 
@@ -180,7 +186,8 @@ fun PantallaRegistro(
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 6.dp)
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
                         .align(Alignment.Start),
                 )
 
@@ -260,7 +267,10 @@ fun PantallaRegistro(
 
     // Llama a la Alerta solo si la variable de estado es true
     if (showDialog) {
-        AlertaCamposVacios(onDismiss = { showDialog = false }, "Registro")
+        AlertaCamposVacios(onDismiss = { showDialog = false },
+            titulo = "Llenar todos los campos" ,
+            stringResource(R.string.llenar_campos)
+        )
     }
 }
 
