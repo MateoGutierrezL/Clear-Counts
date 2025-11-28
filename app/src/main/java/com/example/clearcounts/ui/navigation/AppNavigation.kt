@@ -24,9 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Graficas
-import com.example.clearcounts.ui.screens.Notificaciones
+import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Presupuesto
-import com.example.clearcounts.ui.screens.ingresos
+import com.example.clearcounts.ui.screens.Categorias.ingresos
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
@@ -207,7 +207,6 @@ fun AppNavigation() {
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
 
                     ingresos(navigationController, icono, nombre)
-
 
                 }
 

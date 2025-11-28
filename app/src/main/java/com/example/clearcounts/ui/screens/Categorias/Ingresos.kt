@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.screens
+package com.example.clearcounts.ui.screens.Categorias
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
