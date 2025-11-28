@@ -46,9 +46,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.screens.CategoriaItemGastos
-import com.example.clearcounts.ui.screens.CategoriaItemIngresos
-import com.example.clearcounts.ui.screens.DataSource
+import com.example.clearcounts.ui.screens.Categorias.CategoriaItemGastos
+import com.example.clearcounts.ui.screens.Categorias.CategoriaItemIngresos
+import com.example.clearcounts.ui.screens.Categorias.DataSource
 import com.example.clearcounts.ui.theme.AzulEncabezado
 
 
@@ -163,13 +163,13 @@ fun CustomBottomAppBar(
                 },
             ) {
                 var ingreso by rememberSaveable {
-                    mutableStateOf(false)
+                    mutableStateOf(true)
                 }
                 var gasto by rememberSaveable {
                     mutableStateOf(false)
                 }
                 val colorTextoIngreso = if (isSystemInDarkTheme()) {
-                    if (ingreso) Color.Cyan else Color.Black
+                    if (ingreso) MaterialTheme.colorScheme.primary else Color.Black
                 } else {
                     if (ingreso) Color.Black else Color.Black
                 }
@@ -178,6 +178,8 @@ fun CustomBottomAppBar(
                 } else {
                     if (gasto) Color.Black else Color.Black
                 }
+
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

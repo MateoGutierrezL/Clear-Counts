@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">ClearCounts</string>
+    <string name="llenar_campos">Para poder realizar el registro es necesario llenar todos los campos</string>
+
+    <!-- Strings para la seccion de Comentarios -->
     <string name="Texto_comentarios">Nos gustaría hacer que la experiencia sea lo mejor posible, asi que por favor envía tus problemas, ideas o simplemente como mejorar la app.</string>
+
+    <!-- Strings para las Categorias -->
     <string name="categoria_comida">Comida</string>
     <string name="categoria_gasolina">Gasolina</string>
-    <string name="llenar_campos">Para poder realizar el registro es necesario llenar todos los campos</string>
+
+    <!-- Strings para las Notificaciones -->
+    <string name="titulo_alertas">¡Alerta de Seguridad!</string>
+    <string name="contenido_alertas">Se ha detectado un inicio de sesion inusual en tu cuenta.</string>
 
 </resources>

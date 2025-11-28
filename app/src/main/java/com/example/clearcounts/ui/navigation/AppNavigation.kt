@@ -208,7 +208,6 @@ fun AppNavigation() {
 
                     ingresos(navigationController, icono, nombre)
 
-
                 }
 
             }

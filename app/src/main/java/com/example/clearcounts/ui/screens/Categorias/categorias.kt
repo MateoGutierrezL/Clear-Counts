@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.screens
+package com.example.clearcounts.ui.screens.Categorias
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
@@ -41,10 +42,10 @@ object DataSource{
         categorias(R.drawable.gasolina,R.string.categoria_gasolina),
     )
     val categoriasGastos = mutableStateListOf(
-        categorias(R.drawable.comida,R.string.categoria_comida),
         categorias(R.drawable.gasolina,R.string.categoria_gasolina),
         categorias(R.drawable.comida,R.string.categoria_comida),
         categorias(R.drawable.gasolina,R.string.categoria_gasolina),
+        categorias(R.drawable.comida,R.string.categoria_comida),
 
     )
 }
@@ -92,9 +93,10 @@ fun CategoriaItemIngresos(navController: NavController, categoria: categorias, s
     Spacer(
         modifier = Modifier.size(10.dp)
     )
-    Text(
-        text = "----------------------------------------------------------------------",
-        color = Color.Cyan
+    HorizontalDivider(
+        modifier = Modifier,
+        thickness = 3.dp,
+        color = MaterialTheme.colorScheme.primary
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -137,8 +139,9 @@ fun CategoriaItemGastos(navController: NavController, categoria: categorias, she
     Spacer(
         modifier = Modifier.size(10.dp)
     )
-    Text(
-        text = "----------------------------------------------------------------------",
-        color = Color.Cyan
+    HorizontalDivider(
+        modifier = Modifier,
+        thickness = 3.dp,
+        color = MaterialTheme.colorScheme.primary
     )
 }
