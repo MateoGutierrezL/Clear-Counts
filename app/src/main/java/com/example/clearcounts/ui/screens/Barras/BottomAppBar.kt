@@ -50,6 +50,7 @@ import com.example.clearcounts.ui.screens.Categorias.CategoriaItemGastos
 import com.example.clearcounts.ui.screens.Categorias.CategoriaItemIngresos
 import com.example.clearcounts.ui.screens.Categorias.DataSource
 import com.example.clearcounts.ui.theme.AzulEncabezado
+import com.example.clearcounts.ui.theme.ClearCountTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +61,7 @@ fun CustomBottomAppBar(
 ) {
     val context = LocalContext.current.applicationContext
 
-    BottomAppBar(containerColor = AzulEncabezado) {
+    BottomAppBar(containerColor = MaterialTheme.colorScheme.primary) {
         // Home
         NavigationBarItem(
             selected = selectedIcon.value == "home",
@@ -75,21 +76,21 @@ fun CustomBottomAppBar(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Inicio",
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "home") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "home") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             label = {
                 Text(
                     text = "Inicio",
                     fontSize = 12.sp,
-                    color = if (selectedIcon.value == "home") Color.White else Color.Black
+                    color = if (selectedIcon.value == "home") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                unselectedIconColor = Color.Black,
+                unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
                 selectedTextColor = Color.White,
-                unselectedTextColor = Color.Black,
+                unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
                 indicatorColor = Color.Transparent
             )
         )
@@ -108,21 +109,21 @@ fun CustomBottomAppBar(
                     painter = painterResource(id = R.drawable.graph),
                     contentDescription = "Gráficas",
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "charts") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "charts") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             label = {
                 Text(
                     text = "Gráficas",
                     fontSize = 12.sp,
-                    color = if (selectedIcon.value == "charts") Color.White else Color.Black
+                    color = if (selectedIcon.value == "charts") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                unselectedIconColor = Color.Black,
+                unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
                 selectedTextColor = Color.White,
-                unselectedTextColor = Color.Black,
+                unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
                 indicatorColor = Color.Transparent
             )
         )
@@ -143,13 +144,13 @@ fun CustomBottomAppBar(
                         .padding(vertical = 8.dp)
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(MaterialTheme.colorScheme.onPrimary),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Añadir",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -333,21 +334,21 @@ fun CustomBottomAppBar(
                     painter = painterResource(id = R.drawable.save_money),
                     contentDescription = "Presupuesto",
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "budget") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             label = {
                 Text(
                     text = "Presupuesto",
                     fontSize = 11.sp,
-                    color = if (selectedIcon.value == "budget") Color.White else Color.Black
+                    color = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                unselectedIconColor = Color.Black,
+                unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
                 selectedTextColor = Color.White,
-                unselectedTextColor = Color.Black,
+                unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
                 indicatorColor = Color.Transparent
             )
         )
@@ -366,21 +367,21 @@ fun CustomBottomAppBar(
                     painter = painterResource(id = R.drawable.user),
                     contentDescription = "Perfil",
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "profile") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "profile") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             label = {
                 Text(
                     text = "Perfil",
                     fontSize = 12.sp,
-                    color = if (selectedIcon.value == "profile") Color.White else Color.Black
+                    color = if (selectedIcon.value == "profile") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
-                unselectedIconColor = Color.Black,
+                unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
                 selectedTextColor = Color.White,
-                unselectedTextColor = Color.Black,
+                unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
                 indicatorColor = Color.Transparent
             )
         )

@@ -96,6 +96,7 @@ fun PantallaInicioSesion(
         is InicioSesionUiState.Error -> println("Error")
         is InicioSesionUiState.Loading -> println("Cargando")
         is InicioSesionUiState.Success -> navegarInicio()
+        else -> "Error"
 
     }
 

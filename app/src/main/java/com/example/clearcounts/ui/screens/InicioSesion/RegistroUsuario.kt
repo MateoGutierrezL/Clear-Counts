@@ -13,23 +13,32 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -40,9 +49,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.UserEntity
@@ -62,14 +74,9 @@ fun PantallaRegistro(
     var contrasena by remember { mutableStateOf("") }
     var correoUsuario by remember { mutableStateOf("") }
 
-    // Visibilidad de la alerta
-    var showDialog by remember { mutableStateOf(false) }
-
-    // Variable para manejar los colores del outlinedText, viene de la carpeta utils
-    // CAMBIO: Usamos colores dinámicos de MaterialTheme.colorScheme
     val coloresOutlined = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = MaterialTheme.colorScheme.primary, // Color principal del tema
-        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), // Un color neutro sutil
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
         cursorColor = MaterialTheme.colorScheme.primary,
         focusedTextColor = MaterialTheme.colorScheme.onSurface,
         unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -77,13 +84,36 @@ fun PantallaRegistro(
         unfocusedLabelColor = MaterialTheme.colorScheme.onSurface
     )
 
+    // Visibilidad de las alertas
+    var showDialog by remember { mutableStateOf(false) }
+    var showSuccesDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+
     //Instanciar la clase de LocalFocusManager
     val focusManager = LocalFocusManager.current
+
+    val registerStatus by viewModel.registerStatus.collectAsState()
+
+    LaunchedEffect(key1 = registerStatus) {
+        when(registerStatus) {
+            is RegistroUsuarioUiState.Success -> {
+
+                showSuccesDialog = true
+
+            }
+            is RegistroUsuarioUiState.Error -> {
+
+                showErrorDialog = true
+            }
+            is RegistroUsuarioUiState.Loading -> {
+                // Opcional: mostrar un ProgressBar en la UI
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            // CAMBIO: Aseguramos que el fondo se adapte al tema
             .background(color = MaterialTheme.colorScheme.surface)
             .verticalScroll(rememberScrollState())
             .pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
@@ -227,8 +257,6 @@ fun PantallaRegistro(
                         // 2. Llamar al ViewModel
                         viewModel.insertUser(newUser)
 
-                        navegarBotonRegistrarme()
-
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -241,9 +269,7 @@ fun PantallaRegistro(
                 Text("Registrarme")
             }
 
-            //Texto para la navegación hacia el inicio de sesión
             val annotatedString = buildAnnotatedString {
-                // CAMBIO: El color por defecto del texto es onSurface
                 withStyle(style = SpanStyle(MaterialTheme.colorScheme.onSurface)) {
                     append("¿Ya tienes una cuenta? ")
                 }
@@ -251,7 +277,6 @@ fun PantallaRegistro(
                 withStyle(
                     style = SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        // CAMBIO: El color del enlace usa primary
                         color = MaterialTheme.colorScheme.primary
                     )
                 ) {
@@ -276,8 +301,132 @@ fun PantallaRegistro(
             stringResource(R.string.llenar_campos)
         )
     }
+
+    if (showSuccesDialog) {
+        RegisterSucces(
+            onDismiss = {
+                showSuccesDialog = false
+                navegarBotonRegistrarme()
+            }
+        )
+    }
+
+    if (showErrorDialog) {
+        RegisterError(
+            onDismiss = {
+                showErrorDialog = false
+            }
+        )
+    }
 }
 
+@Composable
+fun RegisterSucces(onDismiss: () -> Unit){
+
+    Dialog(onDismissRequest = onDismiss) {
+
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = "Registro Exitoso",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(60.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "¡Registro Exitoso!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Tus datos han sido guardados correctamente.",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = onDismiss) {
+                    Text("Aceptar")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RegisterLoading(){
+
+}
+
+@Composable
+fun RegisterError(onDismiss: () -> Unit){
+
+    Dialog(onDismissRequest = onDismiss) {
+
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Registro Fallido",
+                    tint = Color.Red, // Color rojo
+                    modifier = Modifier.size(60.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "¡Registro Fallido!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Text(
+                    text = "Ocurrió un error inesperado. Por favor, intenta de nuevo.",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Aceptar")
+                }
+            }
+        }
+    }
+
+}
+
+@Preview
+@Composable
+fun previewError(){
+    RegisterError(onDismiss = {})
+}
 
 
 

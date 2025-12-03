@@ -196,8 +196,6 @@ fun EditarPerfil(
 
                 Button(onClick = {
 
-                    //*TODO Funcion por implementar, es necesario realizar primero el inicio de sesion
-                    //viewModel.updateUser()
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary)

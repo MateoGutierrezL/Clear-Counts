@@ -57,7 +57,15 @@ fun InicioUsuario(){
                     navController.navigate("RegistroUsuario")
                 },
                 navegarInicio = {
-                    navController.navigate("Inicio")
+                    navController.navigate("Inicio"){
+
+                        popUpTo("InicioSesion") {
+
+                            inclusive = true
+                        }
+
+                        launchSingleTop = true
+                    }
                 },
                 navegarOlvidoContrasena = {
                     navController.navigate("RecuperarClave")

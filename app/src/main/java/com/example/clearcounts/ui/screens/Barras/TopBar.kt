@@ -31,6 +31,7 @@ import androidx.wear.compose.material3.MaterialTheme
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.theme.AzulEncabezado
+import com.example.clearcounts.ui.theme.ClearCountTheme
 import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.negro
 
@@ -44,24 +45,18 @@ fun TopBar(
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = AzulEncabezado,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = blanco
+            containerColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary
         ),
+        scrollBehavior = null,
         title = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.TopStart
             ) {
                 Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = negro)) {
-                            append("Clear")
-                        }
-                        withStyle(style = SpanStyle(color = blanco)) {
-                            append("Counts")
-                        }
-                    },
+                    text = "Clear Counts",
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -72,7 +67,7 @@ fun TopBar(
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Menu Drawer",
-                    tint = negro
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         },
@@ -89,7 +84,7 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.customer_service),
                     contentDescription = "preguntas y comentarios",
                     modifier = Modifier.size(30.dp),
-                    tint = if (selectedIcon.value == "pqr") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "pqr") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -104,9 +99,11 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.notification),
                     contentDescription = "Notificaciones",
                     modifier = Modifier.size(30.dp),
-                    tint = if (selectedIcon.value == "notification") Color.White else Color.Black
+                    tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
     )
+
 }
+

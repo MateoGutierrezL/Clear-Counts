@@ -20,6 +20,8 @@ class ViewModelInicioSesion @Inject constructor(
     private val _loginStatus = MutableStateFlow<InicioSesionUiState>(InicioSesionUiState.Loading)
     val loginStatus : StateFlow<InicioSesionUiState> = _loginStatus
 
+
+
     fun validateUser(
         correo: String,
         contrasena: String
@@ -48,8 +50,6 @@ class ViewModelInicioSesion @Inject constructor(
                 println("Error al iniciar sesion")
             }
         }
-
-
     }
 }
 
@@ -59,4 +59,3 @@ sealed interface InicioSesionUiState {
     object Error : InicioSesionUiState
     object Loading : InicioSesionUiState
 }
-

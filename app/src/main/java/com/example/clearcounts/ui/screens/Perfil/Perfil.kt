@@ -73,7 +73,7 @@ fun Perfil(
                     painter = painterResource(id = R.drawable.user),
                     contentDescription = "Icono de usuario",
                     modifier = Modifier.padding(bottom = 20.dp).size(130.dp),
-                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                 )
 
                 //Aqui debe de ir el nombre de usuario con su correo
