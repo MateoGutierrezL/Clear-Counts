@@ -41,7 +41,6 @@ import com.example.clearcounts.ui.theme.AzulBotones
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.gris
-import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Preview(showBackground = true)
@@ -99,7 +98,7 @@ fun PreguntasComentarios(){
 
             Spacer(modifier = Modifier.height(20.dp))
 
-                BotonesContacto()
+            BotonesContacto()
 
         }
     }

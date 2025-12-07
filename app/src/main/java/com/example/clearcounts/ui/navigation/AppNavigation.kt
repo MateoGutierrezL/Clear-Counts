@@ -206,7 +206,19 @@ fun AppNavigation() {
                     val icono = backStackEntry.arguments?.getInt("icono") ?: 0
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
 
-                    ingresos(navigationController, icono, nombre)
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {  }
+                    }
+
+                    ingresos(
+                        icono,
+                        nombre,
+                        botonVolver = {
+                            navigationController.popBackStack()
+                        }
+                    )
 
                 }
 

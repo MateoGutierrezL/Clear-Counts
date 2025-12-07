@@ -158,7 +158,7 @@ fun contenidoMedio() {
         Box(
             modifier = Modifier
                 // CAMBIO: Fondo del contenedor a secondaryContainer
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Column(
                 modifier = Modifier

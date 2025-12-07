@@ -278,3 +278,12 @@ fun CircularProgressBar(
         )
     }
 }
+
+@Composable
+fun ejemplo(){
+
+
+    Row {  }
+
+    Column {  }
+}
