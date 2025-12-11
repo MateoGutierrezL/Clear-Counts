@@ -65,6 +65,10 @@ dependencies {
     // ... dependencias de Compose (material3)
     implementation("androidx.compose.material3:material3")
 
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.core)
+
+
    //ggg
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")

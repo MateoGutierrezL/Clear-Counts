@@ -49,8 +49,6 @@ import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Categorias.CategoriaItemGastos
 import com.example.clearcounts.ui.screens.Categorias.CategoriaItemIngresos
 import com.example.clearcounts.ui.screens.Categorias.DataSource
-import com.example.clearcounts.ui.theme.AzulEncabezado
-import com.example.clearcounts.ui.theme.ClearCountTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)

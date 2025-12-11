@@ -36,4 +36,16 @@ interface UserRepository {
      */
     fun getUserByIdStream(id: Int): Flow<UserEntity?>
 
+    fun getCurrentLoggedInUser(): Flow<UserEntity?>
+
+    /**
+     * Marca a un usuario como logueado guardando su ID en DataStore.
+     */
+    suspend fun setLoggedInUser(userId: Int)
+
+    /**
+     * Cierra la sesión limpiando el ID en DataStore.
+     */
+    suspend fun logoutUser()
+
 }

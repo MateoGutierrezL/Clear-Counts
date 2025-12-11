@@ -1,6 +1,5 @@
 package com.example.clearcounts.ui.screens.Perfil
 
-import android.graphics.ColorFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,20 +24,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.clearcounts.R
+import com.example.clearcounts.ui.screens.MainViewModel
 import com.example.clearcounts.ui.theme.ClearCountTheme
 
 
 @Composable
 fun Perfil(
-    navegarPantallaEditarPerfil: () -> Unit
+    navegarPantallaEditarPerfil: () -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
 ){
 
-    //Variables de los datos del usuario
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
-    var nombreUsuario by remember { mutableStateOf("") }
-    var correoUsuario by remember { mutableStateOf("") }
-
+    val nombreUsuario = currentUser?.nombre ?: "Usuario invitado"
+    val correoUsuario = currentUser?.correo ?: "No disponible"
 
     ClearCountTheme {
 
@@ -78,7 +80,7 @@ fun Perfil(
 
                 //Aqui debe de ir el nombre de usuario con su correo
                 Text(
-                    text = "Mateo Gutiérrez Laverde",
+                    text = nombreUsuario,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -86,7 +88,7 @@ fun Perfil(
                 )
 
                 Text(
-                    text = "mateo@gmail.com",
+                    text = correoUsuario,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onBackground,

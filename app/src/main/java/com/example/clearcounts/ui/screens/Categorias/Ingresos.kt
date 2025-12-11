@@ -1,11 +1,6 @@
 package com.example.clearcounts.ui.screens.Categorias
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
-import android.graphics.Paint
-import android.os.Build
-import android.widget.Space
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,7 +32,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -53,7 +46,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -72,7 +64,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.screens.InicioSesion.RegisterSucces
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -245,7 +236,9 @@ fun ingresos(
             contentAlignment = Alignment.BottomCenter
         ){
             Column {
-                BotonesInferiores()
+                BotonesInferiores(
+                    onCancelChange = botonVolver
+                )
             }
 
         }
@@ -464,7 +457,9 @@ fun CampoDiasDesplegable(
 
 
 @Composable
-fun BotonesInferiores(){
+fun BotonesInferiores(
+    onCancelChange:() -> Unit
+){
 
     Button(
         modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
@@ -480,7 +475,7 @@ fun BotonesInferiores(){
 
     OutlinedButton(
         modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
-        onClick = {}
+        onClick = onCancelChange
     ){
         Text("Cancelar",
             color = MaterialTheme.colorScheme.onBackground,

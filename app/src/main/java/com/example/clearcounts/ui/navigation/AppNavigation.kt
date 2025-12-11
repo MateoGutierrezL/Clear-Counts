@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -17,6 +18,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +35,7 @@ import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.screens.Categorias.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
+import com.example.clearcounts.ui.screens.MainViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
@@ -40,13 +44,16 @@ import kotlinx.coroutines.launch
 //Funcion que maneja el topappbar bottombar y la barra desplegable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
     val topBarVisible = rememberSaveable { mutableStateOf(true) }
+    val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -55,8 +62,8 @@ fun AppNavigation() {
             ){
                 NavigationDrawer(
                     profilePicture = painterResource(id = R.drawable.user),
-                    name = "Mateo Gutierrez",
-                    email = "mateo@gmail.com",
+                    name = currentUser?.nombre ?: "Usuario invitado",
+                    email = currentUser?.correo ?: "No disponible",
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
@@ -91,9 +98,7 @@ fun AppNavigation() {
                             }
                         },
                         navegarPantallaPreguntasComentarios = {
-                            navigationController.navigate(Pantallas.PreguntasComentarios.pantalla) {
-                                popUpTo(0)
-                            }
+                            navigationController.navigate(Pantallas.PreguntasComentarios.pantalla)
                         }
                     )
                 }
@@ -182,7 +187,11 @@ fun AppNavigation() {
                         onDispose {}
                     }
 
-                    PreguntasComentarios()
+                    PreguntasComentarios(
+                        botonVolver = {
+                            navigationController.popBackStack()
+                        }
+                    )
                 }
 
                 composable(Pantallas.Notificaciones.pantalla) {

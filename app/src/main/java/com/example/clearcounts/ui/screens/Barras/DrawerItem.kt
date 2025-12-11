@@ -1,11 +1,5 @@
 package com.example.clearcounts.ui.screens.Barras
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.clearcounts.R
 
 enum class DrawerItem (

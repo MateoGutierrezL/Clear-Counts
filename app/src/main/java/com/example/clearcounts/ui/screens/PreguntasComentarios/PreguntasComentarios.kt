@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -33,7 +36,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clearcounts.R
@@ -43,9 +45,10 @@ import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.gris
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
-@Preview(showBackground = true)
 @Composable
-fun PreguntasComentarios(){
+fun PreguntasComentarios(
+    botonVolver: () -> Unit
+){
 
     var comentario by remember { mutableStateOf("") }
 
@@ -65,9 +68,25 @@ fun PreguntasComentarios(){
             detectTapGestures(onTap = {
 
                 focusManager.clearFocus()
-            })
+            }
+            )
         }
     ){
+        IconButton(
+            onClick = {
+                botonVolver()
+            },
+            modifier = Modifier
+                .padding(top = 10.dp, start = 5.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Volver",
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {

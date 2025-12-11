@@ -1,6 +1,5 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
-import android.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,26 +9,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,20 +42,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.theme.AzulEncabezado
-import com.example.clearcounts.ui.theme.ClearCountTheme
-import com.example.clearcounts.ui.theme.blanco
-import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.AlertaCamposVacios
 import com.example.clearcounts.utils.OutlinedTextFieldColors
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
@@ -72,13 +63,14 @@ fun PantallaInicioSesion(
 ) {
 
     //Variables que almacenan los datos que son proporcionados en cada uno de los textfield
-
     var contrasena by remember { mutableStateOf("") }
 
     var correoUsuario by remember { mutableStateOf("") }
 
     //Variable para manejar la alerta de campos vacios
     var showDialog by remember { mutableStateOf(false) }
+
+    var showLoginErrorDialog by remember { mutableStateOf(false)}
 
     //Instanciar la clase de LocalFocusManager
     val focusManager = LocalFocusManager.current
@@ -93,7 +85,7 @@ fun PantallaInicioSesion(
 
     when(loginStatus){
 
-        is InicioSesionUiState.Error -> println("Error")
+        is InicioSesionUiState.Error -> showLoginErrorDialog = true
         is InicioSesionUiState.Loading -> println("Cargando")
         is InicioSesionUiState.Success -> navegarInicio()
         else -> "Error"
@@ -230,7 +222,8 @@ fun PantallaInicioSesion(
                     onClick = {
                         if (correoUsuario.isBlank() || contrasena.isBlank()) {
                             showDialog = true
-                        } else {
+                        }
+                        else {
                             viewModel.validateUser(correoUsuario, contrasena)
                         }
                     },
@@ -250,6 +243,71 @@ fun PantallaInicioSesion(
                 mensaje = stringResource(R.string.llenar_campos)
             )
         }
+
+    if (showLoginErrorDialog){
+        LoginError(
+            onDismiss = {
+                showLoginErrorDialog = false
+
+                viewModel.clearLoginStatus()
+            }
+        )
+    }
+}
+
+@Composable
+fun LoginError(onDismiss: () -> Unit){
+
+    Dialog(onDismissRequest = onDismiss) {
+
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Inicio sesion Fallido",
+                    tint = Color.Red, // Color rojo
+                    modifier = Modifier.size(60.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "¡Inicio sesión Fallido!",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Text(
+                    text = "Correo electronico o contraseña no validos",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Aceptar")
+                }
+            }
+        }
+    }
+
 }
 
 

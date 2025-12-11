@@ -24,6 +24,7 @@ hilt = "2.57.1"
 hilt-compose = "1.1.0"
 room = "2.8.4"
 ksp = "2.0.21-1.0.27"
+datastore = "1.0.0"
 
 [libraries]
 #hilt
@@ -35,6 +36,10 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room"}
 room-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
+
+#DataStore
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

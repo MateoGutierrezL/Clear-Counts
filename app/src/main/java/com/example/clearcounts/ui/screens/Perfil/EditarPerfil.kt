@@ -15,13 +15,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,27 +38,34 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material3.Icon
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.UserEntity
-import com.example.clearcounts.ui.navigation.Pantallas
+import com.example.clearcounts.ui.screens.MainViewModel
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.ClearCountTheme
-import com.example.clearcounts.ui.theme.negro
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Composable
 fun EditarPerfil(
     botonVolver: () -> Unit,
-    viewModel: EditarPerfilViewModel = hiltViewModel()
+    viewModel: EditarPerfilViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel()
 ){
 
-    //Variables de los datos del usuario
+    val currentUser by mainViewModel.currentUser.collectAsStateWithLifecycle()
 
-    var nombreUsuario by remember { mutableStateOf("") }
-    var correoUsuario by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
+    var nombreUsuario by remember { mutableStateOf(currentUser?.nombre ?: "") }
+    var correoUsuario by remember { mutableStateOf(currentUser?.correo ?: "") }
+    var telefono by remember { mutableStateOf(currentUser?.numero ?: "") }
+
+    LaunchedEffect(currentUser) {
+        if (currentUser != null) {
+            nombreUsuario = currentUser!!.nombre
+            correoUsuario = currentUser!!.correo
+            telefono = currentUser!!.numero
+        }
+    }
 
     //Variable para manejar los colores del outlinedText, viene de la carpeta utils
     val coloresOutlined = OutlinedTextFieldColors(
@@ -138,8 +145,7 @@ fun EditarPerfil(
                     )
 
                     OutlinedTextField(value = nombreUsuario,
-                        onValueChange = { nombreUsuario= it },
-                        placeholder = {Text("Ingrese su nombre completo")},
+                        onValueChange = { nombreUsuario = it },
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         colors = coloresOutlined,
@@ -164,7 +170,6 @@ fun EditarPerfil(
                     OutlinedTextField(
                         value = telefono,
                         onValueChange = { telefono = it },
-                        placeholder = { Text("Ingrese su número") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
@@ -187,7 +192,6 @@ fun EditarPerfil(
                     OutlinedTextField(
                         value = correoUsuario,
                         onValueChange = { correoUsuario = it },
-                        placeholder = { Text("Ingrese su correo electrónico") },
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         colors = coloresOutlined
@@ -195,7 +199,11 @@ fun EditarPerfil(
                 }
 
                 Button(onClick = {
-
+                    viewModel.updateUser(
+                        nombre = nombreUsuario,
+                        numero = telefono,
+                        correo = correoUsuario
+                    )
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary)

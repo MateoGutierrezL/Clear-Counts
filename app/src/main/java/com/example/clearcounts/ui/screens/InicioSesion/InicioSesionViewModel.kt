@@ -35,6 +35,8 @@ class ViewModelInicioSesion @Inject constructor(
 
                 if(usuario != null && usuario.contrasena == contrasena){
 
+                    userRepository.setLoggedInUser(usuario.id)
+
                     _loginStatus.value = InicioSesionUiState.Success(usuario.id)
                     println("Inicio de sesion exitoso")
 
@@ -51,6 +53,11 @@ class ViewModelInicioSesion @Inject constructor(
             }
         }
     }
+
+    fun clearLoginStatus() {
+        _loginStatus.value = InicioSesionUiState.Loading // O un nuevo objeto Idle
+    }
+
 }
 
 sealed interface InicioSesionUiState {
