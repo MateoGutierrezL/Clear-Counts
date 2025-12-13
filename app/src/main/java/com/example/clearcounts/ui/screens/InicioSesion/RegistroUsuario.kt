@@ -305,7 +305,9 @@ fun PantallaRegistro(
             onDismiss = {
                 showSuccesDialog = false
                 navegarBotonRegistrarme()
-            }
+            },
+            title = "¡Registro Exitoso!",
+            text = "Tus datos han sido guardados correctamente."
         )
     }
 
@@ -319,7 +321,11 @@ fun PantallaRegistro(
 }
 
 @Composable
-fun RegisterSucces(onDismiss: () -> Unit){
+fun RegisterSucces(
+    onDismiss: () -> Unit,
+    title: String,
+    text: String
+){
 
     Dialog(onDismissRequest = onDismiss) {
 
@@ -334,20 +340,20 @@ fun RegisterSucces(onDismiss: () -> Unit){
 
                 Icon(
                     imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = "Registro Exitoso",
+                    contentDescription = title,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(60.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¡Registro Exitoso!",
+                    text = title,
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Tus datos han sido guardados correctamente.",
+                    text = text,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))

@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,6 +72,10 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+const val MAX_LENGHT_OF_AMOUNT = 10
+const val MAX_LENGHT_OF_NOTE = 200
+
+
 @SuppressLint("NewApi")
 @Composable
 fun ingresos(
@@ -78,6 +83,8 @@ fun ingresos(
     nombre: String,
     botonVolver:() -> Unit
 ){
+
+
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
@@ -184,7 +191,10 @@ fun ingresos(
             ){
                 CampoCantidad(
                     cantidad = cantidad,
-                    onCantidadChange = { cantidad = it },
+                    onCantidadChange = { nuevoValor ->
+                        if (nuevoValor.length <= MAX_LENGHT_OF_AMOUNT){
+                            cantidad = nuevoValor
+                        }},
                     modifier = Modifier.weight(1.3f)
                 )
 
@@ -225,7 +235,12 @@ fun ingresos(
 
             CampoNota(
                 nota = nota,
-                onNotaChange = {nota = it}
+                onNotaChange = { nuevoValor ->
+
+                    if (nuevoValor.length <= MAX_LENGHT_OF_NOTE){
+                        nota = nuevoValor
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(100.dp))
@@ -287,7 +302,7 @@ fun ingresos(
     }
 
     if (showDatePicker){
-        DatePickerDialog(
+        DatePickerDialogComposable(
             onConfirm = { selectedDate ->
 
                 updateDate(selectedDate)
@@ -296,8 +311,7 @@ fun ingresos(
             },
             onDismiss = {
                 showDatePicker = false
-            },
-            onIconChange = {}
+            }
         )
     }
 }
@@ -634,59 +648,40 @@ fun TimeInputDialog(
 
 @SuppressLint("NewApi")
 @Composable
-fun DatePickerDialog(
+fun DatePickerDialogComposable(
     onConfirm: (LocalDate) -> Unit,
-    onDismiss: () -> Unit,
-    onIconChange: () -> Unit
-){
+    onDismiss: () -> Unit
+) {
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = java.time.Instant.now().toEpochMilli()
     )
 
-    Dialog(
-        onDismissRequest = onDismiss
-    ) {
-        Surface (
-            color = MaterialTheme.colorScheme.surface
-        ){
-            Column {
-
-                DatePicker(state = datePickerState, modifier = Modifier.padding(10.dp))
-
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    TextButton(
-                        onClick = onDismiss,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onBackground
-                        )
-                    ) {
-                        Text("Cancelar")
-                    }
-
-                    TextButton(onClick = {
-                        val selectedMillis = datePickerState.selectedDateMillis
-                        if (selectedMillis != null){
-
-                            val selectedDate = java.time.Instant.ofEpochMilli(selectedMillis)
-                                .atZone(ZoneId.of("UTC"))
-                                .toLocalDate()
-
-                            onConfirm(selectedDate)
-                        }
-                        onDismiss()
-                    }) {
-                        Text("Aceptar")
-                    }
-
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                // ... (Lógica de conversión y onConfirm) ...
+                val selectedMillis = datePickerState.selectedDateMillis
+                if (selectedMillis != null) {
+                    val selectedDate = java.time.Instant.ofEpochMilli(selectedMillis)
+                        .atZone(ZoneId.of("UTC"))
+                        .toLocalDate()
+                    onConfirm(selectedDate)
                 }
+                onDismiss()
+            }) {
+                Text("Aceptar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
             }
         }
+    ) {
+        // El DatePicker se ajustará automáticamente dentro del diálogo de Material 3
+        DatePicker(state = datePickerState)
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui
+package com.example.clearcounts.ui.screens
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

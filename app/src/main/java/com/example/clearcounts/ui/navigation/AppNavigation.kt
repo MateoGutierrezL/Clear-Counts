@@ -26,7 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.Presupuesto
+import com.example.clearcounts.ui.screens.Presupuesto
 import com.example.clearcounts.ui.screens.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
@@ -35,7 +35,7 @@ import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.screens.Categorias.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
-import com.example.clearcounts.ui.screens.MainViewModel
+import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: UserSessionViewModel = hiltViewModel()
 ) {
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
@@ -175,6 +175,9 @@ fun AppNavigation(
                     EditarPerfil(
                         botonVolver = {
                             navigationController.popBackStack()
+                        },
+                        navegarPerfil = {
+                            navigationController.navigate(Pantallas.Perfil.pantalla)
                         }
                     )
                 }

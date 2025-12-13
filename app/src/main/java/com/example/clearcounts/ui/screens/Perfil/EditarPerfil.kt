@@ -41,19 +41,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.material3.Icon
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.screens.MainViewModel
+import com.example.clearcounts.ui.screens.InicioSesion.RegisterSucces
+import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.ClearCountTheme
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 
 @Composable
 fun EditarPerfil(
+    navegarPerfil:() -> Unit,
     botonVolver: () -> Unit,
     viewModel: EditarPerfilViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel()
+    userSessionViewModel: UserSessionViewModel = hiltViewModel()
 ){
-
-    val currentUser by mainViewModel.currentUser.collectAsStateWithLifecycle()
+    val currentUser by userSessionViewModel.currentUser.collectAsStateWithLifecycle()
 
     var nombreUsuario by remember { mutableStateOf(currentUser?.nombre ?: "") }
     var correoUsuario by remember { mutableStateOf(currentUser?.correo ?: "") }
@@ -72,6 +73,8 @@ fun EditarPerfil(
         focusedBorder = AzulEncabezado,
         unfocusedBorder = AzulEncabezado
     )
+
+    var showSuccesDialog by remember {mutableStateOf(false)}
 
     //Instanciar la clase de LocalFocusManager
     val focusManager = LocalFocusManager.current
@@ -204,6 +207,8 @@ fun EditarPerfil(
                         numero = telefono,
                         correo = correoUsuario
                     )
+
+                    showSuccesDialog = true
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary)
@@ -214,5 +219,16 @@ fun EditarPerfil(
                 }
             }
         }
+    }
+
+    if (showSuccesDialog){
+        RegisterSucces(
+            onDismiss = {
+                showSuccesDialog = false
+                navegarPerfil()
+            },
+            title = "Datos actualizados",
+            text = "Los datos han sido actualizados correctamente"
+        )
     }
 }

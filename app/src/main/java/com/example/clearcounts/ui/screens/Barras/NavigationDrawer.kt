@@ -63,8 +63,8 @@ fun NavigationDrawer(
             verticalArrangement = Arrangement.Center,
 
             ) {
-            Text(text = name, style = MaterialTheme.typography.titleLarge)
-            Text(text = email, style = MaterialTheme.typography.bodyMedium)
+            Text(text = name, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 15.dp, top = 10.dp))
+            Text(text = email, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 15.dp, bottom = 5.dp))
 
             Spacer(modifier = Modifier.height(16.dp))
         }
