@@ -1,6 +1,5 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.UserRepository
