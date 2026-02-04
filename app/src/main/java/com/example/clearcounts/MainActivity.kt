@@ -19,6 +19,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/*
+Una buena app permite lo siguiente
+
+No falle si el usuario recibe una llamada telefónica o cambia a otra app mientras usa la tuya.
+No consuma recursos valiosos del sistema cuando el usuario no la use de forma activa.
+No pierda el progreso del usuario si este abandona tu app y regresa a ella posteriormente.
+No falle ni pierda el progreso del usuario cuando se gire la pantalla entre la orientación horizontal y la vertical.
+
+ */
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

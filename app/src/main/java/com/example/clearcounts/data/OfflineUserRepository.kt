@@ -3,14 +3,17 @@ package com.example.clearcounts.data
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.data.datastore.UserSessionDataStore
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class OfflineUserRepository @Inject constructor(
     private val userDao: UserDao,
-    private val sessionDataStore: UserSessionDataStore
+    private val sessionDataStore: UserSessionDataStore,
+    private val auth: FirebaseAuth
 ): UserRepository{
 
     override fun getAllUsersStream(): Flow<List<UserEntity>> = userDao.getAllUsers()
@@ -36,12 +39,31 @@ class OfflineUserRepository @Inject constructor(
             }
     }
 
-    override suspend fun setLoggedInUser(userId: Int) {
-        sessionDataStore.setLoggedInUserId(userId)
-    }
-
     override suspend fun logoutUser() {
         sessionDataStore.clearLoggedInUserId()
+    }
+
+    override suspend fun signUp(email: String, password: String): Result<Boolean> {
+        return try{
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            Result.success(true)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun signIn(email: String, password: String): Result<Boolean>{
+
+        return try{
+
+            val result = auth.signInWithEmailAndPassword(email, password).await()
+
+            Result.success(true)
+        } catch (e: Exception){
+
+            Result.failure(e)
+        }
+
     }
 
 }

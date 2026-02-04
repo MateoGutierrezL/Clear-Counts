@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.UserRepository
@@ -20,18 +21,27 @@ class RegistroUsuarioViewModel @Inject constructor(
     private val _registerStatus = MutableStateFlow<RegistroUsuarioUiState>(RegistroUsuarioUiState.Loading)
     val registerStatus : StateFlow<RegistroUsuarioUiState> = _registerStatus
 
-    fun insertUser(userEntity: UserEntity){
+    fun signUp(userEntity: UserEntity) {
+        viewModelScope.launch {
+            _registerStatus.value = RegistroUsuarioUiState.Loading
+
+            val result = userRepository.signUp(userEntity.correo, userEntity.contrasena)
+
+            result.onSuccess {
+                _registerStatus.value = RegistroUsuarioUiState.Success
+            }.onFailure {
+                _registerStatus.value = RegistroUsuarioUiState.Error
+            }
+        }
 
         viewModelScope.launch {
             try {
                 userRepository.insertUser(userEntity)
-                _registerStatus.value = RegistroUsuarioUiState.Success
 
                 println("Usuario ingresado con exito")
 
             }catch(e: Exception){
 
-                _registerStatus.value = RegistroUsuarioUiState.Error
                 println("Error al ingresar el usuario")
 
             }
@@ -40,9 +50,7 @@ class RegistroUsuarioViewModel @Inject constructor(
 }
 
 sealed interface RegistroUsuarioUiState {
-
     object Success: RegistroUsuarioUiState
-
     object Error : RegistroUsuarioUiState
     object Loading : RegistroUsuarioUiState
 }

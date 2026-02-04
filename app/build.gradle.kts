@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -67,6 +69,11 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.core)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
 
 
    //ggg

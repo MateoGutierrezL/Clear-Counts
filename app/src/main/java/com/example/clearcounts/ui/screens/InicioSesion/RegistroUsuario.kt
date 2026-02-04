@@ -253,7 +253,7 @@ fun PantallaRegistro(
                         )
 
                         // 2. Llamar al ViewModel
-                        viewModel.insertUser(newUser)
+                        viewModel.signUp(newUser)
 
                     }
                 },

@@ -2,6 +2,7 @@ package com.example.clearcounts.ui.screens.InicioSesion
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.clearcounts.InicioUsuario
 import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.data.database.entities.UserEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,33 +24,20 @@ class ViewModelInicioSesion @Inject constructor(
 
 
     fun validateUser(
-        correo: String,
-        contrasena: String
+        email: String,
+        password: String
     ){
 
         viewModelScope.launch {
 
-            try {
+            _loginStatus.value = InicioSesionUiState.Loading
 
-                val usuario: UserEntity? = userRepository.getUserByEmailStream(correo).firstOrNull()
+            val result = userRepository.signIn(email, password)
 
-                if(usuario != null && usuario.contrasena == contrasena){
-
-                    userRepository.setLoggedInUser(usuario.id)
-
-                    _loginStatus.value = InicioSesionUiState.Success(usuario.id)
-                    println("Inicio de sesion exitoso")
-
-                }else{
-
-                    _loginStatus.value = InicioSesionUiState.Error
-                    println("Usuario o contraseña incorrectos")
-                }
-
-            }catch (e: Exception){
-
+            result.onSuccess {
+                _loginStatus.value = InicioSesionUiState.Success
+            }.onFailure {
                 _loginStatus.value = InicioSesionUiState.Error
-                println("Error al iniciar sesion")
             }
         }
     }
@@ -61,8 +49,7 @@ class ViewModelInicioSesion @Inject constructor(
 }
 
 sealed interface InicioSesionUiState {
-    data class Success(val Userid: Int): InicioSesionUiState
-
+    object Success : InicioSesionUiState
     object Error : InicioSesionUiState
     object Loading : InicioSesionUiState
 }

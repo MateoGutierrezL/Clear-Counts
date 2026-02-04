@@ -39,13 +39,19 @@ interface UserRepository {
     fun getCurrentLoggedInUser(): Flow<UserEntity?>
 
     /**
-     * Marca a un usuario como logueado guardando su ID en DataStore.
-     */
-    suspend fun setLoggedInUser(userId: Int)
-
-    /**
      * Cierra la sesión limpiando el ID en DataStore.
      */
     suspend fun logoutUser()
+
+    /**
+     * Registro de usuario con firebase
+     */
+    suspend fun signUp(email: String, password: String): Result<Boolean>
+
+    /**
+     * Inicio sesion de usuario con firebase
+     */
+
+    suspend fun signIn(email: String, password: String): Result<Boolean>
 
 }
