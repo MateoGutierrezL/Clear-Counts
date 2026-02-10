@@ -23,11 +23,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.clearcounts.R
+import com.example.clearcounts.data.database.entities.UserEntity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 
 @HiltViewModel
 class ViewModelInicioSesion @Inject constructor(
 
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val auth: FirebaseAuth
 ): ViewModel(){
 
     private val _loginStatus = MutableStateFlow<InicioSesionUiState>(InicioSesionUiState.Idle)
@@ -131,7 +135,8 @@ class ViewModelInicioSesion @Inject constructor(
 
     private suspend fun authenticateWithFirebase(token: String) {
         val result = userRepository.signInGoogle(token)
-        result.onSuccess {
+        result.onSuccess { authResult ->
+
             _loginStatus.value = InicioSesionUiState.Success
         }.onFailure { exception ->
             _loginStatus.value = InicioSesionUiState.ErrorEspecifico(

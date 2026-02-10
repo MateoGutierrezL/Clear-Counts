@@ -41,6 +41,7 @@ import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +51,7 @@ import javax.inject.Inject
 fun AppNavigation(
     rootNavController: NavController,
     viewModel: UserSessionViewModel = hiltViewModel(),
+
 ) {
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
@@ -58,6 +60,8 @@ fun AppNavigation(
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
     val topBarVisible = rememberSaveable { mutableStateOf(true) }
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+
+    
 
     ModalNavigationDrawer(
         drawerContent = {

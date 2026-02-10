@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -123,7 +124,7 @@ fun PantallaInicioSesion(
     when(loginStatus){
 
         is InicioSesionUiState.Error -> showLoginErrorDialog = true
-        is InicioSesionUiState.Loading -> println("Cargando")
+        is InicioSesionUiState.Loading -> LoadingScreen()
         is InicioSesionUiState.Success -> navegarInicio()
         else -> "Error"
 
@@ -404,8 +405,11 @@ fun LoginError(onDismiss: () -> Unit){
     }
 }
 
-
-
-
-
-
+@Composable
+fun LoadingScreen(){
+    CircularProgressIndicator(
+        modifier = Modifier.size(64.dp),
+        color = MaterialTheme.colorScheme.secondary,
+        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+    )
+}
