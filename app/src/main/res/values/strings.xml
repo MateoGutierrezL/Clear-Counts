@@ -13,4 +13,10 @@
     <string name="titulo_alertas">¡Alerta de Seguridad!</string>
     <string name="contenido_alertas">Se ha detectado un inicio de sesion inusual en tu cuenta.</string>
 
+    <string name="facebook_app_id">1410849674119011</string>
+    <string name="fb_login_protocol_scheme">fb1410849674119011</string>
+    <string name="facebook_client_token">251e9f9be386dc47541ef42e4c475a88</string>
+    <string name="default_web_client_id">855897287042-q5a75g7ku4bk9lg800t12rm24qoh5fb8.apps.googleusercontent.com</string>
+
+
 </resources>

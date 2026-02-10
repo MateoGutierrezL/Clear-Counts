@@ -56,18 +56,19 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun InicioUsuario(){
 
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "InicioSesion") {
+    val rootNavController = rememberNavController()
+
+    NavHost(navController = rootNavController, startDestination = "InicioSesion") {
 
         composable("InicioSesion")
         {
             PantallaInicioSesion(
 
                 navegarRegistroUsuario = {
-                    navController.navigate("RegistroUsuario")
+                    rootNavController.navigate("RegistroUsuario")
                 },
                 navegarInicio = {
-                    navController.navigate("Inicio"){
+                    rootNavController.navigate("Inicio"){
 
                         popUpTo("InicioSesion") {
 
@@ -78,7 +79,7 @@ fun InicioUsuario(){
                     }
                 },
                 navegarOlvidoContrasena = {
-                    navController.navigate("RecuperarClave")
+                    rootNavController.navigate("RecuperarClave")
                 }
             )
         }
@@ -89,19 +90,19 @@ fun InicioUsuario(){
 
                 navegarBotonRegistrarme = {
 
-                    navController.navigate("InicioSesion") {
+                    rootNavController.navigate("InicioSesion") {
                         popUpTo("PantallaRegistro") { inclusive = true }
                     }
                 },
                 textoNavegarInicioSesion = {
 
-                    navController.navigate("InicioSesion")
+                    rootNavController.navigate("InicioSesion")
                 }
             )
         }
 
         composable ("Inicio"){
-            AppNavigation()
+            AppNavigation(rootNavController = rootNavController)
         }
     }
 }

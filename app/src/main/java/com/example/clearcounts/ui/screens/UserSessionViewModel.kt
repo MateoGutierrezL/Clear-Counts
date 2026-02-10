@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.UserRepository
@@ -23,9 +24,19 @@ class UserSessionViewModel @Inject constructor(
             initialValue = null
         )
 
-    fun performLogout() {
+    /*
+    TODO Manejar el estado para cerrar la sesion con el datastore
+     */
+    fun logOut(onComplete:() -> Unit) {
         viewModelScope.launch {
-            userRepository.logoutUser() // Borra el ID de DataStore
+            try {
+                userRepository.signOut()
+                onComplete()
+            } catch (e: Exception){
+                Log.e("Auth", "Error: ${e.message}")
+                onComplete()
+            }
+
         }
     }
 

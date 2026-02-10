@@ -20,12 +20,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
+import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.ui.screens.Presupuesto
 import com.example.clearcounts.ui.screens.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
@@ -40,12 +42,14 @@ import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
-    viewModel: UserSessionViewModel = hiltViewModel()
+    rootNavController: NavController,
+    viewModel: UserSessionViewModel = hiltViewModel(),
 ) {
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
@@ -71,7 +75,15 @@ fun AppNavigation(
                         DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {}
                         DrawerItem.TUTORIAL -> {}
-                        DrawerItem.LOG_OUT -> {}
+                        DrawerItem.LOG_OUT -> {
+                            viewModel.logOut{
+                                rootNavController.navigate("InicioSesion"){
+                                    popUpTo("Inicio"){
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
                 }
                     scope.launch {
                         drawerState.close()

@@ -1,9 +1,17 @@
 package com.example.clearcounts.data
 
+import android.content.Context
+import android.util.Log
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.data.datastore.UserSessionDataStore
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -13,7 +21,8 @@ import javax.inject.Inject
 class OfflineUserRepository @Inject constructor(
     private val userDao: UserDao,
     private val sessionDataStore: UserSessionDataStore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @ApplicationContext private val context: Context
 ): UserRepository{
 
     override fun getAllUsersStream(): Flow<List<UserEntity>> = userDao.getAllUsers()
@@ -64,6 +73,44 @@ class OfflineUserRepository @Inject constructor(
             Result.failure(e)
         }
 
+    }
+
+    override suspend fun signInFacebook(token: String): Result<AuthResult> {
+        return try {
+            val credential = FacebookAuthProvider.getCredential(token)
+            val result = auth.signInWithCredential(credential).await()
+            Result.success(result)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun signInGoogle(token: String): Result<AuthResult>{
+        return try {
+            val credential = GoogleAuthProvider.getCredential(token, null)
+            val res = auth.signInWithCredential(credential).await()
+            Result.success(res)
+        } catch (e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun signOut() {
+
+        auth.signOut()
+
+        com.facebook.login.LoginManager.getInstance().logOut()
+
+        sessionDataStore.clearLoggedInUserId()
+
+        try {
+            val credentialManager = CredentialManager.create(context)
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            Log.e("AUth", "Funciona")
+        } catch (e: Exception) {
+            // Loguear error o ignorar si falla la limpieza de estado
+            Log.e("Auth", "Error al limpiar estado de credenciales: ${e.message}")
+        }
     }
 
 }

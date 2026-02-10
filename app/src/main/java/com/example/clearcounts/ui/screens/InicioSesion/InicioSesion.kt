@@ -1,7 +1,10 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,13 +23,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.clearcounts.R
@@ -48,10 +49,17 @@ import com.example.clearcounts.utils.AlertaCamposVacios
 import com.example.clearcounts.utils.OutlinedTextFieldColors
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.ui.theme.gris
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 
 
 @Composable
@@ -61,6 +69,7 @@ fun PantallaInicioSesion(
     navegarInicio:() -> Unit,
     viewModel: ViewModelInicioSesion = hiltViewModel()
 ) {
+
 
     //Variables que almacenan los datos que son proporcionados en cada uno de los textfield
     var contrasena by remember { mutableStateOf("") }
@@ -82,6 +91,34 @@ fun PantallaInicioSesion(
     )
 
     val loginStatus by viewModel.loginStatus.collectAsState()
+
+    val context = LocalContext.current
+    val callbackManager = remember { CallbackManager.Factory.create() }
+
+    // Configuramos el Launcher para recibir el resultado de Facebook
+    val loginLauncher = rememberLauncherForActivityResult(
+        LoginManager.getInstance().createLogInActivityResultContract(callbackManager)
+    ) {
+        // El resultado se maneja a través del callbackManager
+    }
+
+    // Registramos el callback
+    DisposableEffect(Unit) {
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    viewModel.onFacebookLoginSucces(result.accessToken.token)
+                }
+                override fun onCancel() { /* Manejar cancelación */ }
+                override fun onError(error: FacebookException) {
+                    // Aquí podrías disparar el estado de error en tu ViewModel
+                }
+            }
+        )
+        onDispose { LoginManager.getInstance().unregisterCallback(callbackManager) }
+    }
+
 
     when(loginStatus){
 
@@ -117,14 +154,7 @@ fun PantallaInicioSesion(
                     contentDescription = "Logo de Clear Counts"
                 )
 
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp),
-                    thickness = 2.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = "Ingrese a su cuenta",
@@ -175,48 +205,6 @@ fun PantallaInicioSesion(
                     )
                 }
 
-                Row {
-                    //Texto para navegar hacia la pantalla de olvido su contraseña
-                    Text(
-                        text = "¿Olvidó su clave?",
-                        modifier = Modifier.clickable {
-
-                            navegarOlvidoContrasena()
-                        },
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.width(45.dp))
-
-                    //Texto para navegar hacia la pantalla de registro
-                    val annotatedString = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            append("¿No tiene cuenta? ")
-                        }
-
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            append("\n  Regístrese aquí")
-                        }
-                    }
-
-                    Text(
-                        text = annotatedString,
-                        modifier = Modifier.clickable {
-
-                            navegarRegistroUsuario()
-                        }
-                    )
-                }
                 //Verficacion de que este debidamente diligenciado
                 Button(
                     onClick = {
@@ -227,11 +215,118 @@ fun PantallaInicioSesion(
                             viewModel.validateUser(correoUsuario, contrasena)
                         }
                     },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 48.dp, end = 48.dp),
+                    shape = RoundedCornerShape(16.dp) ,
+                    border = BorderStroke(1.dp, gris ),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
-                    Text("Ingresar", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Ingresar", color = MaterialTheme.colorScheme.onBackground)
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ){
+
+                    Button(
+                        onClick = {
+                            loginLauncher.launch(listOf("email", "public_profile"))
+                        },
+                        modifier = Modifier.border(
+                            border = BorderStroke(1.dp, color = Color(0xFF1877F2)),
+                            shape = ButtonDefaults.shape,
+
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
+                    ) {
+
+                        Row (verticalAlignment = Alignment.CenterVertically){
+
+                            Icon(
+
+                                painter = painterResource(id = R.drawable.facebook_logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.Unspecified
+
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text("Facebook",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.signInWithGoogle(context)
+                        },
+                        modifier = Modifier.border(
+                            border = BorderStroke(1.dp, gris),
+                            shape = ButtonDefaults.shape
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
+                    ) {
+
+                        Row (verticalAlignment = Alignment.CenterVertically){
+
+                            Icon(
+
+                                painter = painterResource(id = R.drawable.google_logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.Unspecified
+
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text("Google",
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                        }
+                    }
+                }
+
+                Row (horizontalArrangement = Arrangement.Center){
+                    //Texto para navegar hacia la pantalla de olvido su contraseña
+                    Text(
+                        text = "¿Olvidó su clave?",
+                        modifier = Modifier
+                        .clickable {
+
+                            navegarOlvidoContrasena()
+                        },
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 14.sp
+                    )
+
+                    Spacer(modifier = Modifier.width(42.dp))
+
+                    Text(
+                        text = "¿No tiene cuenta?\n Regístrese aquí",
+                        modifier = Modifier
+                            .clickable {
+
+                                navegarRegistroUsuario()
+                            },
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 14.sp
+                    )
                 }
             }
         }
@@ -307,7 +402,6 @@ fun LoginError(onDismiss: () -> Unit){
             }
         }
     }
-
 }
 
 

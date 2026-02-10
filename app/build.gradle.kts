@@ -74,7 +74,12 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
-
+    //Google
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    //Facebook
+    implementation("com.facebook.android:facebook-login:latest.release")
 
    //ggg
     implementation("androidx.compose.material:material-icons-core")

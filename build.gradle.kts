@@ -8,3 +8,10 @@ plugins {
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.crashlytics) apply false
 }
+
+buildscript {
+
+    repositories{
+        mavenCentral()
+    }
+}

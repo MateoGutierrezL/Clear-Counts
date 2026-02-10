@@ -367,11 +367,6 @@ fun RegisterSucces(
 }
 
 @Composable
-fun RegisterLoading(){
-
-}
-
-@Composable
 fun RegisterError(onDismiss: () -> Unit){
 
     Dialog(onDismissRequest = onDismiss) {

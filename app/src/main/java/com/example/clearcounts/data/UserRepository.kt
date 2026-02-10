@@ -1,6 +1,8 @@
 package com.example.clearcounts.data
 
 import com.example.clearcounts.data.database.entities.UserEntity
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -53,5 +55,20 @@ interface UserRepository {
      */
 
     suspend fun signIn(email: String, password: String): Result<Boolean>
+
+    /**
+     * Inicio sesion de usuario con Facebook
+     */
+    suspend fun signInFacebook(token: String): Result<AuthResult>
+
+    /**
+     * Inicio sesion de usuario con Google
+     */
+    suspend fun signInGoogle(token: String): Result<AuthResult>
+
+    /**
+     * cerrar sesion
+     */
+    suspend fun signOut()
 
 }
