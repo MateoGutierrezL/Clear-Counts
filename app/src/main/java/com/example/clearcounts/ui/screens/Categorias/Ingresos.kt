@@ -79,6 +79,7 @@ const val MAX_LENGHT_OF_NOTE = 200
 @SuppressLint("NewApi")
 @Composable
 fun ingresos(
+    ruta: String,
     icono: Int,
     nombre: String,
     botonVolver:() -> Unit
@@ -141,7 +142,7 @@ fun ingresos(
 
                 Text(
                     modifier = Modifier.padding(top = 22.dp, start = 10.dp),
-                    text = "Realiza un ingreso",
+                    text = "Realiza un $ruta",
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -683,14 +684,4 @@ fun DatePickerDialogComposable(
         // El DatePicker se ajustará automáticamente dentro del diálogo de Material 3
         DatePicker(state = datePickerState)
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ingresosPreview(){
-    ingresos(
-        icono = R.drawable.ingresos,
-        nombre = "Ingresos",
-        botonVolver = {}
-    )
 }

@@ -223,7 +223,6 @@ fun CustomBottomAppBar(
 
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = if (gasto) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-
                                         )
                                 ) {
                                     Text(
@@ -267,7 +266,8 @@ fun CustomBottomAppBar(
                                             CategoriaItemIngresos(
                                                 navController = navigationController,
                                                 categoria = categoria,
-                                                sheetState = sheetState
+                                                sheetState = sheetState,
+                                                ruta = "ingreso"
                                             )
                                         }
                                     }
@@ -287,7 +287,8 @@ fun CustomBottomAppBar(
                                             CategoriaItemGastos(
                                                 navController = navigationController,
                                                 categoria = categoria,
-                                                sheetState = sheetState
+                                                sheetState = sheetState,
+                                                ruta = "gasto"
                                             )
                                         }
                                     }

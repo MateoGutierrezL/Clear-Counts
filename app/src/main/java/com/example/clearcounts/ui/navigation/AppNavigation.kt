@@ -225,12 +225,14 @@ fun AppNavigation(
                 }
 
                 composable(
-                    route = "ingresos/{icono}/{nombre}",
+                    route = "{ruta}/{icono}/{nombre}",
                     arguments = listOf(
+                        navArgument("ruta") { type = NavType.StringType },
                         navArgument("icono") { type = NavType.IntType },
                         navArgument("nombre") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
+                    val ruta = backStackEntry.arguments?.getString("ruta") ?: "ingresos"
                     val icono = backStackEntry.arguments?.getInt("icono") ?: 0
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
 
@@ -241,11 +243,12 @@ fun AppNavigation(
                     }
 
                     ingresos(
-                        icono,
-                        nombre,
+                        ruta = ruta,
+                        icono = icono,
+                        nombre = nombre,
                         botonVolver = {
                             navigationController.popBackStack()
-                        }
+                        },
                     )
 
                 }

@@ -55,7 +55,7 @@ object DataSource{
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaItemIngresos(navController: NavController, categoria: categorias, sheetState: SheetState) {
+fun CategoriaItemIngresos(navController: NavController, categoria: categorias, sheetState: SheetState, ruta: String) {
     val scope = rememberCoroutineScope()
     val nombreString = stringResource(id = categoria.nombre)
     Button(
@@ -63,7 +63,7 @@ fun CategoriaItemIngresos(navController: NavController, categoria: categorias, s
             scope.launch {
                 delay(500)
                 sheetState.hide()
-                navController.navigate("ingresos/${categoria.icono}/$nombreString")
+                navController.navigate("$ruta/${categoria.icono}/$nombreString")
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -101,7 +101,7 @@ fun CategoriaItemIngresos(navController: NavController, categoria: categorias, s
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaItemGastos(navController: NavController, categoria: categorias, sheetState: SheetState) {
+fun CategoriaItemGastos(navController: NavController, categoria: categorias, sheetState: SheetState, ruta: String) {
     val scope = rememberCoroutineScope()
     val nombreString = stringResource(id = categoria.nombre)
     Button(
@@ -109,7 +109,7 @@ fun CategoriaItemGastos(navController: NavController, categoria: categorias, she
             scope.launch {
                 delay(500)
                 sheetState.hide()
-                navController.navigate("ingresos/${categoria.icono}/$nombreString")
+                navController.navigate("$ruta/${categoria.icono}/$nombreString")
             }
         },
         modifier = Modifier.fillMaxWidth(),
