@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.example.clearcounts.R
 import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.ui.screens.Presupuesto
@@ -41,6 +42,7 @@ import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -190,7 +192,9 @@ fun AppNavigation(
 
                     EditarPerfil(
                         botonVolver = {
-                            navigationController.popBackStack()
+                            if (navigationController.previousBackStackEntry != null){
+                                navigationController.popBackStack()
+                            }
                         },
                         navegarPerfil = {
                             navigationController.navigate(Pantallas.Perfil.pantalla)
@@ -208,7 +212,9 @@ fun AppNavigation(
 
                     PreguntasComentarios(
                         botonVolver = {
-                            navigationController.popBackStack()
+                            if (navigationController.previousBackStackEntry != null){
+                                navigationController.popBackStack()
+                            }
                         }
                     )
                 }
@@ -247,7 +253,9 @@ fun AppNavigation(
                         icono = icono,
                         nombre = nombre,
                         botonVolver = {
-                            navigationController.popBackStack()
+                            if (navigationController.previousBackStackEntry != null){
+                                navigationController.popBackStack()
+                            }
                         },
                     )
 

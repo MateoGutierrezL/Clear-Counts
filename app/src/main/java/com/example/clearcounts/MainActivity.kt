@@ -20,6 +20,9 @@ import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaRegistro
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCodigo
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarVerificacionCorreo
 import com.example.clearcounts.ui.theme.ClearCountTheme
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -100,7 +103,7 @@ fun InicioUsuario(isLoggedIn: Boolean){
                     }
                 },
                 navegarOlvidoContrasena = {
-                    rootNavController.navigate("RecuperarClave")
+                    rootNavController.navigate("RecuperarContrasena")
                 }
             )
         }
@@ -118,6 +121,49 @@ fun InicioUsuario(isLoggedIn: Boolean){
                 textoNavegarInicioSesion = {
 
                     rootNavController.navigate("InicioSesion")
+                }
+            )
+        }
+
+        composable("RecuperarVerificacionCorreo") {
+
+            RecuperarVerificacionCorreo(
+                botonVolver = {
+                    if (rootNavController.previousBackStackEntry != null){
+                        rootNavController.popBackStack()
+                    }
+                },
+                onBotonSiguienteVerificacion = {
+                    //TODO falta implementar la logica para realizar con la recuperaccion de contraseña
+                }
+            )
+        }
+
+        composable("RecuperarCodigo"){
+
+            RecuperarCodigo(
+                botonVolver = {
+                    if (rootNavController.previousBackStackEntry != null){
+                        rootNavController.popBackStack()
+                    }
+                },
+                onBotonSiguienteCodigo = {
+                    rootNavController.navigate("RecuperarVerificacionCorreo")
+                }
+            )
+        }
+
+        composable("RecuperarContrasena"){
+
+            RecuperarContrasena(
+
+                botonVolver = {
+                    if (rootNavController.previousBackStackEntry != null){
+                        rootNavController.popBackStack()
+                    }
+                },
+                onBotonSiguiente = {
+                    rootNavController.navigate("RecuperarCodigo")
                 }
             )
         }

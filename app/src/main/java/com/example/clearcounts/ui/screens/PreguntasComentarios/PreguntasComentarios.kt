@@ -141,7 +141,7 @@ fun BotonesContacto(
 
     Button(
         onClick = {
-            viewModel.SendEmail(context, "mateogutierrez7112@gmail.com", subject, body )
+            viewModel.SendEmail(context, "clearcounts1@gmail.com", subject, body )
         },
         modifier = Modifier.fillMaxWidth(). padding(start = 50.dp, end = 50.dp)
             .border(
