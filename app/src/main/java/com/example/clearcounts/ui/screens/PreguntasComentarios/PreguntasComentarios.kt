@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,12 +40,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.theme.AzulBotones
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.blanco
 import com.example.clearcounts.ui.theme.gris
 import com.example.clearcounts.utils.OutlinedTextFieldColors
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun PreguntasComentarios(
@@ -117,72 +121,55 @@ fun PreguntasComentarios(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            BotonesContacto()
+            BotonesContacto(
+                subject = "Pregunta, queja o reclamo",
+                body = comentario
+            )
 
         }
     }
 }
 
 @Composable
-fun BotonesContacto(){
+fun BotonesContacto(
+    viewModel: ViewModelPreguntasComentarios = hiltViewModel(),
+    subject: String,
+    body: String
+){
 
-    Row {
+    val context = LocalContext.current
 
-        Button(
-            onClick = {""},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AzulBotones
-            ),
-            modifier = Modifier.height(46.dp)
-        ) {
+    Button(
+        onClick = {
+            viewModel.SendEmail(context, "mateogutierrez7112@gmail.com", subject, body )
+        },
+        modifier = Modifier.fillMaxWidth(). padding(start = 50.dp, end = 50.dp)
+            .border(
+            border = BorderStroke(1.dp, gris),
+            shape = ButtonDefaults.shape
+        ),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.background
+        )
+    ) {
 
-            Row (verticalAlignment = Alignment.CenterVertically){
+        Row (verticalAlignment = Alignment.CenterVertically){
 
-                Icon(
+            Icon(
 
-                    painter = painterResource(id = R.drawable.enviar_mensaje),
-                    contentDescription = "Icono de Enviar mensaje",
-                    modifier = Modifier.size(20.dp),
-                    tint = blanco
+                painter = painterResource(id = R.drawable.correo_electronico),
+                contentDescription = "Icono de Enviar correo",
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onBackground
 
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Enviar mensaje")
-
-            }
-        }
-
-        Button(
-            onClick = {""},
-            modifier = Modifier.border(
-                border = BorderStroke(1.dp, gris),
-                shape = ButtonDefaults.shape
-            ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.background
             )
-        ) {
 
-            Row (verticalAlignment = Alignment.CenterVertically){
+            Spacer(modifier = Modifier.width(8.dp))
 
-                Icon(
+            Text("Enviar correo",
+                color = MaterialTheme.colorScheme.onBackground
+            )
 
-                    painter = painterResource(id = R.drawable.correo_electronico),
-                    contentDescription = "Icono de Enviar correo",
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
-
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text("Enviar correo",
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-            }
         }
     }
 }
