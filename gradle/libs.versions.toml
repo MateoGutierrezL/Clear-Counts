@@ -22,10 +22,10 @@ foundationVersion = "1.9.5"
 runtimeVersion = "1.9.5"
 hilt = "2.57.1"
 hilt-compose = "1.1.0"
-room = "2.8.4"
+room = "2.6.1"
 ksp = "2.1.10-1.0.29"
 datastore = "1.0.0"
-firebaseBom = "34.8.0"
+firebaseBom = "34.9.0"
 services = "4.4.4"
 crashlytics = "3.0.6"
 
@@ -80,6 +80,9 @@ androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime
 [plugins]
 #Hilt
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+
+#Room
+room = { id = "androidx.room", version.ref = "room"}
 
 #Ksp
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
