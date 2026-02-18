@@ -15,7 +15,7 @@ import com.example.clearcounts.data.database.entities.UserEntity
         UserEntity::class,
         IncomeEntity::class,
         ExpenseEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -25,4 +25,5 @@ abstract class UserDatabase: RoomDatabase() {
     abstract fun getIncomeDao(): IncomeDao
 
     abstract fun getExpenseDao(): ExpenseDao
+
 }

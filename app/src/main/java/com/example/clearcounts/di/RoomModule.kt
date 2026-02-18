@@ -3,6 +3,7 @@ package com.example.clearcounts.di
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.clearcounts.data.database.UserDatabase
 import dagger.Module
 import dagger.Provides

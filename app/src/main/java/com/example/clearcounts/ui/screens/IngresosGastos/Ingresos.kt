@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.screens.Categorias
+package com.example.clearcounts.ui.screens.IngresosGastos
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
@@ -60,14 +60,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.clearcounts.R
+import com.example.clearcounts.data.ExpenseRepository
+import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.data.database.entities.UserEntity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -87,7 +86,8 @@ fun ingresos(
     icono: Int,
     nombre: String,
     botonVolver:() -> Unit,
-    viewModel: IngresosViewModel = hiltViewModel()
+    viewModel: IngresosGastosViewModel = hiltViewModel(),
+    botonCrearNavegacion:() -> Unit
 ){
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -259,15 +259,33 @@ fun ingresos(
                     onCancelChange = botonVolver,
                     onCreateChange = {
 
-                        val newIncome = IncomeEntity(
-                            id = 0,
-                            categoria = ruta,
-                            cantidad = cantidad.toDouble(),
-                            hora = horaSeleccionadaState,
-                            fecha = fechaSeleccionadaState,
-                            nota = nota
-                        )
-                        viewModel.insertIncome(newIncome)
+                        if (cantidad.isNotBlank() && cantidad.toDoubleOrNull() != null) {
+
+                            val onSuccess = { botonCrearNavegacion() }
+
+                            if (ruta == "ingreso") {
+                                val newIncome = IncomeEntity(
+                                    id = 0,
+                                    categoria = ruta,
+                                    cantidad = cantidad.toDouble(),
+                                    hora = horaSeleccionadaState,
+                                    fecha = fechaSeleccionadaState,
+                                    nota = nota
+                                )
+                                viewModel.insertIncome(newIncome)
+                            } else {
+                                val newExpense = ExpenseEntity(
+                                    id = 0,
+                                    categoria = ruta,
+                                    cantidad = cantidad.toDouble(),
+                                    hora = horaSeleccionadaState,
+                                    fecha = fechaSeleccionadaState,
+                                    nota = nota
+                                )
+                                viewModel.insertExpense(newExpense, onSuccess)
+                            }
+                        }
+
                     }
                 )
             }

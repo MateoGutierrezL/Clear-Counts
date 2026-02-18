@@ -9,7 +9,7 @@ data class ExpenseEntity (
 
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "categoria") val categoria: String,
-    @ColumnInfo(name = "cantidad") val cantidad: String,
+    @ColumnInfo(name = "cantidad") val cantidad: Double,
     @ColumnInfo(name = "hora")val hora: String,
     @ColumnInfo(name = "fecha") val fecha: String,
     @ColumnInfo(name = "nota")val nota: String

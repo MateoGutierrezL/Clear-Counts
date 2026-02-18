@@ -1,5 +1,7 @@
 package com.example.clearcounts.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -26,28 +28,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.clearcounts.R
-import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.ui.screens.Presupuesto
 import com.example.clearcounts.ui.screens.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
-import com.example.clearcounts.ui.screens.Categorias.ingresos
+import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
@@ -257,6 +255,9 @@ fun AppNavigation(
                                 navigationController.popBackStack()
                             }
                         },
+                        botonCrearNavegacion = {
+                            navigationController.navigate(Pantallas.Inicio.pantalla)
+                        }
                     )
 
                 }
