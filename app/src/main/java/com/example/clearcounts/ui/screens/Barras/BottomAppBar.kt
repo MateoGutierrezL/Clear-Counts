@@ -59,7 +59,7 @@ fun CustomBottomAppBar(
 ) {
     val context = LocalContext.current.applicationContext
 
-    BottomAppBar(containerColor = MaterialTheme.colorScheme.primaryContainer) {
+    BottomAppBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
         // Home
         NavigationBarItem(
             selected = selectedIcon.value == "home",

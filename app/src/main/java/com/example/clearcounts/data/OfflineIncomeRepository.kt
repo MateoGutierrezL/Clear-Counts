@@ -2,6 +2,7 @@ package com.example.clearcounts.data
 
 import com.example.clearcounts.data.database.dao.IncomeDao
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class OfflineIncomeRepository @Inject constructor(
@@ -10,5 +11,8 @@ class OfflineIncomeRepository @Inject constructor(
 ): IncomeRepository {
 
     override suspend fun insertIncome(incomeEntity: IncomeEntity) = incomeDao.insert(incomeEntity)
+    override fun getAllIncomes(): Flow<List<IncomeEntity>> {
+        return incomeDao.getAllIncomes()
+    }
 
 }

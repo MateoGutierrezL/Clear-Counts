@@ -15,7 +15,7 @@ import com.example.clearcounts.data.database.entities.UserEntity
         UserEntity::class,
         IncomeEntity::class,
         ExpenseEntity::class],
-    version = 3,
+    version = 5,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {

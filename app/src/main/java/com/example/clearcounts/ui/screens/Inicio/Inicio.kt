@@ -2,17 +2,8 @@ package com.example.clearcounts.ui.screens.Inicio
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,17 +17,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,30 +39,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.clearcounts.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.data.database.entities.ExpenseEntity
+import com.example.clearcounts.data.database.entities.IncomeEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(paddingValues: PaddingValues) {
+fun HomeScreen(
+    paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel()
+) {
+
+    val listaMovimientos by viewModel.movimientosState.collectAsState()
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM", Locale.forLanguageTag("es-ES"))
 
@@ -87,13 +85,21 @@ fun HomeScreen(paddingValues: PaddingValues) {
             item {
                 IngresosGastos()
             }
-            item {
-                GraficoBarras(
-                    datos = listOf(2f,3f,4f)
-                )
-            }
-            item {
-                Transacciones() // Este contiene toda la parte de movimientos recientes
+            items(
+                items = listaMovimientos,
+                // Clave única para que Compose no se confunda con IDs repetidos entre tablas
+                key = { item ->
+                    when (item) {
+                        is IncomeEntity -> "inc_${item.id}"
+                        is ExpenseEntity -> "exp_${item.id}"
+                        else -> item.hashCode()
+                    }
+                }
+            ) { movimiento ->
+                when (movimiento) {
+                    is IncomeEntity -> ItemIngreso(ingreso = movimiento)
+                    is ExpenseEntity -> ItemGasto(gasto = movimiento)
+                }
             }
             item {
                 contenidoAbajo() // Este contiene la parte de metas
@@ -117,7 +123,7 @@ fun Balance(
                 spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
             )
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -181,7 +187,7 @@ fun ItemFinanciero(
                 spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             )
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
@@ -207,6 +213,154 @@ fun ItemFinanciero(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
+    }
+}
+
+@Composable
+fun ItemIngreso(
+    ingreso: IncomeEntity
+){
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            val containerColor = Color.Black.copy(alpha = 0.1f)
+            val iconColor =  Color(0xFF2ECC71)
+            val icon = Icons.Default.ArrowUpward
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(containerColor),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp).rotate(45f),
+                    tint = iconColor
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = ingreso.categoria,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (!ingreso.nota.isNullOrBlank()){
+                    Text(
+                        text = ingreso.nota,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "+${ingreso.cantidad.toInt()}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF2ECC71),
+                textAlign = TextAlign.End
+            )
+        }
+    }
+}
+
+@Composable
+fun ItemGasto(
+    gasto: ExpenseEntity
+){
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            val containerColor = Color.Black.copy(alpha = 0.1f)
+            val iconColor =  Color(0xFFE74C3C)
+            val icon = Icons.Default.ArrowDownward
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(containerColor),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp).rotate(225f),
+                    tint = iconColor
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = gasto.categoria,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (!gasto.nota.isNullOrBlank()){
+                    Text(
+                        text = gasto.nota,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "-${gasto.cantidad.toInt()}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFFE74C3C),
+                textAlign = TextAlign.End
+            )
+        }
     }
 }
 
@@ -244,156 +398,28 @@ fun GraficoBarras(
     }
 }
 
-
 @Composable
-fun Transacciones() {
+fun LineChart(data: List<Float>) {
+    Canvas(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+        val path = Path()
+        val width = size.width
+        val height = size.height
+        val maxData = data.maxOrNull() ?: 1f
+        val minData = data.minOrNull() ?: 0f
+        val range = maxData - minData
 
-    Row() {
-        Text(
-            text = "Transacciones"
-        )
-    }
-    Column(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .width(382.dp),
-        ) {
-        Box(
-            modifier = Modifier
-                // CAMBIO: Fondo del contenedor a secondaryContainer
-                .background(MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .width(382.dp),
-
-                ) {
-                Text(
-                    text = "Movimientos recientes",
-                    textAlign = TextAlign.Start,
-                    // CAMBIO: Color del texto a onSecondaryContainer
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    textDecoration = TextDecoration.Underline
-                )
-
-                Row {
-                    Text(
-                        text = "10/09/2005",
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .padding(10.dp),
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                        text = buildAnnotatedString {
-                            // Gastos (Rojo)
-                            withStyle(style = SpanStyle(Color.Red)) {
-                                append("$340.000")
-                            }
-                            // Separador (Blanco, cambiado a onSecondaryContainer)
-                            withStyle(style = SpanStyle(MaterialTheme.colorScheme.onSecondaryContainer)) {
-                                append("/")
-                            }
-                            // Ingresos (Verde)
-                            withStyle(style = SpanStyle(Color.Green)) {
-                                append("$500.000")
-                            }
-                        }
-                    )
-                }
-
-                // --- MOVIMIENTOS INDIVIDUALES ---
-
-                Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.ingresos),
-                        contentDescription = "Icono de la bolsa de monedas",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter para que la imagen se adapte si es un Vector
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Ingresos extra",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-                    )
-                    Text(
-                        text = "+$500.000",
-                        color = Color.Green, // Color fijo para montos positivos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gasolina),
-                        contentDescription = "Icono de la gasolina",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Gasolina",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$230.000",
-                        color = Color.Red, // Color fijo para montos negativos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.administracion),
-                        contentDescription = "Icono de la administracion",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Administracion",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$110.400",
-                        color = Color.Red, // Color fijo para montos negativos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-            }
+        // Calcular puntos y dibujar línea
+        data.forEachIndexed { index, value ->
+            val x = index * (width / (data.size - 1))
+            val y = height - ((value - minData) / range * height)
+            if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
+
+        drawPath(
+            path = path,
+            color = Color.Blue,
+            style = Stroke(width = 5f)
+        )
     }
 }
 @Composable

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "961152d1c1f9129d12647cf80a2dbbf9",
+    "version": 5,
+    "identityHash": "8ce2544600116eefaf40b734708c4df2",
     "entities": [
       {
         "tableName": "usuario",
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "gasto",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `categoria` TEXT NOT NULL, `cantidad` REAL NOT NULL, `hora` TEXT NOT NULL, `fecha` TEXT NOT NULL, `nota` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `categoria` TEXT NOT NULL, `cantidad` REAL NOT NULL, `hora` TEXT NOT NULL, `fecha` TEXT NOT NULL, `nota` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -136,7 +136,7 @@
             "fieldPath": "nota",
             "columnName": "nota",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -152,7 +152,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '961152d1c1f9129d12647cf80a2dbbf9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8ce2544600116eefaf40b734708c4df2')"
     ]
   }
 }

@@ -33,7 +33,7 @@ fun TopBar(
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             scrolledContainerColor = MaterialTheme.colorScheme.primary
         ),
         scrollBehavior = null,

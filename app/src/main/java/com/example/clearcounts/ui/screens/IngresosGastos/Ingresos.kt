@@ -266,7 +266,7 @@ fun ingresos(
                             if (ruta == "ingreso") {
                                 val newIncome = IncomeEntity(
                                     id = 0,
-                                    categoria = ruta,
+                                    categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
@@ -276,7 +276,7 @@ fun ingresos(
                             } else {
                                 val newExpense = ExpenseEntity(
                                     id = 0,
-                                    categoria = ruta,
+                                    categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,

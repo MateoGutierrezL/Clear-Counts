@@ -30,8 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 @HiltViewModel
 class ViewModelInicioSesion @Inject constructor(
 
-    private val userRepository: UserRepository,
-    private val auth: FirebaseAuth
+    private val userRepository: UserRepository
 ): ViewModel(){
 
     private val _loginStatus = MutableStateFlow<InicioSesionUiState>(InicioSesionUiState.Idle)

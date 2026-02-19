@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ExpenseDao {
 
-    @Query("SELECT * FROM ingreso")
+    @Query("SELECT * FROM gasto")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
