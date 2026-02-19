@@ -71,4 +71,9 @@ interface UserRepository {
      */
     suspend fun signOut()
 
+    /**
+     * Envio de correo para recuperar contraseña
+     */
+    suspend fun SendResetPassword(email: String): Result<Unit>
+
 }

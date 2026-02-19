@@ -5,13 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.ExpenseRepository
 import com.example.clearcounts.data.IncomeRepository
-import com.example.clearcounts.data.OfflineExpenseRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +29,7 @@ class IngresosGastosViewModel @Inject constructor(
                 onSuccess()
 
 
-                Log.e("gasto", "Funciona")
+                Log.e("ingreso", "Funciona")
 
             }catch (e: Exception){
 
@@ -51,11 +48,11 @@ class IngresosGastosViewModel @Inject constructor(
                 expenseRepository.insertExpense(expenseEntity)
                 onSuccess()
 
-                Log.e("ingreso", "Funciona")
+                Log.e("gasto", "Funciona")
 
             }catch (e: Exception){
 
-                Log.e("ingreso", "Fallo insertando el ingreso: ${e.message}")
+                Log.e("gasto", "Fallo insertando el gasto: ${e.message}")
             }
         }
     }

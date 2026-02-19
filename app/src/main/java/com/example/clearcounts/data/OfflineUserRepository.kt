@@ -7,6 +7,7 @@ import androidx.credentials.CredentialManager
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.data.datastore.UserSessionDataStore
+import com.facebook.share.Sharer
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -110,6 +111,16 @@ class OfflineUserRepository @Inject constructor(
         } catch (e: Exception) {
             // Loguear error o ignorar si falla la limpieza de estado
             Log.e("Auth", "Error al limpiar estado de credenciales: ${e.message}")
+        }
+    }
+
+    override suspend fun SendResetPassword(email: String): Result<Unit> {
+
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            Result.success(Unit)
+        }catch (e: Exception){
+            Result.failure(e)
         }
     }
 

@@ -38,16 +38,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.theme.AzulEncabezado
 import com.example.clearcounts.ui.theme.gris
 import com.example.clearcounts.utils.OutlinedTextFieldColors
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecuperarContrasena(
     botonVolver:() -> Unit,
-    onBotonSiguiente: () -> Unit
+    onBotonSiguiente: () -> Unit,
+    viewModel: RecuperarContrasenaViewModel = hiltViewModel()
 ){
 
     var correo by remember {mutableStateOf("")}
@@ -142,7 +146,12 @@ fun RecuperarContrasena(
             //Llamada del boton inferior
             BotonSiguiente(
                 onBotonSiguiente = {
-                    onBotonSiguiente()
+                    if (correo.isNotBlank()){
+
+                        viewModel.sendEmailResetPassword(correo)
+                        onBotonSiguiente()
+                    }
+
                 }
             )
 

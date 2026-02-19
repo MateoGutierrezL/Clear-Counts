@@ -272,7 +272,7 @@ fun ingresos(
                                     fecha = fechaSeleccionadaState,
                                     nota = nota
                                 )
-                                viewModel.insertIncome(newIncome)
+                                viewModel.insertIncome(newIncome, onSuccess)
                             } else {
                                 val newExpense = ExpenseEntity(
                                     id = 0,
