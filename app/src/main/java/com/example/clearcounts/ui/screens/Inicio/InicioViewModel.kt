@@ -27,6 +27,7 @@ class InicioViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository
 ): ViewModel(){
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val movimientosState: StateFlow<List<Any>> = combine(
         incomeRepository.getAllIncomes(),
         expenseRepository.getAllExpenses()

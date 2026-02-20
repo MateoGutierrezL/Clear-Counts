@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +26,13 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -71,6 +75,9 @@ fun HomeScreen(
 
     var fechaActual by remember { mutableStateOf(LocalDate.now().format(formatoFecha)) }
 
+    var ingresoSeleccionado by remember { mutableStateOf<IncomeEntity?>(null) }
+    var gastoSeleccionado by remember { mutableStateOf<ExpenseEntity?>(null) }
+
     LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,6 +92,13 @@ fun HomeScreen(
             item {
                 IngresosGastos()
             }
+            item {
+                Transacciones(
+                    onVerTodoChange = {
+                        //Todo funcion para implementar sobre el texto de ver todos en el inicio
+                    }
+                )
+            }
             items(
                 items = listaMovimientos,
                 // Clave única para que Compose no se confunda con IDs repetidos entre tablas
@@ -97,14 +111,92 @@ fun HomeScreen(
                 }
             ) { movimiento ->
                 when (movimiento) {
-                    is IncomeEntity -> ItemIngreso(ingreso = movimiento)
-                    is ExpenseEntity -> ItemGasto(gasto = movimiento)
+                    is IncomeEntity -> ItemIngreso(
+                        ingreso = movimiento,
+                        onPopUpIngreso = {
+                            ingresoSeleccionado = movimiento
+                        }
+                    )
+                    is ExpenseEntity -> ItemGasto(
+                        gasto = movimiento,
+                        onPopUpGasto = {
+                            gastoSeleccionado = movimiento
+                        }
+                    )
                 }
             }
             item {
                 contenidoAbajo() // Este contiene la parte de metas
             }
         }
+
+    ingresoSeleccionado?.let { ingreso ->
+        DetalleIngresoPopup(
+            ingreso = ingreso,
+            onDismiss = { ingresoSeleccionado = null }
+        )
+    }
+
+    gastoSeleccionado?.let { gasto ->
+        DetalleGastoPopup(
+            gasto = gasto,
+            onDismiss = { gastoSeleccionado = null }
+        )
+    }
+}
+
+@Composable
+fun DetalleIngresoPopup(
+    ingreso: IncomeEntity,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Cerrar") }
+        },
+        title = { Text(text = "Detalle de Ingreso", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Text("Categoría: ${ingreso.categoria}")
+                Text("Monto: ${ingreso.cantidad}")
+                Text("Hora: ${ingreso.hora}")
+                Text("Fecha: ${ingreso.fecha}")
+
+                if (!ingreso.nota.isNullOrEmpty()) {
+                    Text("Nota: ${ingreso.nota}")
+                }
+            }
+        },
+        shape = RoundedCornerShape(16.dp)
+    )
+}
+
+@Composable
+fun DetalleGastoPopup(
+    gasto: ExpenseEntity,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Cerrar") }
+        },
+        title = { Text(text = "Detalle de Gasto", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Text("Categoría: ${gasto.categoria}")
+                Text("Monto: ${gasto.cantidad}")
+                Text("Hora: ${gasto.hora}")
+                Text("Fecha: ${gasto.fecha}")
+
+                if (!gasto.nota.isNullOrEmpty()) {
+                    Text("Nota: ${gasto.nota}")
+                }
+            }
+        },
+        shape = RoundedCornerShape(16.dp)
+    )
 }
 
 @Composable
@@ -218,12 +310,16 @@ fun ItemFinanciero(
 
 @Composable
 fun ItemIngreso(
-    ingreso: IncomeEntity
+    ingreso: IncomeEntity,
+    onPopUpIngreso:() -> Unit
 ){
 
     Card(
         modifier = Modifier.fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable{
+                onPopUpIngreso()
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
@@ -292,12 +388,16 @@ fun ItemIngreso(
 
 @Composable
 fun ItemGasto(
-    gasto: ExpenseEntity
+    gasto: ExpenseEntity,
+    onPopUpGasto: () -> Unit
 ){
 
     Card(
         modifier = Modifier.fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable{
+                onPopUpGasto()
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
@@ -361,6 +461,31 @@ fun ItemGasto(
                 textAlign = TextAlign.End
             )
         }
+    }
+}
+
+@Composable
+fun Transacciones(
+    onVerTodoChange:() -> Unit
+){
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Transacciones",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Text(
+            modifier = Modifier.clickable{
+                onVerTodoChange()
+            },
+            text = "Ver todas",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.ExtraBold,
+            textAlign = TextAlign.End
+        )
     }
 }
 
