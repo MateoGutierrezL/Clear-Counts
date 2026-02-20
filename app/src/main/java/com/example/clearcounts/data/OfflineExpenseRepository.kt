@@ -16,4 +16,6 @@ class OfflineExpenseRepository @Inject constructor(
         return expenseDao.getAllExpenses()
     }
 
+    override suspend fun deleteExpense(expenseEntity: ExpenseEntity) = expenseDao.delete(expenseEntity)
+
 }

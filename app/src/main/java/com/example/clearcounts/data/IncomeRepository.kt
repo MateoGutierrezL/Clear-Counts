@@ -9,4 +9,6 @@ interface IncomeRepository {
 
     fun getAllIncomes(): Flow<List<IncomeEntity>>
 
+    suspend fun deleteIncome(incomeEntity: IncomeEntity)
+
 }

@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui.screens.Inicio
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -64,6 +66,27 @@ class InicioViewModel @Inject constructor(
         } catch (e: Exception) {
             // Si hay un error, lo mandamos al final de la lista para no romper la app
             LocalDateTime.MIN
+        }
+    }
+
+    fun deleteIncome(incomeEntity: IncomeEntity){
+
+        viewModelScope.launch {
+            try {
+                incomeRepository.deleteIncome(incomeEntity = incomeEntity)
+            }catch (e: Exception){
+                Log.e("ingreso", "fallo al eliminar el ingreso: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteExpense(expenseEntity: ExpenseEntity){
+        viewModelScope.launch {
+            try {
+                expenseRepository.deleteExpense(expenseEntity = expenseEntity)
+            }catch (e: Exception){
+                Log.e("gasto", "fallo al eliminar el gasto: ${e.message}")
+            }
         }
     }
 }

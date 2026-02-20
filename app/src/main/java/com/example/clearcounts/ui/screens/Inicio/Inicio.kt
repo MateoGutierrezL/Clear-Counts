@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Inicio
 
+import android.R
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
@@ -26,7 +27,9 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -56,6 +59,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.common.extensions.formatToSinglePrecision
+import co.yml.charts.ui.piechart.models.PieChartConfig
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import java.time.LocalDate
@@ -92,6 +109,11 @@ fun HomeScreen(
             item {
                 IngresosGastos()
             }
+
+            item {
+                GraficoLineChart()
+            }
+
             item {
                 Transacciones(
                     onVerTodoChange = {
@@ -125,22 +147,25 @@ fun HomeScreen(
                     )
                 }
             }
-            item {
-                contenidoAbajo() // Este contiene la parte de metas
-            }
         }
 
     ingresoSeleccionado?.let { ingreso ->
         DetalleIngresoPopup(
             ingreso = ingreso,
-            onDismiss = { ingresoSeleccionado = null }
+            onDismiss = { ingresoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteIncome(ingreso)
+            }
         )
     }
 
     gastoSeleccionado?.let { gasto ->
         DetalleGastoPopup(
             gasto = gasto,
-            onDismiss = { gastoSeleccionado = null }
+            onDismiss = { gastoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteExpense(gasto)
+            }
         )
     }
 }
@@ -148,7 +173,8 @@ fun HomeScreen(
 @Composable
 fun DetalleIngresoPopup(
     ingreso: IncomeEntity,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -166,6 +192,18 @@ fun DetalleIngresoPopup(
                 if (!ingreso.nota.isNullOrEmpty()) {
                     Text("Nota: ${ingreso.nota}")
                 }
+
+                Button(
+                    onClick = {
+                        onDelete()
+                        onDismiss()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null
+                    )
+                }
             }
         },
         shape = RoundedCornerShape(16.dp)
@@ -175,7 +213,8 @@ fun DetalleIngresoPopup(
 @Composable
 fun DetalleGastoPopup(
     gasto: ExpenseEntity,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -192,6 +231,18 @@ fun DetalleGastoPopup(
 
                 if (!gasto.nota.isNullOrEmpty()) {
                     Text("Nota: ${gasto.nota}")
+                }
+
+                Button(
+                    onClick = {
+                        onDelete()
+                        onDismiss()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null
+                    )
                 }
             }
         },
@@ -423,7 +474,7 @@ fun ItemGasto(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp).rotate(225f),
+                    modifier = Modifier.size(24.dp).rotate(45f),
                     tint = iconColor
                 )
             }
@@ -490,64 +541,67 @@ fun Transacciones(
 }
 
 @Composable
-fun GraficoBarras(
-    datos: List<Float>
-){
-    val maxValor = datos.maxOrNull() ?: 1f // Para normalizar la altura
+fun GraficoLineChart(){
 
-    Canvas(
+    val steps = 5
+
+    val pointsData: List<Point> =
+        listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f)
+        )
+
+    val xAxisData = AxisData.Builder()
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .axisStepSize(100.dp)
+        .backgroundColor(color = MaterialTheme.colorScheme.background)
+        .steps(pointsData.size - 1)
+        .labelData { i -> i.toString() }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .steps(steps)
+        .backgroundColor(color = MaterialTheme.colorScheme.background)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i ->
+            val yScale = 100 / steps
+            (i * yScale).formatToSinglePrecision()
+        }.build()
+
+    val lineChartData = LineChartData(
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(color = MaterialTheme.colorScheme.primaryContainer),
+                    IntersectionPoint(color = MaterialTheme.colorScheme.primaryContainer),
+                    SelectionHighlightPoint(color = MaterialTheme.colorScheme.onBackground),
+                    ShadowUnderLine(color = MaterialTheme.colorScheme.primaryContainer, alpha = 0.5f),
+                    SelectionHighlightPopUp()
+                )
+            ),
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = null,
+        backgroundColor = MaterialTheme.colorScheme.background
+    )
+
+    LineChart(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .padding(16.dp)
-    ) {
-        val anchoLienzo = size.width
-        val altoLienzo = size.height
-        val espacioEntreBarras = 20f
-        val anchoBarra = (anchoLienzo - (espacioEntreBarras * (datos.size - 1))) / datos.size
+            .height(300.dp)
+            .padding(2.dp),
+        lineChartData = lineChartData
+    )
 
-        datos.forEachIndexed { index, valor ->
-            // 1. Calcular la altura proporcional
-            val alturaBarra = (valor / maxValor) * altoLienzo
-
-            // 2. Dibujar el rectángulo
-            drawRect(
-                color = Color(0xFF3498DB),
-                topLeft = Offset(
-                    x = index * (anchoBarra + espacioEntreBarras),
-                    y = altoLienzo - alturaBarra // Invertir el eje Y
-                ),
-                size = Size(anchoBarra, alturaBarra)
-            )
-        }
-    }
 }
 
-@Composable
-fun LineChart(data: List<Float>) {
-    Canvas(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-        val path = Path()
-        val width = size.width
-        val height = size.height
-        val maxData = data.maxOrNull() ?: 1f
-        val minData = data.minOrNull() ?: 0f
-        val range = maxData - minData
-
-        // Calcular puntos y dibujar línea
-        data.forEachIndexed { index, value ->
-            val x = index * (width / (data.size - 1))
-            val y = height - ((value - minData) / range * height)
-            if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
-        }
-
-        drawPath(
-            path = path,
-            color = Color.Blue,
-            style = Stroke(width = 5f)
-        )
-    }
+fun Float.formatToSinglePrecision(): String {
+    return String.format("%.1f", this)
 }
-@Composable
-fun contenidoAbajo(){
 
+// O si el resultado de tu operación es Int, úsala sobre Floats:
+fun Number.formatToSinglePrecision(): String {
+    return "%.1f".format(this.toDouble())
 }

@@ -15,4 +15,6 @@ class OfflineIncomeRepository @Inject constructor(
         return incomeDao.getAllIncomes()
     }
 
+    override suspend fun deleteIncome(incomeEntity: IncomeEntity) = incomeDao.delete(incomeEntity)
+
 }
