@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -14,12 +15,16 @@ android {
 
     defaultConfig {
         applicationId = "com.example.clearcounts"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
     buildTypes {
@@ -44,6 +49,9 @@ android {
 }
 
 dependencies {
+
+    //Ycharts
+    implementation("co.yml:ycharts:2.1.0")
 
     // Hilt - Implementaciones
     implementation(libs.hilt.android)

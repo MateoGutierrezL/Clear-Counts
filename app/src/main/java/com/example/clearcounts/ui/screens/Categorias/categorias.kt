@@ -30,32 +30,9 @@ import com.example.clearcounts.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-data class categorias(
-    @DrawableRes val icono: Int,
-    @StringRes val nombre: Int
-)
-object DataSource{
-    val categoriasIngresos = mutableStateListOf(
-        categorias(R.drawable.comida,R.string.categoria_comida),
-        categorias(R.drawable.gasolina,R.string.categoria_gasolina),
-        categorias(R.drawable.comida,R.string.categoria_comida),
-        categorias(R.drawable.gasolina,R.string.categoria_gasolina),
-    )
-    val categoriasGastos = mutableStateListOf(
-        categorias(R.drawable.gasolina,R.string.categoria_gasolina),
-        categorias(R.drawable.comida,R.string.categoria_comida),
-        categorias(R.drawable.gasolina,R.string.categoria_gasolina),
-        categorias(R.drawable.comida,R.string.categoria_comida),
-
-    )
-}
-
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaItemIngresos(navController: NavController, categoria: categorias, sheetState: SheetState, ruta: String) {
+fun CategoriaItemIngresos(navController: NavController, categoria: Categorias, sheetState: SheetState, ruta: String) {
     val scope = rememberCoroutineScope()
     val nombreString = stringResource(id = categoria.nombre)
     Button(
@@ -101,7 +78,7 @@ fun CategoriaItemIngresos(navController: NavController, categoria: categorias, s
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaItemGastos(navController: NavController, categoria: categorias, sheetState: SheetState, ruta: String) {
+fun CategoriaItemGastos(navController: NavController, categoria: Categorias, sheetState: SheetState, ruta: String) {
     val scope = rememberCoroutineScope()
     val nombreString = stringResource(id = categoria.nombre)
     Button(

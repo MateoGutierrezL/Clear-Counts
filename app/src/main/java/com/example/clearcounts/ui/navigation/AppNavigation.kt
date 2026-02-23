@@ -1,5 +1,7 @@
 package com.example.clearcounts.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
@@ -33,7 +35,7 @@ import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
-import com.example.clearcounts.ui.screens.Categorias.ingresos
+import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.UserSessionViewModel
@@ -44,6 +46,7 @@ import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
@@ -257,6 +260,9 @@ fun AppNavigation(
                                 navigationController.popBackStack()
                             }
                         },
+                        botonCrearNavegacion = {
+                            navigationController.navigate(Pantallas.Inicio.pantalla)
+                        }
                     )
 
                 }

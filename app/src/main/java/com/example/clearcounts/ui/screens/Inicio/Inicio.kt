@@ -1,15 +1,12 @@
 package com.example.clearcounts.ui.screens.Inicio
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import android.R
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,485 +19,589 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.clearcounts.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.common.extensions.formatToSinglePrecision
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import com.example.clearcounts.data.database.entities.ExpenseEntity
+import com.example.clearcounts.data.database.entities.IncomeEntity
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(paddingValues: PaddingValues) { // paddingValues: PaddingValues
-        LazyColumn(
+fun HomeScreen(
+    paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel()
+) {
+
+    val listaMovimientos by viewModel.movimientosState.collectAsState()
+
+    val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM", Locale.forLanguageTag("es-ES"))
+
+    var fechaActual by remember { mutableStateOf(LocalDate.now().format(formatoFecha)) }
+
+    var ingresoSeleccionado by remember { mutableStateOf<IncomeEntity?>(null) }
+    var gastoSeleccionado by remember { mutableStateOf<ExpenseEntity?>(null) }
+
+    LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
         ) {
             item {
-                contenidoSuperior() // Este contiene la barra de progreso hasta la imagen de la mascota
+                Balance(
+                    fechaActual = fechaActual
+                )
             }
+
             item {
-                contenidoMedio() // Este contiene toda la parte de movimientos recientes
+                IngresosGastos()
             }
+
             item {
-                contenidoAbajo() // Este contiene la parte de metas
-            }
-        }
-
-
-
-}
-
-@Composable
-fun contenidoSuperior() {
-    val infiniteTransition = rememberInfiniteTransition(label = "ProgressAnimation")
-    val animatedProgress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3300, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ), label = "animatedProgress"
-    )
-
-    Column(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .width(382.dp)
-            .height(120.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Box(
-            modifier = Modifier
-                // CAMBIO: Fondo del contenedor a primaryContainer o primary
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .height(150.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 30.dp),
-                    text = "¡Vas muy bien!",
-                    style = MaterialTheme.typography.titleMedium,
-                    // CAMBIO: Color del texto para contrastar con primaryContainer
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    textAlign = TextAlign.Center
-                )
-                LinearProgressIndicator(
-                    progress = { animatedProgress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp)
-                        .padding(start = 30.dp, end = 30.dp)
-                        // CAMBIO: Borde que se adapte al tema (usa onPrimaryContainer)
-                        .border(BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer)),
-                    // CAMBIO: Color de la barra de progreso a primary
-                    color = MaterialTheme.colorScheme.primary,
-                    // CAMBIO: Color de fondo de la barra a surfaceVariant
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    strokeCap = StrokeCap.Butt,
-                )
-                Text(
-                    text = "${(animatedProgress * 100).toInt()}%",
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    // CAMBIO: Color del porcentaje para contrastar con primaryContainer
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    fontWeight = FontWeight.Bold
-                )
+                GraficoLineChart()
             }
 
-        }
-    }
-    // El Box y la Image no tenían colores fijos que cambiar, solo el fondo que es transparente por defecto.
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.perro_feliz),
-            contentDescription = "Logo de Clear Counts",
-            modifier = Modifier
-                .size(200.dp),
-            alignment = Alignment.Center
-        )
-    }
-}
-
-
-@Composable
-fun contenidoMedio() {
-    Column(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .width(382.dp),
-        ) {
-        Box(
-            modifier = Modifier
-                // CAMBIO: Fondo del contenedor a secondaryContainer
-                .background(MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .width(382.dp),
-
-                ) {
-                Text(
-                    text = "Movimientos recientes",
-                    textAlign = TextAlign.Start,
-                    // CAMBIO: Color del texto a onSecondaryContainer
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    textDecoration = TextDecoration.Underline
+            item {
+                Transacciones(
+                    onVerTodoChange = {
+                        //Todo funcion para implementar sobre el texto de ver todos en el inicio
+                    }
                 )
-
-                Row {
-                    Text(
-                        text = "10/09/2005",
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .padding(10.dp),
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+            }
+            items(
+                items = listaMovimientos,
+                // Clave única para que Compose no se confunda con IDs repetidos entre tablas
+                key = { item ->
+                    when (item) {
+                        is IncomeEntity -> "inc_${item.id}"
+                        is ExpenseEntity -> "exp_${item.id}"
+                        else -> item.hashCode()
+                    }
+                }
+            ) { movimiento ->
+                when (movimiento) {
+                    is IncomeEntity -> ItemIngreso(
+                        ingreso = movimiento,
+                        onPopUpIngreso = {
+                            ingresoSeleccionado = movimiento
+                        }
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                        text = buildAnnotatedString {
-                            // Gastos (Rojo)
-                            withStyle(style = SpanStyle(Color.Red)) {
-                                append("$340.000")
-                            }
-                            // Separador (Blanco, cambiado a onSecondaryContainer)
-                            withStyle(style = SpanStyle(MaterialTheme.colorScheme.onSecondaryContainer)) {
-                                append("/")
-                            }
-                            // Ingresos (Verde)
-                            withStyle(style = SpanStyle(Color.Green)) {
-                                append("$500.000")
-                            }
+                    is ExpenseEntity -> ItemGasto(
+                        gasto = movimiento,
+                        onPopUpGasto = {
+                            gastoSeleccionado = movimiento
                         }
                     )
                 }
+            }
+        }
 
-                // --- MOVIMIENTOS INDIVIDUALES ---
+    ingresoSeleccionado?.let { ingreso ->
+        DetalleIngresoPopup(
+            ingreso = ingreso,
+            onDismiss = { ingresoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteIncome(ingreso)
+            }
+        )
+    }
 
-                Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.ingresos),
-                        contentDescription = "Icono de la bolsa de monedas",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter para que la imagen se adapte si es un Vector
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Ingresos extra",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-                    )
-                    Text(
-                        text = "+$500.000",
-                        color = Color.Green, // Color fijo para montos positivos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
+    gastoSeleccionado?.let { gasto ->
+        DetalleGastoPopup(
+            gasto = gasto,
+            onDismiss = { gastoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteExpense(gasto)
+            }
+        )
+    }
+}
+
+@Composable
+fun DetalleIngresoPopup(
+    ingreso: IncomeEntity,
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Cerrar") }
+        },
+        title = { Text(text = "Detalle de Ingreso", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Text("Categoría: ${ingreso.categoria}")
+                Text("Monto: ${ingreso.cantidad}")
+                Text("Hora: ${ingreso.hora}")
+                Text("Fecha: ${ingreso.fecha}")
+
+                if (!ingreso.nota.isNullOrEmpty()) {
+                    Text("Nota: ${ingreso.nota}")
                 }
 
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gasolina),
-                        contentDescription = "Icono de la gasolina",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Gasolina",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$230.000",
-                        color = Color.Red, // Color fijo para montos negativos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.administracion),
-                        contentDescription = "Icono de la administracion",
-                        modifier = Modifier
-                            .size(90.dp)
-                        // CAMBIO: Agregar ColorFilter
-                        // .colorFilter(ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer))
-                    )
-                    Text(
-                        text = "Administracion",
-                        // CAMBIO: Color del texto a onSecondaryContainer
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$110.400",
-                        color = Color.Red, // Color fijo para montos negativos
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
+                Button(
+                    onClick = {
+                        onDelete()
+                        onDismiss()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null
                     )
                 }
             }
+        },
+        shape = RoundedCornerShape(16.dp)
+    )
+}
+
+@Composable
+fun DetalleGastoPopup(
+    gasto: ExpenseEntity,
+    onDismiss: () -> Unit,
+    onDelete: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Cerrar") }
+        },
+        title = { Text(text = "Detalle de Gasto", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Text("Categoría: ${gasto.categoria}")
+                Text("Monto: ${gasto.cantidad}")
+                Text("Hora: ${gasto.hora}")
+                Text("Fecha: ${gasto.fecha}")
+
+                if (!gasto.nota.isNullOrEmpty()) {
+                    Text("Nota: ${gasto.nota}")
+                }
+
+                Button(
+                    onClick = {
+                        onDelete()
+                        onDismiss()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        shape = RoundedCornerShape(16.dp)
+    )
+}
+
+@Composable
+fun Balance(
+    fechaActual: String
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 20.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(text = fechaActual, style = MaterialTheme.typography.bodyMedium)
+        }
+
+        Text(text = "Balance Total", style = MaterialTheme.typography.bodyLarge)
+
+        Text(
+            text = "2555,00 €",
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun IngresosGastos(){
+
+    Row(modifier =
+        Modifier.fillMaxWidth()
+        .padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        ItemFinanciero(
+            titulo = "Ingresos",
+            monto = "3200,00 €",
+            icono = Icons.AutoMirrored.Default.TrendingUp,
+            modifier = Modifier.weight(1f),
+            tint = Color(0xFF2ECC71)
+        )
+
+        ItemFinanciero(
+            titulo = "Gastos",
+            monto = "645,00 €",
+            icono = Icons.AutoMirrored.Default.TrendingDown,
+            modifier = Modifier.weight(1f),
+            tint = Color(0xFFE74C3C)
+        )
+    }
+}
+
+@Composable
+fun ItemFinanciero(
+    titulo: String,
+    monto: String,
+    icono: ImageVector,
+    modifier: Modifier = Modifier,
+    tint: Color
+) {
+    Column(
+        modifier = modifier
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+             Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Black.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(imageVector = icono, contentDescription = null, modifier = Modifier.size(20.dp), tint = tint)
+            }
+            Text(text = titulo, style = MaterialTheme.typography.bodyMedium)
+        }
+
+        Text(
+            text = monto,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun ItemIngreso(
+    ingreso: IncomeEntity,
+    onPopUpIngreso:() -> Unit
+){
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable{
+                onPopUpIngreso()
+            },
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            val containerColor = Color.Black.copy(alpha = 0.1f)
+            val iconColor =  Color(0xFF2ECC71)
+            val icon = Icons.Default.ArrowUpward
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(containerColor),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp).rotate(45f),
+                    tint = iconColor
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = ingreso.categoria,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (!ingreso.nota.isNullOrBlank()){
+                    Text(
+                        text = ingreso.nota,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "+${ingreso.cantidad.toInt()}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFF2ECC71),
+                textAlign = TextAlign.End
+            )
         }
     }
 }
 
-
-
-/*
 @Composable
-fun contenidoSuperior() {
-    val infiniteTransition = rememberInfiniteTransition()
-    val animatedProgress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3300, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+fun ItemGasto(
+    gasto: ExpenseEntity,
+    onPopUpGasto: () -> Unit
+){
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable{
+                onPopUpGasto()
+            },
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            val containerColor = Color.Black.copy(alpha = 0.1f)
+            val iconColor =  Color(0xFFE74C3C)
+            val icon = Icons.Default.ArrowDownward
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(containerColor),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp).rotate(45f),
+                    tint = iconColor
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = gasto.categoria,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (!gasto.nota.isNullOrBlank()){
+                    Text(
+                        text = gasto.nota,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "-${gasto.cantidad.toInt()}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color(0xFFE74C3C),
+                textAlign = TextAlign.End
+            )
+        }
+    }
+}
+
+@Composable
+fun Transacciones(
+    onVerTodoChange:() -> Unit
+){
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Transacciones",
+            style = MaterialTheme.typography.titleMedium
         )
+
+        Text(
+            modifier = Modifier.clickable{
+                onVerTodoChange()
+            },
+            text = "Ver todas",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.ExtraBold,
+            textAlign = TextAlign.End
+        )
+    }
+}
+
+@Composable
+fun GraficoLineChart(){
+
+    val steps = 5
+
+    val pointsData: List<Point> =
+        listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f)
+        )
+
+    val xAxisData = AxisData.Builder()
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .axisStepSize(100.dp)
+        .backgroundColor(color = MaterialTheme.colorScheme.background)
+        .steps(pointsData.size - 1)
+        .labelData { i -> i.toString() }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .steps(steps)
+        .backgroundColor(color = MaterialTheme.colorScheme.background)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i ->
+            val yScale = 100 / steps
+            (i * yScale).formatToSinglePrecision()
+        }.build()
+
+    val lineChartData = LineChartData(
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(color = MaterialTheme.colorScheme.primaryContainer),
+                    IntersectionPoint(color = MaterialTheme.colorScheme.primaryContainer),
+                    SelectionHighlightPoint(color = MaterialTheme.colorScheme.onBackground),
+                    ShadowUnderLine(color = MaterialTheme.colorScheme.primaryContainer, alpha = 0.5f),
+                    SelectionHighlightPopUp()
+                )
+            ),
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = null,
+        backgroundColor = MaterialTheme.colorScheme.background
     )
 
-    Column(
+    LineChart(
         modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .width(382.dp)
-            .height(120.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Box(
-            modifier = Modifier
-                .background(AzulEncabezado)
-                .height(150.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 30.dp),
-                    text = "¡Vas muy bien!",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = blanco,
-                    textAlign = TextAlign.Center
-
-                )
-                LinearProgressIndicator(
-                    progress = { animatedProgress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp)
-                        .padding(start = 30.dp, end = 30.dp)
-                        .border(BorderStroke(1.dp, negro)),
-                    color = negro,
-                    trackColor = AzulBotones,
-                    strokeCap = StrokeCap.Butt,
-                )
-                Text(
-                    text = "${(animatedProgress * 100).toInt()}%",
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    color = negro,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-        }
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.perro_feliz),
-            contentDescription = "Logo de Clear Counts",
-            modifier = Modifier
-                .size(200.dp),
-            alignment = Alignment.Center
-        )
-    }
+            .fillMaxWidth()
+            .height(300.dp)
+            .padding(2.dp),
+        lineChartData = lineChartData
+    )
 
 }
 
-@Preview
-@Composable
-fun contenidoMedio() {
+fun Float.formatToSinglePrecision(): String {
+    return String.format("%.1f", this)
+}
 
-    Column(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .width(382.dp),
-
-        ) {
-        Box(
-            modifier = Modifier
-                .background(AzulEncabezado)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .width(382.dp),
-
-                ) {
-                Text(
-                    text = "Movimientos recientes",
-                    textAlign = TextAlign.Start,
-                    color = blanco,
-                    textDecoration = TextDecoration.Underline
-                )
-
-                Row {
-                    Text(
-                        text = "10/09/2005",
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .padding(10.dp),
-                        color = blanco
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(Color.Red)) {
-                                append("$340.000")
-                            }
-                            withStyle(style = SpanStyle(Color.White)) {
-                                append("/")
-                            }
-                            withStyle(style = SpanStyle(Color.Green)) {
-                                append("$500.000")
-                            }
-                        }
-                    )
-                }
-                Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.ingresos),
-                        contentDescription = "Icono de la bolsa de monedas",
-                        modifier = Modifier
-                            .size(90.dp)
-                    )
-                    Text(
-                        text = "Ingresos extra",
-                        color = blanco,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-                    )
-                    Text(
-                        text = "+$500.000",
-                        color = Color.Green,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.gasolina),
-                        contentDescription = "Icono de la gasolina",
-                        modifier = Modifier
-                            .size(90.dp)
-                    )
-                    Text(
-                        text = "Gasolina",
-                        color = blanco,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$230.000",
-                        color = Color.Red,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-                Row(modifier = Modifier.padding(top = 20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.administracion),
-                        contentDescription = "Icono de la administracion",
-                        modifier = Modifier
-                            .size(90.dp)
-                    )
-                    Text(
-                        text = "Administracion",
-                        color = blanco,
-                        modifier = Modifier
-                            .padding(top = 30.dp, start = 7.dp)
-
-                    )
-                    Text(
-                        text = "-$110.400",
-                        color = Color.Red,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp)
-                    )
-                }
-            }
-        }
-    }
-} */
-
-@Composable
-fun contenidoAbajo(){
-
+// O si el resultado de tu operación es Int, úsala sobre Floats:
+fun Number.formatToSinglePrecision(): String {
+    return "%.1f".format(this.toDouble())
 }

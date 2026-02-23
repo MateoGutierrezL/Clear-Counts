@@ -33,7 +33,7 @@ fun TopBar(
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             scrolledContainerColor = MaterialTheme.colorScheme.primary
         ),
         scrollBehavior = null,
@@ -44,7 +44,7 @@ fun TopBar(
             ) {
                 Text(
                     text = "Clear Counts",
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -55,7 +55,7 @@ fun TopBar(
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Menu Drawer",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },
@@ -72,7 +72,7 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.customer_service),
                     contentDescription = "preguntas y comentarios",
                     modifier = Modifier.size(30.dp),
-                    tint = if (selectedIcon.value == "pqr") Color.White else MaterialTheme.colorScheme.onPrimary
+                    tint = if (selectedIcon.value == "pqr") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -87,7 +87,7 @@ fun TopBar(
                     painter = painterResource(id = R.drawable.notification),
                     contentDescription = "Notificaciones",
                     modifier = Modifier.size(30.dp),
-                    tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimary
+                    tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }

@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.screens.Categorias
+package com.example.clearcounts.ui.screens.IngresosGastos
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
@@ -60,11 +60,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.clearcounts.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.data.ExpenseRepository
+import com.example.clearcounts.data.database.entities.ExpenseEntity
+import com.example.clearcounts.data.database.entities.IncomeEntity
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -82,10 +85,10 @@ fun ingresos(
     ruta: String,
     icono: Int,
     nombre: String,
-    botonVolver:() -> Unit
+    botonVolver:() -> Unit,
+    viewModel: IngresosGastosViewModel = hiltViewModel(),
+    botonCrearNavegacion:() -> Unit
 ){
-
-
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
@@ -253,7 +256,37 @@ fun ingresos(
         ){
             Column {
                 BotonesInferiores(
-                    onCancelChange = botonVolver
+                    onCancelChange = botonVolver,
+                    onCreateChange = {
+
+                        if (cantidad.isNotBlank() && cantidad.toDoubleOrNull() != null) {
+
+                            val onSuccess = { botonCrearNavegacion() }
+
+                            if (ruta == "ingreso") {
+                                val newIncome = IncomeEntity(
+                                    id = 0,
+                                    categoria = nombre,
+                                    cantidad = cantidad.toDouble(),
+                                    hora = horaSeleccionadaState,
+                                    fecha = fechaSeleccionadaState,
+                                    nota = nota
+                                )
+                                viewModel.insertIncome(newIncome, onSuccess)
+                            } else {
+                                val newExpense = ExpenseEntity(
+                                    id = 0,
+                                    categoria = nombre,
+                                    cantidad = cantidad.toDouble(),
+                                    hora = horaSeleccionadaState,
+                                    fecha = fechaSeleccionadaState,
+                                    nota = nota
+                                )
+                                viewModel.insertExpense(newExpense, onSuccess)
+                            }
+                        }
+
+                    }
                 )
             }
 
@@ -473,12 +506,15 @@ fun CampoDiasDesplegable(
 
 @Composable
 fun BotonesInferiores(
-    onCancelChange:() -> Unit
+    onCancelChange:() -> Unit,
+    onCreateChange:() -> Unit
 ){
 
     Button(
         modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
-        onClick = {},
+        onClick = {
+            onCreateChange()
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary)
     ) {
@@ -655,7 +691,7 @@ fun DatePickerDialogComposable(
 ) {
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = java.time.Instant.now().toEpochMilli()
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
 
     DatePickerDialog(
@@ -665,7 +701,7 @@ fun DatePickerDialogComposable(
                 // ... (Lógica de conversión y onConfirm) ...
                 val selectedMillis = datePickerState.selectedDateMillis
                 if (selectedMillis != null) {
-                    val selectedDate = java.time.Instant.ofEpochMilli(selectedMillis)
+                    val selectedDate = Instant.ofEpochMilli(selectedMillis)
                         .atZone(ZoneId.of("UTC"))
                         .toLocalDate()
                     onConfirm(selectedDate)

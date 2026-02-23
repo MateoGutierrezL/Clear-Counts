@@ -3,6 +3,7 @@ package com.example.clearcounts.di
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.clearcounts.data.database.UserDatabase
 import dagger.Module
 import dagger.Provides
@@ -21,12 +22,22 @@ object RoomModule {
     @Provides
     fun provideRoom(@ApplicationContext context: Context) =
         Room.databaseBuilder(
-            context,
-            UserDatabase::class.java,
-            USER_DATABASE_NAME
-        ).build()
+                context,
+                UserDatabase::class.java,
+                USER_DATABASE_NAME
+            ).fallbackToDestructiveMigration()
+            .build()
 
     @Singleton
     @Provides
     fun provideUserDao(db: UserDatabase) = db.getUserDao()
+
+    @Singleton
+    @Provides
+    fun provideIncomeDao(db: UserDatabase) = db.getIncomeDao()
+
+    @Singleton
+    @Provides
+    fun provideExpenseDao(db: UserDatabase) = db.getExpenseDao()
+
 }
