@@ -19,9 +19,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import com.example.clearcounts.ui.theme.AzulBotones
+
 
 @Composable
 fun NavigationDrawer(
@@ -99,7 +101,6 @@ fun NavigationDrawer(
     }
 
     Column {
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(

@@ -26,9 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.clearcounts.R
-import com.example.clearcounts.data.UserRepository
 import com.example.clearcounts.ui.screens.Presupuesto
 import com.example.clearcounts.ui.screens.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
@@ -40,12 +38,10 @@ import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentar
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
+import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +73,11 @@ fun AppNavigation(
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
-                        DrawerItem.EXPORT_PDF -> {}
+                        DrawerItem.EXPORT_PDF -> {
+                            navigationController.navigate(Pantallas.Pdf.pantalla) {
+                                popUpTo(0)
+                            }
+                        }
                         DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {}
                         DrawerItem.TUTORIAL -> {}
@@ -259,6 +259,15 @@ fun AppNavigation(
                         },
                     )
 
+                }
+                composable(Pantallas.Pdf.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+                    PantallaExportarGrafico()
                 }
 
             }
