@@ -55,6 +55,7 @@ dependencies {
 
     // Hilt - Implementaciones
     implementation(libs.hilt.android)
+    implementation(libs.foundation)
     ksp(libs.hilt.compiler)
 
     // Room - Implementaciones
@@ -90,6 +91,7 @@ dependencies {
     implementation("com.facebook.android:facebook-login:latest.release")
 
    //ggg
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.core.ktx)
