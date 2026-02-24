@@ -159,7 +159,7 @@ fun PantallaExportarGrafico(
 
                         ItemFinanciero(
                             titulo = "Ingresos",
-                            monto = "$ingresosTotales",
+                            monto = "${ingresosTotales.toInt()}",
                             icono = Icons.AutoMirrored.Default.TrendingUp,
                             modifier = Modifier.weight(1f),
                             tint = Color(0xFF2ECC71)
@@ -167,7 +167,7 @@ fun PantallaExportarGrafico(
 
                         ItemFinanciero(
                             titulo = "Gastos",
-                            monto = "$gastosTotales",
+                            monto = "${gastosTotales.toInt()}",
                             icono = Icons.AutoMirrored.Default.TrendingDown,
                             modifier = Modifier.weight(1f),
                             tint = Color(0xFFE74C3C)
@@ -388,7 +388,7 @@ fun ListaSelector(
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = if (isSelected) 22.sp else 16.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
                     ),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )

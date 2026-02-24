@@ -12,4 +12,6 @@ interface ExpenseRepository {
 
     suspend fun deleteExpense(expenseEntity: ExpenseEntity)
 
+    fun totalExpense(): Flow<Double?>
+
 }

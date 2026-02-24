@@ -17,5 +17,8 @@ class OfflineExpenseRepository @Inject constructor(
     }
 
     override suspend fun deleteExpense(expenseEntity: ExpenseEntity) = expenseDao.delete(expenseEntity)
+    override fun totalExpense(): Flow<Double?> {
+        return expenseDao.getTotalExpense()
+    }
 
 }

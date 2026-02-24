@@ -17,4 +17,8 @@ class OfflineIncomeRepository @Inject constructor(
 
     override suspend fun deleteIncome(incomeEntity: IncomeEntity) = incomeDao.delete(incomeEntity)
 
+    override fun totalIncome(): Flow<Double?> {
+        return incomeDao.getTotalIncome()
+    }
+
 }

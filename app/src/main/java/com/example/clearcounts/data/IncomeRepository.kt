@@ -11,4 +11,6 @@ interface IncomeRepository {
 
     suspend fun deleteIncome(incomeEntity: IncomeEntity)
 
+    fun totalIncome(): Flow<Double?>
+
 }

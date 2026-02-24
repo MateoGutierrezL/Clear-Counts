@@ -21,4 +21,7 @@ interface IncomeDao {
     @Delete
     suspend fun delete(incomeEntity: IncomeEntity)
 
+    @Query("SELECT SUM(cantidad) FROM ingreso")
+    fun getTotalIncome(): Flow<Double?>
+
 }

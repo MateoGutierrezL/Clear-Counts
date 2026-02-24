@@ -21,4 +21,7 @@ interface ExpenseDao {
     @Delete
     suspend fun delete(expenseEntity: ExpenseEntity)
 
+    @Query("SELECT SUM(cantidad) FROM gasto")
+    fun getTotalExpense(): Flow<Double?>
+
 }

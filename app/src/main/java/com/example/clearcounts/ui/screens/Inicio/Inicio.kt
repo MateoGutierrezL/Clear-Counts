@@ -1,9 +1,7 @@
 package com.example.clearcounts.ui.screens.Inicio
 
-import android.R
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,13 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -62,7 +56,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
 import co.yml.charts.ui.linechart.model.LineChartData
@@ -71,8 +64,6 @@ import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
-import co.yml.charts.common.extensions.formatToSinglePrecision
-import co.yml.charts.ui.piechart.models.PieChartConfig
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import java.time.LocalDate
@@ -95,6 +86,10 @@ fun HomeScreen(
     var ingresoSeleccionado by remember { mutableStateOf<IncomeEntity?>(null) }
     var gastoSeleccionado by remember { mutableStateOf<ExpenseEntity?>(null) }
 
+    val totalIngreso by viewModel.totalIngresoSum.collectAsState()
+
+    val totalGasto by viewModel.totalGastoSum.collectAsState()
+
     LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -102,12 +97,16 @@ fun HomeScreen(
         ) {
             item {
                 Balance(
-                    fechaActual = fechaActual
+                    fechaActual = fechaActual,
+                    balance = "${(totalIngreso-totalGasto).toInt()}"
                 )
             }
 
             item {
-                IngresosGastos()
+                IngresosGastos(
+                    totalIngreso = "${totalIngreso.toInt()}",
+                    totalGasto = "${totalGasto.toInt()}"
+                )
             }
 
             item {
@@ -252,7 +251,8 @@ fun DetalleGastoPopup(
 
 @Composable
 fun Balance(
-    fechaActual: String
+    fechaActual: String,
+    balance: String
 ) {
 
     Column(
@@ -279,7 +279,7 @@ fun Balance(
         Text(text = "Balance Total", style = MaterialTheme.typography.bodyLarge)
 
         Text(
-            text = "2555,00 €",
+            text = balance,
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold
         )
@@ -287,7 +287,10 @@ fun Balance(
 }
 
 @Composable
-fun IngresosGastos(){
+fun IngresosGastos(
+    totalIngreso: String,
+    totalGasto: String,
+){
 
     Row(modifier =
         Modifier.fillMaxWidth()
@@ -297,7 +300,7 @@ fun IngresosGastos(){
 
         ItemFinanciero(
             titulo = "Ingresos",
-            monto = "3200,00 €",
+            monto = totalIngreso,
             icono = Icons.AutoMirrored.Default.TrendingUp,
             modifier = Modifier.weight(1f),
             tint = Color(0xFF2ECC71)
@@ -305,7 +308,7 @@ fun IngresosGastos(){
 
         ItemFinanciero(
             titulo = "Gastos",
-            monto = "645,00 €",
+            monto = totalGasto,
             icono = Icons.AutoMirrored.Default.TrendingDown,
             modifier = Modifier.weight(1f),
             tint = Color(0xFFE74C3C)
@@ -541,12 +544,21 @@ fun Transacciones(
 }
 
 @Composable
-fun GraficoLineChart(){
+fun GraficoLineChart(
+    pointsData: List<Point>
+){
+
+    Text(
+        text = "Últimos 7 días",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+    )
 
     val steps = 5
 
     val pointsData: List<Point> =
-        listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f)
+        listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f),
+            Point(5f, 0f), Point(6f, 60f), Point(7f, 10f)
         )
 
     val xAxisData = AxisData.Builder()
