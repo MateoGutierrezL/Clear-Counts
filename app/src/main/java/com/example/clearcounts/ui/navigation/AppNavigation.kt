@@ -35,6 +35,7 @@ import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
+import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
@@ -75,7 +76,10 @@ fun AppNavigation(
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
-                        DrawerItem.EXPORT_PDF -> {}
+                        DrawerItem.EXPORT_PDF -> {
+
+                            navigationController.navigate(Pantallas.Exportar.pantalla)
+                        }
                         DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {}
                         DrawerItem.TUTORIAL -> {}
@@ -215,6 +219,17 @@ fun AppNavigation(
                             }
                         }
                     )
+                }
+
+                composable(Pantallas.Exportar.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    PantallaExportarGrafico()
                 }
 
                 composable(Pantallas.Notificaciones.pantalla) {
