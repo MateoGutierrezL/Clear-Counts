@@ -173,7 +173,11 @@ fun PantallaExportarGrafico(
                             tint = Color(0xFFE74C3C)
                         )
                     }
+                    /*
+
                     GraficoLineChart()
+
+                     */
                 }
 
 

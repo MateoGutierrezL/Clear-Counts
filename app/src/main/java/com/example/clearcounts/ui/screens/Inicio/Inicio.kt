@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
 import co.yml.charts.ui.linechart.model.LineChartData
@@ -66,16 +68,21 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.facebook.internal.Utility.locale
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel()
 ) {
+
+    val formatter = NumberFormat.getInstance(Locale.forLanguageTag("es-ES")).apply {
+        maximumFractionDigits = 0
+    }
 
     val listaMovimientos by viewModel.movimientosState.collectAsState()
 
@@ -90,27 +97,39 @@ fun HomeScreen(
 
     val totalGasto by viewModel.totalGastoSum.collectAsState()
 
+    val chartData by viewModel.chartDataState.collectAsState()
+
     LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
         ) {
             item {
+                val balance = (totalIngreso-totalGasto).toInt()
+
                 Balance(
                     fechaActual = fechaActual,
-                    balance = "${(totalIngreso-totalGasto).toInt()}"
+                    balance = formatter.format(balance)
                 )
             }
 
             item {
+                val totalIngreso = totalIngreso.toInt()
+                val totalGasto = totalGasto.toInt()
+
                 IngresosGastos(
-                    totalIngreso = "${totalIngreso.toInt()}",
-                    totalGasto = "${totalGasto.toInt()}"
+                    totalIngreso = formatter.format(totalIngreso),
+                    totalGasto = formatter.format(totalGasto)
                 )
             }
 
             item {
-                GraficoLineChart()
+                Text(
+                    text = "Últimos 7 días",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+                GraficoLineChart(data = chartData)
             }
 
             item {
@@ -544,69 +563,69 @@ fun Transacciones(
 }
 
 @Composable
-fun GraficoLineChart(
-    pointsData: List<Point>
-){
+fun GraficoLineChart(data: Triple<List<Point>, List<String>, List<Float>>) {
+    val pointsData = data.first
+    val labelsX = data.second
+    val yValues = data.third
 
-    Text(
-        text = "Últimos 7 días",
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-    )
+    if (pointsData.isEmpty()) return
 
-    val steps = 5
+    val locale = Locale.forLanguageTag("es-ES")
+    val currencyFormat = NumberFormat.getInstance(locale).apply {
+        maximumFractionDigits = 0
+    }
 
-    val pointsData: List<Point> =
-        listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f),
-            Point(5f, 0f), Point(6f, 60f), Point(7f, 10f)
-        )
+    // CALCULAMOS EL RANGO REAL
+    val minY = yValues.first()
+    val maxY = yValues.last()
 
-    val xAxisData = AxisData.Builder()
-        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
-        .axisStepSize(100.dp)
-        .backgroundColor(color = MaterialTheme.colorScheme.background)
-        .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
-        .labelAndAxisLinePadding(15.dp)
-        .build()
+    // Usaremos 4 o 5 pasos fijos para que el eje Y sea limpio
+    val steps = 4
 
     val yAxisData = AxisData.Builder()
         .axisLabelColor(MaterialTheme.colorScheme.onBackground)
         .steps(steps)
-        .backgroundColor(color = MaterialTheme.colorScheme.background)
         .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
-            val yScale = 100 / steps
-            (i * yScale).formatToSinglePrecision()
-        }.build()
+            // Calculamos etiquetas proporcionales para que solo haya un 0
+            val range = maxY - minY
+            val value = minY + (i * (range / steps))
+            currencyFormat.format(value.toInt())
+        }
+        .build()
+
+    val xAxisData = AxisData.Builder()
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .axisStepSize(85.dp)
+        .steps(pointsData.size - 1)
+        .labelData { i -> labelsX.getOrElse(i) { "" } }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
 
     val lineChartData = LineChartData(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
                     dataPoints = pointsData,
-                    LineStyle(color = MaterialTheme.colorScheme.primaryContainer),
-                    IntersectionPoint(color = MaterialTheme.colorScheme.primaryContainer),
+                    lineStyle = LineStyle(color = MaterialTheme.colorScheme.primaryContainer),
+                    intersectionPoint = IntersectionPoint(color = MaterialTheme.colorScheme.primaryContainer),
                     SelectionHighlightPoint(color = MaterialTheme.colorScheme.onBackground),
                     ShadowUnderLine(color = MaterialTheme.colorScheme.primaryContainer, alpha = 0.5f),
-                    SelectionHighlightPopUp()
+                    selectionHighlightPopUp = SelectionHighlightPopUp(
+                        popUpLabel = { _, y -> "${y.toInt()}" }
+                    )
                 )
             ),
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        gridLines = null,
-        backgroundColor = MaterialTheme.colorScheme.background
+        backgroundColor = MaterialTheme.colorScheme.surface
     )
 
     LineChart(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .padding(2.dp),
+        modifier = Modifier.fillMaxWidth().height(300.dp),
         lineChartData = lineChartData
     )
-
 }
 
 fun Float.formatToSinglePrecision(): String {

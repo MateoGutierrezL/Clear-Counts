@@ -24,6 +24,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.collections.emptyList
 
 @HiltViewModel
 class InicioViewModel @Inject constructor(
@@ -31,7 +32,6 @@ class InicioViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository
 ): ViewModel(){
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val movimientosState: StateFlow<List<Any>> = combine(
         incomeRepository.getAllIncomes(),
         expenseRepository.getAllExpenses()
@@ -54,7 +54,6 @@ class InicioViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun combinarFechaHora(fecha: String, hora: String): LocalDateTime {
         return try {
             val formatterFecha = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -107,4 +106,53 @@ class InicioViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0.0
         )
+    // En tu InicioViewModel
+    private val dbFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    // Formato: "feb. 20" (MMM para mes abreviado, dd para día)
+    private val axisFormatter = DateTimeFormatter.ofPattern("MMM dd", Locale("es", "ES"))
+
+    val chartDataState = movimientosState.map { movimientos ->
+        val hoy = LocalDate.now()
+        val points = mutableListOf<Point>()
+        val labelsX = mutableListOf<String>()
+
+        // Generar últimos 7 días de más antiguo a más reciente
+        val ultimos7Dias = (0..6).map { hoy.minusDays(it.toLong()) }.reversed()
+
+        ultimos7Dias.forEachIndexed { index, fecha ->
+            val fechaStringDB = fecha.format(dbFormatter)
+
+            // Balance Neto: Suma ingresos (+) y resta gastos (-)
+            val balanceDia = movimientos.filter { mov ->
+                when (mov) {
+                    is IncomeEntity -> mov.fecha == fechaStringDB
+                    is ExpenseEntity -> mov.fecha == fechaStringDB
+                    else -> false
+                }
+            }.sumOf { mov ->
+                when (mov) {
+                    is IncomeEntity -> mov.cantidad
+                    is ExpenseEntity -> -mov.cantidad
+                    else -> 0.0
+                }
+            }
+
+            points.add(Point(index.toFloat(), balanceDia.toFloat()))
+            labelsX.add(fecha.format(axisFormatter).replaceFirstChar { it.lowercase() })
+        }
+
+        // Valores únicos para el eje Y (ordenados para que el eje sea coherente)
+        val uniqueYValues = points.map { it.y }.toMutableList().apply {
+            if (!contains(0f)) add(0f)
+        }.distinct().sorted()
+
+        val minY = uniqueYValues.firstOrNull() ?: 0f
+        val maxY = uniqueYValues.lastOrNull() ?: 100f
+
+        Triple(points, labelsX, uniqueYValues)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        Triple(emptyList<Point>(), emptyList<String>(), emptyList<Float>())
+    )
 }
