@@ -40,8 +40,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.ui.screens.Graficas
-import com.example.clearcounts.ui.screens.Inicio.GraficoLineChart
 import com.example.clearcounts.ui.screens.Inicio.ItemFinanciero
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

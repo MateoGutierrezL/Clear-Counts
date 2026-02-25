@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Presupuesto
-import com.example.clearcounts.ui.screens.Graficas
+import com.example.clearcounts.ui.screens.graficas.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
