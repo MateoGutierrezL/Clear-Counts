@@ -1,11 +1,16 @@
 package com.example.clearcounts.di
 
+import com.example.clearcounts.data.CategoryRepository
 import com.example.clearcounts.data.ExpenseRepository
 import com.example.clearcounts.data.IncomeRepository
+import com.example.clearcounts.data.OfflineCategoryRepository
 import com.example.clearcounts.data.OfflineExpenseRepository
 import com.example.clearcounts.data.OfflineIncomeRepository
 import com.example.clearcounts.data.OfflineUserRepository
 import com.example.clearcounts.data.UserRepository
+import com.example.clearcounts.data.database.UserDatabase
+import com.google.firebase.sessions.dagger.Provides
+
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +38,12 @@ abstract class RepositoryModule {
     abstract fun bindExpenseRepository(
         offlineExpenseRepository: OfflineExpenseRepository
     ): ExpenseRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(
+        offlineCategoryRepository: OfflineCategoryRepository
+    ): CategoryRepository
+
+
 }

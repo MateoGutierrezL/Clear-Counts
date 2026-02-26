@@ -35,6 +35,7 @@ import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
+import com.example.clearcounts.ui.screens.Categorias.crearCategoria
 import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
@@ -194,7 +195,7 @@ fun AppNavigation(
 
                     EditarPerfil(
                         botonVolver = {
-                            if (navigationController.previousBackStackEntry != null){
+                            if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
                             }
                         },
@@ -214,7 +215,7 @@ fun AppNavigation(
 
                     PreguntasComentarios(
                         botonVolver = {
-                            if (navigationController.previousBackStackEntry != null){
+                            if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
                             }
                         }
@@ -247,18 +248,18 @@ fun AppNavigation(
                     route = "{ruta}/{icono}/{nombre}",
                     arguments = listOf(
                         navArgument("ruta") { type = NavType.StringType },
-                        navArgument("icono") { type = NavType.IntType },
+                        navArgument("icono") { type = NavType.StringType },
                         navArgument("nombre") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
                     val ruta = backStackEntry.arguments?.getString("ruta") ?: "ingresos"
-                    val icono = backStackEntry.arguments?.getInt("icono") ?: 0
+                    val icono = backStackEntry.arguments?.getString("icono") ?: ""
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false
                         topBarVisible.value = false
-                        onDispose {  }
+                        onDispose { }
                     }
 
                     ingresos(
@@ -266,7 +267,7 @@ fun AppNavigation(
                         icono = icono,
                         nombre = nombre,
                         botonVolver = {
-                            if (navigationController.previousBackStackEntry != null){
+                            if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
                             }
                         },
@@ -276,6 +277,23 @@ fun AppNavigation(
                     )
 
                 }
+
+                composable(
+                    route = "crearCategoria/{tipo}",
+                    arguments = listOf(navArgument("tipo") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val tipo = backStackEntry.arguments?.getString("tipo") ?: "ingreso"
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    crearCategoria(
+                        tipo = tipo,
+                        botonVolver = { navigationController.popBackStack() }
+                    )
+                }
+
 
             }
         }

@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Barras
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,18 +46,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.clearcounts.R
-import com.example.clearcounts.ui.screens.Categorias.CategoriaItemGastos
-import com.example.clearcounts.ui.screens.Categorias.CategoriaItemIngresos
-import com.example.clearcounts.ui.screens.Categorias.DataSource
+import com.example.clearcounts.ui.screens.Categorias.CategoriasItem
+import com.example.clearcounts.ui.screens.Categorias.CategoriasViewModel
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomBottomAppBar(
     selectedIcon: MutableState<String>, // Cambiado a String para identificar iconos
-    navigationController: NavHostController
+    navigationController: NavHostController,
+    categoriasViewModel: CategoriasViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current.applicationContext
 
@@ -160,6 +165,7 @@ fun CustomBottomAppBar(
                 onDismissRequest = {
                     isSheetOpen = false
                 },
+
             ) {
                 var ingreso by rememberSaveable {
                     mutableStateOf(true)
@@ -167,6 +173,8 @@ fun CustomBottomAppBar(
                 var gasto by rememberSaveable {
                     mutableStateOf(false)
                 }
+                val gastos by categoriasViewModel.gastos.collectAsState()
+                val ingresos by categoriasViewModel.ingresos.collectAsState()
                 val colorTextoIngreso = if (isSystemInDarkTheme()) {
                     if (ingreso) MaterialTheme.colorScheme.primary else Color.Black
                 } else {
@@ -177,7 +185,7 @@ fun CustomBottomAppBar(
                 } else {
                     if (gasto) Color.Black else Color.Black
                 }
-
+                Log.d("DEBUG", "Gastos: ${gastos.size}, Ingresos: ${ingresos.size}")
 
                 Box(
                     modifier = Modifier
@@ -234,7 +242,8 @@ fun CustomBottomAppBar(
                                     modifier = Modifier
                                         .width(60.dp),
                                     onClick = {
-                                        // Futura navegacion a la pantalla de gastos o ingresos
+                                        val tipo = if (ingreso) "ingreso" else "gasto"
+                                        navigationController.navigate("crearCategoria/$tipo")
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -262,13 +271,8 @@ fun CustomBottomAppBar(
                                         modifier = Modifier
                                             .width(362.dp)
                                     ) {
-                                        DataSource.categoriasIngresos.forEach { categoria ->
-                                            CategoriaItemIngresos(
-                                                navController = navigationController,
-                                                categoria = categoria,
-                                                sheetState = sheetState,
-                                                ruta = "ingreso"
-                                            )
+                                        ingresos.forEach { categoria ->
+                                            CategoriasItem(navigationController, categoria, sheetState, "ingreso")
                                         }
                                     }
                                 }
@@ -283,13 +287,8 @@ fun CustomBottomAppBar(
                                         modifier = Modifier
                                             .width(362.dp)
                                     ) {
-                                        DataSource.categoriasGastos.forEach { categoria ->
-                                            CategoriaItemGastos(
-                                                navController = navigationController,
-                                                categoria = categoria,
-                                                sheetState = sheetState,
-                                                ruta = "gasto"
-                                            )
+                                        gastos.forEach { categoria ->
+                                            CategoriasItem(navigationController, categoria, sheetState, "gasto")
                                         }
                                     }
                                 }
@@ -386,4 +385,6 @@ fun CustomBottomAppBar(
         )
     }
 }
+
+
 
