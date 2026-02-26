@@ -57,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -74,6 +75,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.example.clearcounts.R
 
 const val MAX_LENGHT_OF_AMOUNT = 10
 const val MAX_LENGHT_OF_NOTE = 200
@@ -83,7 +85,7 @@ const val MAX_LENGHT_OF_NOTE = 200
 @Composable
 fun ingresos(
     ruta: String,
-    icono: Int,
+    icono: String,
     nombre: String,
     botonVolver:() -> Unit,
     viewModel: IngresosGastosViewModel = hiltViewModel(),
@@ -113,6 +115,11 @@ fun ingresos(
     var cantidad by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
+
+    val context = LocalContext.current
+    val iconoId = remember(icono) {
+        context.resources.getIdentifier(icono, "drawable", context.packageName)
+    }
 
     Box(
         modifier = Modifier
@@ -165,7 +172,7 @@ fun ingresos(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Image(
-                        painter = painterResource(icono),
+                        painter = if (iconoId != 0) painterResource(iconoId) else painterResource(R.drawable.camion),
                         contentDescription = nombre,
                         modifier = Modifier.size(70.dp).padding(5.dp)
                     )

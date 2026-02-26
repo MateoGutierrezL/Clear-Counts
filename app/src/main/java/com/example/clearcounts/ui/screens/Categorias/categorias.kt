@@ -18,29 +18,43 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.clearcounts.R
+import com.example.clearcounts.data.database.entities.CategoryEntity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriaItemIngresos(navController: NavController, categoria: Categorias, sheetState: SheetState, ruta: String) {
+fun CategoriasItem(
+    navController: NavController,
+    categorias: CategoryEntity,
+    sheetState: SheetState,
+    ruta: String
+) {
     val scope = rememberCoroutineScope()
-    val nombreString = stringResource(id = categoria.nombre)
+    val context = LocalContext.current
+
+    // Convierte el String del icono al resource ID del drawable
+    val iconoId = remember(categorias.icono) {
+        context.resources.getIdentifier(categorias.icono, "drawable", context.packageName)
+    }
+
     Button(
         onClick = {
             scope.launch {
                 delay(500)
                 sheetState.hide()
-                navController.navigate("$ruta/${categoria.icono}/$nombreString")
+                navController.navigate("$ruta/${categorias.icono}/${categorias.nombre}")
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -53,71 +67,24 @@ fun CategoriaItemIngresos(navController: NavController, categoria: Categorias, s
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            Icon(
-                painter = painterResource(id = categoria.icono),
-                contentDescription = stringResource(id = categoria.nombre),
-                modifier = Modifier.size(50.dp),
-                tint = Color.Unspecified
-            )
-            Text(
-                modifier = Modifier.padding(start = 8.dp, top = 11.dp),
-                text = stringResource(id = categoria.nombre),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 20.sp
-            )
-        }
-    }
-    Spacer(
-        modifier = Modifier.size(10.dp)
-    )
-    HorizontalDivider(
-        modifier = Modifier,
-        thickness = 3.dp,
-        color = MaterialTheme.colorScheme.primary
-    )
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CategoriaItemGastos(navController: NavController, categoria: Categorias, sheetState: SheetState, ruta: String) {
-    val scope = rememberCoroutineScope()
-    val nombreString = stringResource(id = categoria.nombre)
-    Button(
-        onClick = {
-            scope.launch {
-                delay(500)
-                sheetState.hide()
-                navController.navigate("$ruta/${categoria.icono}/$nombreString")
+            if (iconoId != 0) { // 0 significa que no encontró el drawable
+                Icon(
+                    painter = painterResource(id = iconoId),
+                    contentDescription = categorias.nombre,
+                    modifier = Modifier.size(50.dp),
+                    tint = Color.Unspecified
+                )
             }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = Color.Black
-        )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Icon(
-                painter = painterResource(id = categoria.icono),
-                contentDescription = stringResource(id = categoria.nombre),
-                modifier = Modifier.size(50.dp),
-                tint = Color.Unspecified
-            )
             Text(
                 modifier = Modifier.padding(start = 8.dp, top = 11.dp),
-                text = stringResource(id = categoria.nombre),
+                text = categorias.nombre,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 20.sp
             )
         }
     }
-    Spacer(
-        modifier = Modifier.size(10.dp)
-    )
+    Spacer(modifier = Modifier.size(10.dp))
     HorizontalDivider(
-        modifier = Modifier,
         thickness = 3.dp,
         color = MaterialTheme.colorScheme.primary
     )

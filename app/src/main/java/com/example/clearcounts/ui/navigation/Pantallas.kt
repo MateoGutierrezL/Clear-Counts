@@ -14,4 +14,5 @@ sealed class Pantallas (val pantalla: String){
     data object ingresos: Pantallas("ingresos")
 
     data object Exportar: Pantallas("exportar")
+    data object CrearCategoria : Pantallas("crearCategoria/{tipo}")
 }
