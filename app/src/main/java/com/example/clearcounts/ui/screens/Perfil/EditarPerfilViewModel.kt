@@ -2,7 +2,7 @@ package com.example.clearcounts.ui.screens.Perfil
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.UserRepository
+import com.example.clearcounts.data.repository.usuario.UserRepository
 import com.example.clearcounts.data.database.entities.UserEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

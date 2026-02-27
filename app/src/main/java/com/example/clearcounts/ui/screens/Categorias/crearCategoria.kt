@@ -151,6 +151,7 @@ fun crearCategoria(
             // Campo nombre
             OutlinedTextField(
                 value = nombre,
+                singleLine = true,
                 onValueChange = { if (it.length <= 20) nombre = it },
                 label = { Text("Nombre") },
                 placeholder = { Text("Ej: Mascota") },

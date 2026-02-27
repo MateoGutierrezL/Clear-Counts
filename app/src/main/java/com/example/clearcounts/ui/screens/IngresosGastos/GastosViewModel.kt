@@ -3,8 +3,8 @@ package com.example.clearcounts.ui.screens.IngresosGastos
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.ExpenseRepository
-import com.example.clearcounts.data.OfflineExpenseRepository
+import com.example.clearcounts.data.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.repository.gasto.OfflineExpenseRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

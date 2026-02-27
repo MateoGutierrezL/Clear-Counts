@@ -1,5 +1,6 @@
-package com.example.clearcounts.data
+package com.example.clearcounts.data.repository.categoria
 
+import com.example.clearcounts.data.database.dao.CategoryExpenseSummary
 import com.example.clearcounts.data.database.entities.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,4 +13,5 @@ interface CategoryRepository {
     suspend fun insertDefaultCategories()
 
     suspend fun insertCategoria(categoria: CategoryEntity)
+
 }

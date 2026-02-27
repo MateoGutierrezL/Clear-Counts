@@ -6,8 +6,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.model.Point
-import com.example.clearcounts.data.ExpenseRepository
-import com.example.clearcounts.data.IncomeRepository
+import com.example.clearcounts.data.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -2,8 +2,10 @@ package com.example.clearcounts.ui.screens.graficas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.ExpenseRepository
-import com.example.clearcounts.data.IncomeRepository
+import com.example.clearcounts.data.database.dao.CategoryExpenseSummary
+import com.example.clearcounts.data.database.dao.MonthlySummary
+import com.example.clearcounts.data.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,19 +28,16 @@ class GraficasViewModel @Inject constructor(
         expenseRepository.getAllExpenses()
     ) { incomes, expenses ->
 
-        // --- LÓGICA DE INGRESOS ---
         val incomeDailyTotals = incomes.groupBy { it.fecha }
             .map { it.value.sumOf { income -> income.cantidad } }
 
         val avgIncome = if (incomeDailyTotals.isNotEmpty()) incomeDailyTotals.average() else 0.0
 
-        // --- LÓGICA DE GASTOS ---
         val expenseDailyTotals = expenses.groupBy { it.fecha }
             .map { it.value.sumOf { expense -> expense.cantidad } }
 
         val avgExpense = if (expenseDailyTotals.isNotEmpty()) expenseDailyTotals.average() else 0.0
 
-        // 3. Retornamos el estado con ambos datos
         FinanceUiState(
             dailyAverageIncome = avgIncome,
             dailyAverageExpense = avgExpense,
@@ -64,7 +63,7 @@ class GraficasViewModel @Inject constructor(
     val lunesSemana: LocalDate = hoy.with(DayOfWeek.MONDAY)
     val domingoSemana: LocalDate = hoy.with(DayOfWeek.SUNDAY)
 
-    // Los 7 días de la semana actual (Lun → Dom)
+    // Dias de la semana
     val diasSemana: List<LocalDate> = (0..6).map { lunesSemana.plusDays(it.toLong()) }
 
     val ingresosPorDia: StateFlow<Map<LocalDate, Double>> =
@@ -108,10 +107,35 @@ class GraficasViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = emptyMap()
             )
+
+    val expensesByCategory: StateFlow<List<CategoryExpenseSummary>> =
+        expenseRepository.getExpensesByCategory()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    val monthlyExpenses: StateFlow<List<MonthlySummary>> =
+        expenseRepository.getMonthlyExpense()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val monthlyIncomes: StateFlow<List<MonthlySummary>> =
+        incomeRepository.getMonthlyIncomes()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    // Combina ambos flows para tener todos los meses presentes en cualquiera
+    val monthlyComparison: StateFlow<List<MonthlyComparision>> =
+        combine(monthlyExpenses, monthlyIncomes) { expenses, incomes ->
+            val allMonths = (expenses.map { it.mes } + incomes.map { it.mes }).distinct().sorted()
+
+            allMonths.map { mes ->
+                MonthlyComparision(
+                    mes = mes,
+                    totalGasto = expenses.find { it.mes == mes }?.total ?: 0.0,
+                    totalIngreso = incomes.find { it.mes == mes }?.total ?: 0.0
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 }
 
-data class FinanceUiState(
-    val dailyAverageIncome: Double = 0.0,
-    val dailyAverageExpense: Double = 0.0,
-    val totalDays: Int = 0
-)

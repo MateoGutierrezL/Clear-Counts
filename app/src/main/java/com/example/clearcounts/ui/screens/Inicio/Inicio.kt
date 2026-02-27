@@ -31,6 +31,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -199,6 +200,24 @@ fun DetalleIngresoPopup(
         confirmButton = {
             TextButton(onClick = onDismiss) { Text("Cerrar") }
         },
+        dismissButton = {
+            Box(
+                modifier = Modifier.fillMaxWidth(0.7f)
+            ){
+                IconButton(
+                    onClick = {
+                        onDelete()
+                        onDismiss()
+                    }
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar"
+                    )
+                }
+            }
+        },
         title = { Text(text = "Detalle de Ingreso", fontWeight = FontWeight.Bold) },
         text = {
             Column {
@@ -209,18 +228,6 @@ fun DetalleIngresoPopup(
 
                 if (!ingreso.nota.isNullOrEmpty()) {
                     Text("Nota: ${ingreso.nota}")
-                }
-
-                Button(
-                    onClick = {
-                        onDelete()
-                        onDismiss()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null
-                    )
                 }
             }
         },
@@ -255,7 +262,8 @@ fun DetalleGastoPopup(
                     onClick = {
                         onDelete()
                         onDismiss()
-                    }
+                    },
+                    modifier = Modifier.align(Alignment.End)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,

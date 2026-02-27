@@ -1,10 +1,8 @@
-package com.example.clearcounts.data
+package com.example.clearcounts.data.repository.usuario
 
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 interface UserRepository {
 

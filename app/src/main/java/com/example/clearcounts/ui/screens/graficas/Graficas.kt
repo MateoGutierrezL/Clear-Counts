@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -22,7 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.yml.charts.axis.AxisData
+import co.yml.charts.common.components.Legends
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.DataUtils
@@ -86,6 +89,10 @@ fun Graficas(
 
         item {
             GastosPorCategoria()
+        }
+
+        item {
+            ComparacionMensual()
         }
 
         item {
@@ -416,19 +423,45 @@ fun TendenciaSemanal(
     }
 }
 
+// Paleta de colores para asignar a cada slice dinámicamente
+private val sliceColors = listOf(
+    Color(0xFF006494),
+    Color(0xFF007A73),
+    Color(0xFF5E3585),
+    Color(0xFF00695C),
+    Color(0xFF1B5E20),
+    Color(0xFF7A1E6D),
+    Color(0xFF4A235A),
+    Color(0xFF1A5276),
+    Color(0xFF0E6655),
+    Color(0xFF6C3483),
+    Color(0xFF145A32),
+    Color(0xFF784212),
+    Color(0xFF1F618D),
+    Color(0xFF5B2C6F),
+    Color(0xFF0B5345),
+    Color(0xFF922B21),
+    Color(0xFF1A3A5C),
+    Color(0xFF4A4A8A),
+    Color(0xFF2E6B4F),
+    Color(0xFF6B2D5E)
+    )
 
 @Composable
-fun GastosPorCategoria(){
+fun GastosPorCategoria(
+    viewModel: GraficasViewModel = hiltViewModel()
+) {
+    val expensesByCategory by viewModel.expensesByCategory.collectAsStateWithLifecycle()
 
-    val pieChartData = PieChartData(
-        slices = listOf(
-            PieChartData.Slice("SciFi", 65f, Color(0xFF333333)),
-            PieChartData.Slice("Comedy", 35f, Color(0xFF666a86)),
-            PieChartData.Slice("Drama", 10f, Color(0xFF95B8D1)),
-            PieChartData.Slice("Romance", 40f, Color(0xFFF53844))
-        ),
-        plotType = PlotType.Pie
-    )
+    val slices = remember(expensesByCategory) {
+        expensesByCategory.mapIndexed { index, category ->
+            PieChartData.Slice(
+                label = category.categoria,
+                value = category.total.toFloat(),
+                color = sliceColors[index % sliceColors.size]
+            )
+        }
+    }
 
     val pieChartConfig = PieChartConfig(
         isAnimationEnable = true,
@@ -459,13 +492,219 @@ fun GastosPorCategoria(){
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            PieChart(
-                modifier = Modifier
-                    .width(400.dp)
-                    .height(280.dp),
-                pieChartData,
-                pieChartConfig
+            when {
+                // Estado vacío: no hay gastos registrados aún
+                slices.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(280.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Sin gastos registrados",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                else -> {
+                    PieChart(
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(280.dp),
+                        pieChartData = PieChartData(
+                            slices = slices,
+                            plotType = PlotType.Pie
+                        ),
+                        pieChartConfig = pieChartConfig
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Leyenda dinámica
+                    slices.forEachIndexed { index, slice ->
+                        val categoria = expensesByCategory[index]
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(12.dp)
+                                        .background(slice.color, CircleShape)
+                                )
+                                Text(
+                                    text = categoria.categoria,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            Text(
+                                text = "${categoria.total.toInt()}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ComparacionMensual(
+    viewModel: GraficasViewModel = hiltViewModel()
+) {
+    val monthlyData by viewModel.monthlyComparison.collectAsStateWithLifecycle()
+
+    val colorIngresos = MaterialTheme.colorScheme.primaryContainer
+    val colorGastos = MaterialTheme.colorScheme.onError
+
+    // Mapeo de MM/yyyy → nombre de mes recortado
+    val nombreMes = mapOf(
+        "01" to "Ene", "02" to "Feb", "03" to "Mar",
+        "04" to "Abr", "05" to "May", "06" to "Jun",
+        "07" to "Jul", "08" to "Ago", "09" to "Sep",
+        "10" to "Oct", "11" to "Nov", "12" to "Dic"
+    )
+
+    val todasLasCantidades = monthlyData.flatMap {
+        listOf(it.totalIngreso, it.totalGasto)
+    }
+    val maxValor = (todasLasCantidades.maxOrNull() ?: 100.0)
+        .coerceAtLeast(100.0)
+        .toFloat()
+
+    val yStepSize = 5
+
+    val groupBarList = monthlyData.mapIndexed { index, item ->
+        val ingreso = item.totalIngreso.toFloat()
+        val gasto = item.totalGasto.toFloat()
+        val mesLabel = nombreMes[item.mes.substring(0, 2)] ?: item.mes
+
+        GroupBar(
+            label = mesLabel,
+            barList = listOf(
+                BarData(
+                    point = Point(index.toFloat(), ingreso),
+                    color = colorIngresos,
+                    label = if (ingreso > 0) "${"%.0f".format(ingreso)}€" else ""
+                ),
+                BarData(
+                    point = Point(index.toFloat(), gasto),
+                    color = colorGastos,
+                    label = if (gasto > 0) "${"%.0f".format(gasto)}€" else ""
+                )
             )
+        )
+    }
+
+    val barStyle = BarStyle(
+        paddingBetweenBars = 12.dp,
+        barWidth = 24.dp,
+        selectionHighlightData = null
+    )
+
+    val groupBarPlotData = BarPlotData(
+        groupBarList = groupBarList,
+        barColorPaletteList = listOf(colorIngresos, colorGastos),
+        barStyle = barStyle
+    )
+
+    val xAxisData = AxisData.Builder()
+        .axisLineColor(Color.Transparent)
+        .backgroundColor(MaterialTheme.colorScheme.surfaceContainerLow)
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .axisStepSize(70.dp)
+        .steps(groupBarList.size - 1)
+        .bottomPadding(12.dp)
+        .labelData { index -> groupBarList[index].label }
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .axisLineColor(Color.Transparent)
+        .backgroundColor(MaterialTheme.colorScheme.surfaceContainerLow)
+        .axisLabelColor(MaterialTheme.colorScheme.onBackground)
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(15.dp)
+        .labelData { index ->
+            val step = maxValor / yStepSize
+            (index * step).toInt().toString()
+        }
+        .build()
+
+    val groupBarChartData = GroupBarChartData(
+        barPlotData = groupBarPlotData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        groupSeparatorConfig = GroupSeparatorConfig(separatorColor = Color.Transparent),
+        paddingEnd = 0.dp
+    )
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "Comparación Mensual",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (monthlyData.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(290.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Sin datos registrados",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                GroupBarChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(290.dp),
+                    groupBarChartData = groupBarChartData
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                LegendItem(color = colorIngresos, text = "Ingresos")
+                Spacer(Modifier.width(16.dp))
+                LegendItem(color = colorGastos, text = "Gastos")
+            }
         }
     }
 }

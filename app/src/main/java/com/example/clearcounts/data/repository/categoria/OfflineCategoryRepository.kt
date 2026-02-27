@@ -1,9 +1,11 @@
-package com.example.clearcounts.data
+package com.example.clearcounts.data.repository.categoria
 
 import com.example.clearcounts.data.database.UserDatabase
 import com.example.clearcounts.data.database.dao.CategoryDao
+import com.example.clearcounts.data.database.dao.CategoryExpenseSummary
 import com.example.clearcounts.data.database.entities.CategoryEntity
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class OfflineCategoryRepository @Inject constructor(
     private val categoryDao: CategoryDao
@@ -13,7 +15,7 @@ class OfflineCategoryRepository @Inject constructor(
 
     override suspend fun insertDefaultCategories() {
         if (categoryDao.getCount() == 0) {
-            categoryDao.insertAll(UserDatabase.DEFAULT_CATEGORIES)
+            categoryDao.insertAll(UserDatabase.Companion.DEFAULT_CATEGORIES)
         }
     }
 

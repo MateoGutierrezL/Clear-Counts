@@ -24,4 +24,12 @@ interface IncomeDao {
     @Query("SELECT SUM(cantidad) FROM ingreso")
     fun getTotalIncome(): Flow<Double?>
 
+    @Query("""
+    SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
+    FROM ingreso
+    GROUP BY SUBSTR(fecha, 4, 7)
+    ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
+""")
+    fun getMonthlyIncomes(): Flow<List<MonthlySummary>>
+
 }

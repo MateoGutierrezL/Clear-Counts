@@ -1,13 +1,13 @@
 package com.example.clearcounts.di
 
-import com.example.clearcounts.data.CategoryRepository
-import com.example.clearcounts.data.ExpenseRepository
-import com.example.clearcounts.data.IncomeRepository
-import com.example.clearcounts.data.OfflineCategoryRepository
-import com.example.clearcounts.data.OfflineExpenseRepository
-import com.example.clearcounts.data.OfflineIncomeRepository
-import com.example.clearcounts.data.OfflineUserRepository
-import com.example.clearcounts.data.UserRepository
+import com.example.clearcounts.data.repository.categoria.CategoryRepository
+import com.example.clearcounts.data.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.repository.ingreso.IncomeRepository
+import com.example.clearcounts.data.repository.categoria.OfflineCategoryRepository
+import com.example.clearcounts.data.repository.gasto.OfflineExpenseRepository
+import com.example.clearcounts.data.repository.ingreso.OfflineIncomeRepository
+import com.example.clearcounts.data.repository.usuario.OfflineUserRepository
+import com.example.clearcounts.data.repository.usuario.UserRepository
 import com.example.clearcounts.data.database.UserDatabase
 import com.google.firebase.sessions.dagger.Provides
 

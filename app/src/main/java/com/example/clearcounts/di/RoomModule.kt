@@ -7,8 +7,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.clearcounts.data.CategoryRepository
-import com.example.clearcounts.data.OfflineCategoryRepository
+import com.example.clearcounts.data.repository.categoria.CategoryRepository
+import com.example.clearcounts.data.repository.categoria.OfflineCategoryRepository
 import com.example.clearcounts.data.database.UserDatabase
 import com.example.clearcounts.data.database.dao.CategoryDao
 import dagger.Module

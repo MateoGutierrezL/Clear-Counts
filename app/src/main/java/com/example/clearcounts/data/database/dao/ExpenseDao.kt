@@ -24,4 +24,21 @@ interface ExpenseDao {
     @Query("SELECT SUM(cantidad) FROM gasto")
     fun getTotalExpense(): Flow<Double?>
 
+    @Query("""
+    SELECT categoria, SUM(cantidad) as total
+    FROM gasto
+    GROUP BY categoria
+    HAVING SUM(cantidad) > 0
+""")
+    fun getExpensesByCategory(): Flow<List<CategoryExpenseSummary>>
+
+    @Query("""
+    SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
+    FROM gasto
+    GROUP BY SUBSTR(fecha, 4, 7)
+    ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
+""")
+    fun getMonthlyExpenses(): Flow<List<MonthlySummary>>
+
 }
+

@@ -3,7 +3,7 @@ package com.example.clearcounts.ui.screens.Categorias
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.CategoryRepository
+import com.example.clearcounts.data.repository.categoria.CategoryRepository
 import com.example.clearcounts.data.database.entities.CategoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject

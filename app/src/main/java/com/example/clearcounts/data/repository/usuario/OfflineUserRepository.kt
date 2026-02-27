@@ -1,4 +1,4 @@
-package com.example.clearcounts.data
+package com.example.clearcounts.data.repository.usuario
 
 import android.content.Context
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.credentials.CredentialManager
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.data.datastore.UserSessionDataStore
-import com.facebook.share.Sharer
+import com.facebook.login.LoginManager
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +24,7 @@ class OfflineUserRepository @Inject constructor(
     private val sessionDataStore: UserSessionDataStore,
     private val auth: FirebaseAuth,
     @ApplicationContext private val context: Context
-): UserRepository{
+): UserRepository {
 
     override fun getAllUsersStream(): Flow<List<UserEntity>> = userDao.getAllUsers()
 
@@ -100,12 +100,12 @@ class OfflineUserRepository @Inject constructor(
 
         auth.signOut()
 
-        com.facebook.login.LoginManager.getInstance().logOut()
+        LoginManager.getInstance().logOut()
 
         sessionDataStore.clearLoggedInUserId()
 
         try {
-            val credentialManager = CredentialManager.create(context)
+            val credentialManager = CredentialManager.Companion.create(context)
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
             Log.e("AUth", "Funciona")
         } catch (e: Exception) {
