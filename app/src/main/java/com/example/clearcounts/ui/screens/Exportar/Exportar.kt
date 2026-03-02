@@ -85,6 +85,7 @@ fun PantallaExportarGrafico(
 
                     // 2. Guardamos pasando por la conversión de software
                     guardarPdfEnUri(context, hardwareBitmap, seleccionadoUri)
+                    viewModel.notificarExportacion("PDF")
                 } catch (e: Exception) {
                     Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                 }
@@ -105,6 +106,7 @@ fun PantallaExportarGrafico(
             context.contentResolver.openOutputStream(it)?.use { output ->
                 output.write(csvContent.toByteArray())
             }
+            viewModel.notificarExportacion("CSV")
             Toast.makeText(context, "Guardado con éxito", Toast.LENGTH_SHORT).show()
         }
     }

@@ -9,6 +9,8 @@ import com.example.clearcounts.data.repository.ingreso.OfflineIncomeRepository
 import com.example.clearcounts.data.repository.usuario.OfflineUserRepository
 import com.example.clearcounts.data.repository.usuario.UserRepository
 import com.example.clearcounts.data.database.UserDatabase
+import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.example.clearcounts.data.repository.notificacion.OfflineNotificationRepository
 import com.google.firebase.sessions.dagger.Provides
 
 import dagger.Binds
@@ -44,6 +46,12 @@ abstract class RepositoryModule {
     abstract fun bindCategoryRepository(
         offlineCategoryRepository: OfflineCategoryRepository
     ): CategoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationRepository(
+        offlineNotificationRepository: OfflineNotificationRepository
+    ): NotificationRepository
 
 
 }

@@ -7,6 +7,7 @@ import com.example.clearcounts.data.repository.gasto.ExpenseRepository
 import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.data.repository.notificacion.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,11 +18,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ExportarGraficosViewModel @Inject constructor(
     private val incomeRepository: IncomeRepository,
-    private val expenseRepository: ExpenseRepository
+    private val expenseRepository: ExpenseRepository,
+    private val notificationRepository: NotificationRepository
 ): ViewModel(){
 
     private val _mesSeleccionado = MutableStateFlow("02-2026")
@@ -64,6 +67,14 @@ class ExportarGraficosViewModel @Inject constructor(
             }
         }
         return csvHeader + csvBody
+    }
+    fun notificarExportacion(tipo: String) { // 👈 Llama esto al exportar
+        viewModelScope.launch {
+            notificationRepository.insertNotification(
+                titulo = "Exportación completada",
+                mensaje = "Tu reporte de ${mesSeleccionado.value} fue exportado como $tipo exitosamente."
+            )
+        }
     }
 
 }

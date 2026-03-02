@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentar
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
+import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
@@ -53,6 +55,7 @@ import kotlinx.coroutines.launch
 fun AppNavigation(
     rootNavController: NavController,
     viewModel: UserSessionViewModel = hiltViewModel(),
+    notificacionesViewModel: NotificacionesViewModel = hiltViewModel()
 
 ) {
     val navigationController = rememberNavController()
@@ -62,8 +65,7 @@ fun AppNavigation(
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
     val topBarVisible = rememberSaveable { mutableStateOf(true) }
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
-
-    
+    val tieneNoLeidas by notificacionesViewModel.tieneNoLeidas.collectAsState()
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -103,6 +105,7 @@ fun AppNavigation(
         drawerState = drawerState
     ) {
         Scaffold(
+
             topBar = {
                 if (topBarVisible.value) {
                     TopBar(
@@ -112,6 +115,7 @@ fun AppNavigation(
                             }
                         },
                         selectedIcon = selectedIcon,
+                        tieneNotificaciones = tieneNoLeidas,
                         navegarPantallaNotificaciones = {
 
                             navigationController.navigate(Pantallas.Notificaciones.pantalla) {
@@ -121,6 +125,7 @@ fun AppNavigation(
                         navegarPantallaPreguntasComentarios = {
                             navigationController.navigate(Pantallas.PreguntasComentarios.pantalla)
                         }
+
                     )
                 }
             },
@@ -238,10 +243,12 @@ fun AppNavigation(
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = true
                         topBarVisible.value = true
+                        notificacionesViewModel.marcarTodasLeidas()
                         onDispose {}
                     }
 
-                    Notificaciones()
+                    Notificaciones(viewModel = notificacionesViewModel)
+
                 }
 
                 composable(

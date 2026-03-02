@@ -7,6 +7,7 @@ import com.example.clearcounts.data.repository.gasto.ExpenseRepository
 import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.data.repository.notificacion.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,8 @@ import javax.inject.Inject
 class IngresosGastosViewModel @Inject constructor(
 
     private val incomeRepository: IncomeRepository,
-    private val expenseRepository: ExpenseRepository
+    private val expenseRepository: ExpenseRepository,
+    private val notificationRepository: NotificationRepository
 ): ViewModel(){
 
     fun insertIncome(
@@ -26,6 +28,10 @@ class IngresosGastosViewModel @Inject constructor(
 
             try {
                 incomeRepository.insertIncome(incomeEntity)
+                notificationRepository.insertNotification( // 👈
+                    titulo = "Ingreso registrado",
+                    mensaje = "Se registró un ingreso de ${incomeEntity.cantidad} en ${incomeEntity.categoria}."
+                )
                 onSuccess()
 
 
@@ -46,6 +52,10 @@ class IngresosGastosViewModel @Inject constructor(
 
             try {
                 expenseRepository.insertExpense(expenseEntity)
+                notificationRepository.insertNotification( // 👈
+                    titulo = "Gasto registrado",
+                    mensaje = "Se registró un gasto de ${expenseEntity.cantidad} en ${expenseEntity.categoria}."
+                )
                 onSuccess()
 
                 Log.e("gasto", "Funciona")

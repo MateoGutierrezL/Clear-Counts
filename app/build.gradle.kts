@@ -55,13 +55,19 @@ dependencies {
 
     // Hilt - Implementaciones
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Room - Implementaciones
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     // Room
     ksp(libs.room.ksp)
+    // Implementacion para el hash de las contraseñas
+    implementation("at.favre.lib:bcrypt:0.10.2")
 
     // Requerida para usar Theme.Material3 en XML
     implementation("com.google.android.material:material:1.11.0") // Usar la última versión estable

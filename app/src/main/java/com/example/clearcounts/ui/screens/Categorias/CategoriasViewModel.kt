@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.repository.categoria.CategoryRepository
 import com.example.clearcounts.data.database.entities.CategoryEntity
+import com.example.clearcounts.data.repository.notificacion.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CategoriasViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
 
     init {
@@ -43,6 +45,10 @@ class CategoriasViewModel @Inject constructor(
         viewModelScope.launch {
             categoryRepository.insertCategoria(
                 CategoryEntity(nombre = nombre, icono = icono, tipo = tipo)
+            )
+            notificationRepository.insertNotification(
+                titulo = "Nueva categoría creada",
+                mensaje = "La categoría \"$nombre\" fue agregada a tus ${ if (tipo == "gasto") "gastos" else "ingresos" }."
             )
         }
     }
