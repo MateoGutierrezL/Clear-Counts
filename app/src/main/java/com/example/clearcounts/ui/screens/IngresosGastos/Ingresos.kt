@@ -81,7 +81,6 @@ const val MAX_LENGHT_OF_AMOUNT = 10
 const val MAX_LENGHT_OF_NOTE = 200
 
 
-@SuppressLint("NewApi")
 @Composable
 fun ingresos(
     ruta: String,
@@ -470,9 +469,15 @@ fun CampoDiasDesplegable(
                     }
                 },
                 shape = MaterialTheme.shapes.medium.copy(topEnd = ZeroCornerSize, bottomEnd = ZeroCornerSize),
-                modifier = Modifier.weight(1f).height(50.dp)
+                modifier = Modifier.weight(1f).height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
             ) {
-                Text(mainButtonText)
+                Text(
+                    text = mainButtonText,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
 
             Button(
@@ -480,14 +485,15 @@ fun CampoDiasDesplegable(
                 onClick = { expanded = true },
                 shape = MaterialTheme.shapes.medium.copy(topStart = ZeroCornerSize, bottomStart = ZeroCornerSize),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
                 contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = "Desplegar opciones de fecha",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -523,10 +529,10 @@ fun BotonesInferiores(
             onCreateChange()
         },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary)
+            containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
         Text("Crear",
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 15.sp
         )
     }

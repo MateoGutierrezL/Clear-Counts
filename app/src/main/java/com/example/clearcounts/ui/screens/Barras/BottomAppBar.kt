@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -329,16 +330,16 @@ fun CustomBottomAppBar(
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.save_money),
-                    contentDescription = "Presupuesto",
+                    imageVector = Icons.Default.TrackChanges,
+                    contentDescription = "Metas",
                     modifier = Modifier.size(26.dp),
                     tint = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Presupuesto",
-                    fontSize = 11.sp,
+                    text = "Metas",
+                    fontSize = 12.sp,
                     color = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },

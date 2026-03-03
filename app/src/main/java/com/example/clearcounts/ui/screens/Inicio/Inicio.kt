@@ -222,7 +222,7 @@ fun DetalleIngresoPopup(
         text = {
             Column {
                 Text("Categoría: ${ingreso.categoria}")
-                Text("Monto: ${ingreso.cantidad}")
+                Text("Monto: ${ingreso.cantidad.toInt()}")
                 Text("Hora: ${ingreso.hora}")
                 Text("Fecha: ${ingreso.fecha}")
 
@@ -242,38 +242,43 @@ fun DetalleGastoPopup(
     onDelete: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cerrar") }
-        },
-        title = { Text(text = "Detalle de Gasto", fontWeight = FontWeight.Bold) },
-        text = {
-            Column {
-                Text("Categoría: ${gasto.categoria}")
-                Text("Monto: ${gasto.cantidad}")
-                Text("Hora: ${gasto.hora}")
-                Text("Fecha: ${gasto.fecha}")
-
-                if (!gasto.nota.isNullOrEmpty()) {
-                    Text("Nota: ${gasto.nota}")
+    onDismissRequest = onDismiss,
+    confirmButton = {
+        TextButton(onClick = onDismiss) { Text("Cerrar") }
+    },
+    dismissButton = {
+        Box(
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ){
+            IconButton(
+                onClick = {
+                    onDelete()
+                    onDismiss()
                 }
 
-                Button(
-                    onClick = {
-                        onDelete()
-                        onDismiss()
-                    },
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null
-                    )
-                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar"
+                )
             }
-        },
-        shape = RoundedCornerShape(16.dp)
-    )
+        }
+    },
+    title = { Text(text = "Detalle de Gasto", fontWeight = FontWeight.Bold) },
+    text = {
+        Column {
+            Text("Categoría: ${gasto.categoria}")
+            Text("Monto: ${gasto.cantidad.toInt()}")
+            Text("Hora: ${gasto.hora}")
+            Text("Fecha: ${gasto.fecha}")
+
+            if (!gasto.nota.isNullOrEmpty()) {
+                Text("Nota: ${gasto.nota}")
+            }
+        }
+    },
+    shape = RoundedCornerShape(16.dp)
+)
 }
 
 @Composable
