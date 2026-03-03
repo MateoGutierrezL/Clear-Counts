@@ -57,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.utils.AlertaCamposVacios
+import at.favre.lib.crypto.bcrypt.BCrypt
 
 
 @Composable
@@ -243,13 +244,13 @@ fun PantallaRegistro(
                     if (nombreUsuario.isBlank() || numero.isBlank() || correoUsuario.isBlank() || contrasena.isBlank()) {
                         showDialog = true // Muestra la alerta
                     } else {
-
+                        val contrasenaHasheada = BCrypt.withDefaults().hashToString(12, contrasena.toCharArray())
                         val newUser = UserEntity(
                             id = 0,
                             nombre = nombreUsuario,
                             numero = numero,
                             correo = correoUsuario,
-                            contrasena = contrasena //Hashear contraseña
+                            contrasena = contrasenaHasheada //Hashear contraseña
                         )
 
                         // 2. Llamar al ViewModel

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +31,8 @@ fun TopBar(
     onMenuClick: () -> Unit,
     selectedIcon: MutableState<String>,
     navegarPantallaNotificaciones: () -> Unit,
-    navegarPantallaPreguntasComentarios: () -> Unit
+    navegarPantallaPreguntasComentarios: () -> Unit,
+    tieneNotificaciones: Boolean = false
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -83,12 +86,21 @@ fun TopBar(
                     navegarPantallaNotificaciones()
                 }
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.notification),
-                    contentDescription = "Notificaciones",
-                    modifier = Modifier.size(30.dp),
-                    tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
-                )
+
+                BadgedBox(
+                    badge = {
+                        if (tieneNotificaciones) {
+                            Badge() // 👈 Círculo rojo
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.notification),
+                        contentDescription = "Notificaciones",
+                        modifier = Modifier.size(30.dp),
+                        tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
         }
     )

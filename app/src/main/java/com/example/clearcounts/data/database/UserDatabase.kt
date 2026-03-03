@@ -9,10 +9,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.clearcounts.data.database.dao.CategoryDao
 import com.example.clearcounts.data.database.dao.ExpenseDao
 import com.example.clearcounts.data.database.dao.IncomeDao
+import com.example.clearcounts.data.database.dao.NotificationDao
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.CategoryEntity
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.data.database.entities.NotificationEntity
 import com.example.clearcounts.data.database.entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +25,9 @@ import kotlinx.coroutines.launch
         UserEntity::class,
         IncomeEntity::class,
         ExpenseEntity::class,
-        CategoryEntity::class],
-    version = 6,
+        CategoryEntity::class,
+        NotificationEntity::class],
+    version = 8,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -34,6 +37,8 @@ abstract class UserDatabase: RoomDatabase() {
     abstract fun getIncomeDao(): IncomeDao
 
     abstract fun getExpenseDao(): ExpenseDao
+
+    abstract fun notificationDao(): NotificationDao
 
     abstract fun categoryDao(): CategoryDao
 

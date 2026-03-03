@@ -1,6 +1,11 @@
 package com.example.clearcounts
 
+import android.Manifest
+import android.icu.util.Calendar
+import android.icu.util.TimeUnit
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +21,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.example.clearcounts.ui.navigation.AppNavigation
 import com.example.clearcounts.ui.navigation.Pantallas
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
@@ -25,13 +37,17 @@ import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCodigo
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarVerificacionCorreo
 import com.example.clearcounts.ui.theme.ClearCountTheme
+import com.example.clearcounts.utils.DailyReminderWorker
+import com.example.clearcounts.utils.NotificationHelper
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
-import jakarta.inject.Inject
+
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 /*
 Una buena app permite lo siguiente
@@ -56,11 +72,23 @@ class MainActivity : ComponentActivity() {
         var isUserLoggedIn by mutableStateOf<Boolean?>(null)
 
         super.onCreate(savedInstanceState)
+        // Canal para las notificaciones
+        NotificationHelper.createNotificationChannel(this)
+
+        // Pedir permiso en Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
+        }
 
         lifecycleScope.launch{
             val user = auth.currentUser
             isUserLoggedIn = user != null
             delay(1000)
+
+            // Programar recordatorio diario solo si el usuario está logueado
+            if (isUserLoggedIn == true) {
+                scheduleDailyReminder()
+            }
         }
 
         splashScreen.setKeepOnScreenCondition { isUserLoggedIn == null }
@@ -73,6 +101,66 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    private fun scheduleDailyReminder() {
+        val now = Calendar.getInstance()
+
+        // Primera notificación - 8pm
+        val target1 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 18)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            if (before(now)) add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        // Segunda notificación
+        val target2 = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 12) // Cambia la hora aquí
+            set(Calendar.MINUTE, 30)
+            set(Calendar.SECOND, 0)
+            if (before(now)) add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        val workRequest1 = PeriodicWorkRequestBuilder<DailyReminderWorker>(
+            java.time.Duration.ofHours(24)
+        )
+            .setInitialDelay(java.time.Duration.ofMillis(target1.timeInMillis - now.timeInMillis))
+            .setInputData(workDataOf(
+                "titulo" to "¡No olvides registrar tus movimientos!",
+                "mensaje" to "Lleva un control de tus gastos e ingresos de hoy."
+            ))
+            .build()
+
+        val workRequest2 = PeriodicWorkRequestBuilder<DailyReminderWorker>(
+            java.time.Duration.ofHours(24)
+        )
+            .setInitialDelay(java.time.Duration.ofMillis(target2.timeInMillis - now.timeInMillis))
+            .setInputData(workDataOf(
+                "titulo" to "¿Cómo van tus finanzas hoy?",
+                "mensaje" to "Revisa tu resumen del día en ClearCounts."
+            ))
+            .build()
+
+
+        WorkManager.getInstance(this).apply {
+            enqueueUniquePeriodicWork("daily_reminder_1", ExistingPeriodicWorkPolicy.REPLACE, workRequest1)
+            enqueueUniquePeriodicWork("daily_reminder_2", ExistingPeriodicWorkPolicy.REPLACE, workRequest2)
+        }
+
+        WorkManager.getInstance(this).getWorkInfosForUniqueWorkLiveData("daily_reminder_1")
+            .observe(this) { workInfos ->
+                workInfos?.forEach { Log.d("WorkManager", "Reminder1 - Estado: ${it.state}") }
+            }
+
+        WorkManager.getInstance(this).getWorkInfosForUniqueWorkLiveData("daily_reminder_2")
+            .observe(this) { workInfos ->
+                workInfos?.forEach {
+                    Log.d("WorkManager", "Reminder2 - Estado: ${it.state}")
+                    if (it.state == WorkInfo.State.FAILED) {
+                        Log.e("WorkManager", "Reminder2 - Error: ${it.outputData.keyValueMap}")
+                    }
+                }
+            }
     }
 }
 

@@ -68,5 +68,9 @@ object RoomModule {
     @Provides
     fun provideCategoryDao(db: UserDatabase) = db.categoryDao()
 
+    @Singleton
+    @Provides
+    fun provideNotificationDao(db: UserDatabase) = db.notificationDao()
+
 
 }
