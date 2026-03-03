@@ -28,6 +28,10 @@ datastore = "1.0.0"
 firebaseBom = "34.9.0"
 services = "4.4.4"
 crashlytics = "3.0.6"
+hiltCommon = "1.3.0"
+workRuntimeKtx = "2.11.1"
+hiltWork = "1.3.0"
+
 
 
 [libraries]
@@ -76,6 +80,9 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundationVersion" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtimeVersion" }
+androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
 
 [plugins]
 #Hilt
