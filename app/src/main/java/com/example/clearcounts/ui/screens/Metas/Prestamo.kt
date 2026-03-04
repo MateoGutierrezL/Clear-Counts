@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Metas
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,11 +43,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material3.Text
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.ui.screens.IngresosGastos.CampoFecha
 import com.example.clearcounts.ui.screens.IngresosGastos.CampoNota
 import com.example.clearcounts.ui.screens.IngresosGastos.DatePickerDialogComposable
+import com.example.clearcounts.ui.screens.IngresosGastos.MAX_LENGHT_OF_AMOUNT
 import com.example.clearcounts.ui.screens.IngresosGastos.MAX_LENGHT_OF_NOTE
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -58,8 +61,13 @@ val MAX_NOMBREPRESTADOR_LENGTH = 40
 fun Prestamo(
     botonVolver:() -> Unit,
     titulo: String,
-    icono: ImageVector
+    icono: ImageVector,
+    viewModel: MetasViewModel = hiltViewModel()
 ){
+
+    var cantidadAcumulada by remember { mutableStateOf("") }
+
+    var cantidadRequerida by remember { mutableStateOf("") }
 
     var prestador by remember { mutableStateOf("") }
 
@@ -129,7 +137,22 @@ fun Prestamo(
         }
 
         item {
-            Montos()
+            Montos(
+                cantidadRequerida = cantidadRequerida,
+                cantidadAcumulada = cantidadAcumulada,
+                onCantidadAcumuladaChange = { nuevoTexto ->
+
+                    if(nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT){
+                        cantidadAcumulada = nuevoTexto
+                    }
+                },
+                onCantidadRequeridaChange = { nuevoTexto ->
+
+                    if(nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT){
+                        cantidadRequerida = nuevoTexto
+                    }
+                }
+            )
         }
 
         item {
@@ -231,10 +254,25 @@ fun Prestamo(
 
             BotonesInferiores(
                 onCancelChange = {
-                    //TODO Falta implementar la funcion
+                    botonVolver()
                 },
                 onCreateChange = {
-                    //TODO falta implementar la funcion
+
+                    if (nombreMovimiento.isNotBlank() && cantidadRequerida.isNotBlank()) {
+                        viewModel.guardarPrestamo(
+                            nombre = nombreMovimiento,
+                            cantidadRequerida = cantidadRequerida,
+                            cantidadAcumulada = cantidadAcumulada,
+                            prestador = prestador,
+                            fechaInicio = fechaInicioSeleccionadaState,
+                            fechaLimite = fechaLimiteSeleccionadaState,
+                            nota = nota,
+                            tipo = titulo // Usamos el parámetro de la pantalla
+                        )
+                        botonVolver() // Regresamos después de guardar
+                    } else {
+                        Log.e("meta", "fallo al insertar la meta")
+                    }
                 }
             )
         }
@@ -284,10 +322,12 @@ fun TituloPantalla(
 }
 
 @Composable
-fun Montos() {
-
-    var requerida by remember { mutableStateOf("") }
-    var acumulada by remember { mutableStateOf("") }
+fun Montos(
+    cantidadRequerida: String,
+    cantidadAcumulada: String,
+    onCantidadRequeridaChange: (String) -> Unit,
+    onCantidadAcumuladaChange: (String) -> Unit
+) {
 
     Column(modifier = Modifier.padding(16.dp)) {
         // --- Encabezado con Línea ---
@@ -317,14 +357,14 @@ fun Montos() {
         ) {
             MontoInput(
                 label = "Cantidad requerida",
-                value = requerida,
-                onValueChange = { requerida = it },
+                value = cantidadRequerida,
+                onValueChange = onCantidadRequeridaChange,
                 modifier = Modifier.weight(1f)
             )
             MontoInput(
                 label = "Cantidad acumulada",
-                value = acumulada,
-                onValueChange = { acumulada = it },
+                value = cantidadAcumulada,
+                onValueChange = onCantidadAcumuladaChange,
                 modifier = Modifier.weight(1f)
             )
         }

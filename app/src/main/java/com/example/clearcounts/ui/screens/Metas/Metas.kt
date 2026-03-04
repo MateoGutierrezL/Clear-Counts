@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui.screens.Metas
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,7 +51,6 @@ fun Metas(
     var currentTab by remember { mutableStateOf("Metas")}
 
     Scaffold(
-
         floatingActionButton = {
             BotonCrear(
                 onBotonCrear = {
@@ -61,10 +61,9 @@ fun Metas(
             )
         },
         floatingActionButtonPosition = FabPosition.End
-    ) { innerPadding ->
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
-                .padding(innerPadding)
                 .padding(8.dp)
         ) {
             item {
@@ -124,6 +123,7 @@ fun ItemEncabezado(
 ){
     Column(
         modifier = modifier
+            .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(16.dp),

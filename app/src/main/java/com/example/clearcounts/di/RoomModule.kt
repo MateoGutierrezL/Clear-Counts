@@ -10,6 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.clearcounts.data.repository.categoria.CategoryRepository
 import com.example.clearcounts.data.repository.categoria.OfflineCategoryRepository
 import com.example.clearcounts.data.database.UserDatabase
+import com.example.clearcounts.data.database.dao.BudgetDao
 import com.example.clearcounts.data.database.dao.CategoryDao
 import dagger.Module
 import dagger.Provides
@@ -72,5 +73,8 @@ object RoomModule {
     @Provides
     fun provideNotificationDao(db: UserDatabase) = db.notificationDao()
 
+    @Singleton
+    @Provides
+    fun provideBudgetDao(db: UserDatabase) = db.budgetDao()
 
 }
