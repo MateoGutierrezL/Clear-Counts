@@ -228,7 +228,8 @@ fun ingresos(
                     onDateClick = {
                         showDatePicker = true
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    label = "Fecha"
                 )
 
                 CampoDiasDesplegable(
@@ -360,7 +361,8 @@ fun ingresos(
 fun CampoFecha(
     fechaSeleccionada: String,
     onDateClick:() -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    label: String
 ){
 
     OutlinedTextField(
@@ -368,7 +370,7 @@ fun CampoFecha(
         onValueChange = {},
         readOnly = true,
         shape = RoundedCornerShape(20.dp),
-        label = { Text("Fecha") },
+        label = { Text(label) },
         modifier = modifier,
         trailingIcon = {
 
@@ -392,6 +394,7 @@ fun CampoNota(
     OutlinedTextField(
         value = nota,
         onValueChange = onNotaChange,
+        minLines = 3,
         maxLines = 5,
         shape = RoundedCornerShape(20.dp),
         label = { Text("Nota") },

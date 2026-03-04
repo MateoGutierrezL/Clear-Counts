@@ -4,6 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.TrackChanges
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalDrawerSheet
@@ -41,6 +45,7 @@ import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.Metas.Metas
+import com.example.clearcounts.ui.screens.Metas.Prestamo
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
@@ -187,7 +192,13 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    Metas()
+                    Metas(
+                        onBotonCrear = { tipoSeleccionado ->
+
+                            navigationController.navigate(Pantallas.Detalle.createRoute(tipoSeleccionado))
+
+                        }
+                    )
                 }
 
                 composable(Pantallas.EditarPerfil.pantalla) {
@@ -301,6 +312,31 @@ fun AppNavigation(
                     )
                 }
 
+                composable(
+                    route = Pantallas.Detalle.pantalla,
+                    arguments = listOf(navArgument("tipo") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val tipo = backStackEntry.arguments?.getString("tipo") ?: "Metas"
+
+                    // Determinamos el título e icono según el tipo recibido
+                    val (tituloFinal, iconoFinal) = when(tipo) {
+                        "Deudas" -> "Deuda" to Icons.Default.ErrorOutline
+                        "Préstamos" -> "Te deben" to Icons.Default.VerifiedUser
+                        else -> "Meta" to Icons.Default.TrackChanges
+                    }
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose { }
+                    }
+
+                    Prestamo(
+                        titulo = tituloFinal,
+                        icono = iconoFinal, // Nuevo parámetro
+                        botonVolver = { navigationController.popBackStack() }
+                    )
+                }
 
             }
         }

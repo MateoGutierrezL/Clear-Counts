@@ -14,5 +14,11 @@ sealed class Pantallas (val pantalla: String){
     data object ingresos: Pantallas("ingresos")
 
     data object Exportar: Pantallas("exportar")
+
     data object CrearCategoria : Pantallas("crearCategoria/{tipo}")
+
+    object Metas : Pantallas("metas")
+    object Detalle : Pantallas("detalle/{tipo}") {
+        fun createRoute(tipo: String) = "detalle/$tipo"
+    }
 }
