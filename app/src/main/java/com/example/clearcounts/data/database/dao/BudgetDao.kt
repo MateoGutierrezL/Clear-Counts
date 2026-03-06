@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -19,4 +20,7 @@ interface BudgetDao {
 
     @Delete
     suspend fun delete(budgetEntity: BudgetEntity)
+
+    @Update
+    suspend fun update(budgetEntity: BudgetEntity)
 }

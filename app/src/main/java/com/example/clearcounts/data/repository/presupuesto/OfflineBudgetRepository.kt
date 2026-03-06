@@ -13,4 +13,5 @@ class OfflineBudgetRepository @Inject constructor(
     override suspend fun insertBudget(budgetEntity: BudgetEntity) = budgetDao.insert(budgetEntity)
 
     override suspend fun deleteBudget(budgetEntity: BudgetEntity) = budgetDao.delete(budgetEntity)
+    override suspend fun updateBudget(budgetEntity: BudgetEntity) = budgetDao.update(budgetEntity)
 }

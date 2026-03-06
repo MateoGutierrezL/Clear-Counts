@@ -56,9 +56,31 @@ class MetasViewModel @Inject constructor(
 
     fun marcarComoHecho(budget: BudgetEntity) {
         viewModelScope.launch {
-            repository.insertBudget(
+            repository.updateBudget(
                 budget.copy(cantidadAcumulada = budget.cantidadRequerida)
             )
+        }
+    }
+
+    fun actualizarCantidadAcumulada(budget: BudgetEntity, cantidad: Double, sumar: Boolean) {
+        viewModelScope.launch {
+            val nuevaCantidad = if (sumar) {
+                budget.cantidadAcumulada + cantidad
+            } else {
+                (budget.cantidadAcumulada - cantidad).coerceAtLeast(0.0)
+            }
+            repository.updateBudget(budget.copy(cantidadAcumulada = nuevaCantidad))
+        }
+    }
+
+    fun actualizarCantidadRequerida(budget: BudgetEntity, cantidad: Double, sumar: Boolean) {
+        viewModelScope.launch {
+            val nuevaCantidad = if (sumar) {
+                budget.cantidadRequerida + cantidad
+            } else {
+                (budget.cantidadRequerida - cantidad).coerceAtLeast(0.0)
+            }
+            repository.updateBudget(budget.copy(cantidadRequerida = nuevaCantidad))
         }
     }
     fun guardarPrestamo(

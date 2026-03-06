@@ -56,7 +56,6 @@ import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
 
 //Funcion que maneja el topappbar bottombar y la barra desplegable
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(

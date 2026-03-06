@@ -10,4 +10,6 @@ interface BudgetRepository {
     suspend fun insertBudget(budgetEntity: BudgetEntity)
 
     suspend fun deleteBudget(budgetEntity: BudgetEntity)
+
+    suspend fun updateBudget(budgetEntity: BudgetEntity)
 }
