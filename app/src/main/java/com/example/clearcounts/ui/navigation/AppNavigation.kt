@@ -44,7 +44,9 @@ import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
+import com.example.clearcounts.ui.screens.Metas.DetalleBudget
 import com.example.clearcounts.ui.screens.Metas.Metas
+import com.example.clearcounts.ui.screens.Metas.MetasViewModel
 import com.example.clearcounts.ui.screens.Metas.Prestamo
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
@@ -184,6 +186,7 @@ fun AppNavigation(
                         }
                     )
                 }
+
                 composable(Pantallas.Presupuesto.pantalla) {
 
                     DisposableEffect(Unit) {
@@ -194,11 +197,40 @@ fun AppNavigation(
 
                     Metas(
                         onBotonCrear = { tipoSeleccionado ->
-
                             navigationController.navigate(Pantallas.Detalle.createRoute(tipoSeleccionado))
-
+                        },
+                        onVerDetalle = { budget ->
+                            navigationController.navigate(Pantallas.DetalleBudget.createRoute(budget.id))
                         }
                     )
+                }
+
+                composable(Pantallas.DetalleBudget.pantalla) { backStackEntry ->
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+
+                    val budgetId = backStackEntry.arguments?.getString("budgetId")?.toIntOrNull()
+                    val viewModelMetas: MetasViewModel = hiltViewModel()
+                    val allBudgets by viewModelMetas.allBudgets.collectAsState()
+                    val budget = allBudgets.find { it.id == budgetId }
+
+                    if (budget != null) {
+                        DetalleBudget(
+                            budget = budget,
+                            onVolver = {
+                                if (navigationController.previousBackStackEntry != null) {
+                                    navigationController.popBackStack()
+                                }
+                            },
+                            onEditar = { budgetAEditar ->
+                                navigationController.navigate(Pantallas.Detalle.createRoute(budgetAEditar.tipo))
+                            }
+                        )
+                    }
                 }
 
                 composable(Pantallas.EditarPerfil.pantalla) {
@@ -308,7 +340,11 @@ fun AppNavigation(
                     }
                     crearCategoria(
                         tipo = tipo,
-                        botonVolver = { navigationController.popBackStack() }
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
                     )
                 }
 
@@ -318,7 +354,6 @@ fun AppNavigation(
                 ) { backStackEntry ->
                     val tipo = backStackEntry.arguments?.getString("tipo") ?: "Metas"
 
-                    // Determinamos el título e icono según el tipo recibido
                     val (tituloFinal, iconoFinal) = when(tipo) {
                         "Deudas" -> "Deuda" to Icons.Default.ErrorOutline
                         "Préstamos" -> "Te deben" to Icons.Default.VerifiedUser
@@ -328,13 +363,17 @@ fun AppNavigation(
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false
                         topBarVisible.value = false
-                        onDispose { }
+                        onDispose {}
                     }
 
                     Prestamo(
                         titulo = tituloFinal,
-                        icono = iconoFinal, // Nuevo parámetro
-                        botonVolver = { navigationController.popBackStack() }
+                        icono = iconoFinal,
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
                     )
                 }
 
