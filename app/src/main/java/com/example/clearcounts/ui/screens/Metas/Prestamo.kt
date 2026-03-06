@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material3.Text
+import com.example.clearcounts.data.database.entities.BudgetEntity
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.ui.screens.IngresosGastos.CampoFecha
 import com.example.clearcounts.ui.screens.IngresosGastos.CampoNota
@@ -62,24 +64,20 @@ fun Prestamo(
     botonVolver:() -> Unit,
     titulo: String,
     icono: ImageVector,
+    budgetAEditar: BudgetEntity? = null,
     viewModel: MetasViewModel = hiltViewModel()
 ){
 
-    var cantidadAcumulada by remember { mutableStateOf("") }
-
-    var cantidadRequerida by remember { mutableStateOf("") }
-
-    var prestador by remember { mutableStateOf("") }
-
-    var nota by remember {mutableStateOf("")}
-
-    var nombreMovimiento by remember {mutableStateOf("")}
+    var nombreMovimiento by remember { mutableStateOf(budgetAEditar?.nombre ?: "") }
+    var cantidadRequerida by remember { mutableStateOf(budgetAEditar?.cantidadRequerida?.toString() ?: "") }
+    var cantidadAcumulada by remember { mutableStateOf(budgetAEditar?.cantidadAcumulada?.toString() ?: "") }
+    var prestador by remember { mutableStateOf(budgetAEditar?.prestador ?: "") }
+    var nota by remember { mutableStateOf(budgetAEditar?.nota ?: "") }
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
-    var fechaInicioSeleccionadaState by remember { mutableStateOf(LocalDate.now().format(formatoFecha)) }
-
-    var fechaLimiteSeleccionadaState by remember { mutableStateOf(LocalDate.now().format(formatoFecha)) }
+    var fechaInicioSeleccionadaState by remember { mutableStateOf(budgetAEditar?.fechaInicio ?: LocalDate.now().format(formatoFecha)) }
+    var fechaLimiteSeleccionadaState by remember { mutableStateOf(budgetAEditar?.fechaLimite ?: LocalDate.now().format(formatoFecha)) }
 
     var tipoFechaEdicion by remember { mutableStateOf<String?>(null) }
 
@@ -89,6 +87,18 @@ fun Prestamo(
 
     val updateLimiteDate = { date: LocalDate ->
         fechaLimiteSeleccionadaState = date.format(formatoFecha)
+    }
+
+    LaunchedEffect(budgetAEditar) {
+        budgetAEditar?.let {
+            nombreMovimiento = it.nombre
+            cantidadRequerida = it.cantidadRequerida.toBigDecimal().toPlainString()
+            cantidadAcumulada = it.cantidadAcumulada.toBigDecimal().toPlainString()
+            prestador = it.prestador ?: ""
+            nota = it.nota ?: ""
+            fechaInicioSeleccionadaState = it.fechaInicio ?: LocalDate.now().format(formatoFecha)
+            fechaLimiteSeleccionadaState = it.fechaLimite ?: LocalDate.now().format(formatoFecha)
+        }
     }
 
     LazyColumn(
@@ -257,21 +267,34 @@ fun Prestamo(
                     botonVolver()
                 },
                 onCreateChange = {
-
                     if (nombreMovimiento.isNotBlank() && cantidadRequerida.isNotBlank()) {
-                        viewModel.guardarPrestamo(
-                            nombre = nombreMovimiento,
-                            cantidadRequerida = cantidadRequerida,
-                            cantidadAcumulada = cantidadAcumulada,
-                            prestador = prestador,
-                            fechaInicio = fechaInicioSeleccionadaState,
-                            fechaLimite = fechaLimiteSeleccionadaState,
-                            nota = nota,
-                            tipo = titulo // Usamos el parámetro de la pantalla
-                        )
-                        botonVolver() // Regresamos después de guardar
-                    } else {
-                        Log.e("meta", "fallo al insertar la meta")
+                        if (budgetAEditar != null) {
+                            // Actualizar
+                            viewModel.actualizarBudget(
+                                budgetAEditar.copy(
+                                    nombre = nombreMovimiento,
+                                    cantidadRequerida = cantidadRequerida.toDoubleOrNull() ?: 0.0,
+                                    cantidadAcumulada = cantidadAcumulada.toDoubleOrNull() ?: 0.0,
+                                    prestador = prestador,
+                                    fechaInicio = fechaInicioSeleccionadaState,
+                                    fechaLimite = fechaLimiteSeleccionadaState,
+                                    nota = nota
+                                )
+                            )
+                        } else {
+                            // Crear nuevo
+                            viewModel.guardarPrestamo(
+                                nombre = nombreMovimiento,
+                                cantidadRequerida = cantidadRequerida,
+                                cantidadAcumulada = cantidadAcumulada,
+                                prestador = prestador,
+                                fechaInicio = fechaInicioSeleccionadaState,
+                                fechaLimite = fechaLimiteSeleccionadaState,
+                                nota = nota,
+                                tipo = titulo
+                            )
+                        }
+                        botonVolver()
                     }
                 }
             )

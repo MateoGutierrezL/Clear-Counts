@@ -18,8 +18,10 @@ sealed class Pantallas (val pantalla: String){
     data object CrearCategoria : Pantallas("crearCategoria/{tipo}")
 
     object Metas : Pantallas("metas")
-    object Detalle : Pantallas("detalle/{tipo}") {
-        fun createRoute(tipo: String) = "detalle/$tipo"
+    object Detalle : Pantallas("detalle/{tipo}?budgetId={budgetId}") {
+        fun createRoute(tipo: String, budgetId: Int? = null) =
+            if (budgetId != null) "detalle/$tipo?budgetId=$budgetId"
+            else "detalle/$tipo"
     }
 
     object DetalleBudget : Pantallas("detalleBudget/{budgetId}") {

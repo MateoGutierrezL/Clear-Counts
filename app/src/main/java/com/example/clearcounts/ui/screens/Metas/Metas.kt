@@ -21,10 +21,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.VerifiedUser
@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -124,7 +125,6 @@ fun Metas(
                 RowEncabezado(onTabSelected = { currentTab = it })
             }
 
-            // Cuadros de resumen
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 ResumenCards(
@@ -136,7 +136,6 @@ fun Metas(
             }
 
             if (listaActual.isEmpty()) {
-                // Estado vacío
                 item {
                     EstadoVacio(
                         mensaje = labelVacio,
@@ -144,14 +143,13 @@ fun Metas(
                     )
                 }
             } else {
-                // Encabezado "Actual" + suma total
                 item {
                     Row(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Default.List,
+                            imageVector = Icons.AutoMirrored.Filled.List,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp)
                         )
@@ -178,7 +176,6 @@ fun Metas(
                     }
                 }
 
-                // Lista de items
                 items(listaActual) { item ->
                     ItemBudgetCard(
                         item = item,
@@ -192,7 +189,6 @@ fun Metas(
     }
 }
 
-// Data class auxiliar para la configuración de cada tab
 data class MetasTabConfig(
     val lista: List<BudgetEntity>,
     val icono: ImageVector,
@@ -271,7 +267,7 @@ fun RowEncabezado(
     onTabSelected: (String) -> Unit
 ) {
     val tabs = listOf("Metas", "Deudas", "Préstamos")
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = Modifier
@@ -450,7 +446,6 @@ fun EstadoVacio(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Ilustración (puedes reemplazar con tu imagen/lottie real)
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = null,
@@ -483,7 +478,7 @@ fun ResumenCards(
     totalLeft: Double,
     completados: Int,
     total: Int,
-    labelCompletados: String // "Fulfilled Goals", "Paid debts", etc.
+    labelCompletados: String
 ) {
     Row(
         modifier = Modifier
@@ -491,7 +486,6 @@ fun ResumenCards(
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Card Total Left
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -514,7 +508,6 @@ fun ResumenCards(
             )
         }
 
-        // Card Completados
         Column(
             modifier = Modifier
                 .weight(1f)

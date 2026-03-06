@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -193,7 +192,7 @@ fun DetalleBudget(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "$ ${budget.cantidadAcumulada.formatMonto()}",
+                        text = budget.cantidadAcumulada.formatMonto(),
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
@@ -258,7 +257,7 @@ fun DetalleBudget(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "$ ${budget.cantidadRequerida.formatMonto()}",
+                        text = budget.cantidadRequerida.formatMonto(),
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )

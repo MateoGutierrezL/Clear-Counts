@@ -83,6 +83,12 @@ class MetasViewModel @Inject constructor(
             repository.updateBudget(budget.copy(cantidadRequerida = nuevaCantidad))
         }
     }
+
+    fun actualizarBudget(budget: BudgetEntity) {
+        viewModelScope.launch {
+            repository.updateBudget(budget)
+        }
+    }
     fun guardarPrestamo(
         nombre: String,
         cantidadRequerida: String,

@@ -226,7 +226,9 @@ fun AppNavigation(
                                 }
                             },
                             onEditar = { budgetAEditar ->
-                                navigationController.navigate(Pantallas.Detalle.createRoute(budgetAEditar.tipo))
+                                navigationController.navigate(
+                                    Pantallas.Detalle.createRoute(budgetAEditar.tipo, budgetAEditar.id)
+                                )
                             }
                         )
                     }
@@ -346,16 +348,26 @@ fun AppNavigation(
                         }
                     )
                 }
-
                 composable(
                     route = Pantallas.Detalle.pantalla,
-                    arguments = listOf(navArgument("tipo") { type = NavType.StringType })
+                    arguments = listOf(
+                        navArgument("tipo") { type = NavType.StringType },
+                        navArgument("budgetId") {
+                            type = NavType.IntType
+                            defaultValue = -1
+                        }
+                    )
                 ) { backStackEntry ->
                     val tipo = backStackEntry.arguments?.getString("tipo") ?: "Metas"
+                    val budgetId = backStackEntry.arguments?.getInt("budgetId") ?: -1
+
+                    val viewModelMetas: MetasViewModel = hiltViewModel()
+                    val allBudgets by viewModelMetas.allBudgets.collectAsState()
+                    val budgetAEditar = allBudgets.find { it.id == budgetId }
 
                     val (tituloFinal, iconoFinal) = when(tipo) {
-                        "Deudas" -> "Deuda" to Icons.Default.ErrorOutline
-                        "Préstamos" -> "Te deben" to Icons.Default.VerifiedUser
+                        "Deuda" -> "Deuda" to Icons.Default.ErrorOutline
+                        "Te deben" -> "Te deben" to Icons.Default.VerifiedUser
                         else -> "Meta" to Icons.Default.TrackChanges
                     }
 
@@ -368,14 +380,10 @@ fun AppNavigation(
                     Prestamo(
                         titulo = tituloFinal,
                         icono = iconoFinal,
-                        botonVolver = {
-                            if (navigationController.previousBackStackEntry != null) {
-                                navigationController.popBackStack()
-                            }
-                        }
+                        budgetAEditar = budgetAEditar,  // <- pasa el budget
+                        botonVolver = { navigationController.popBackStack() }
                     )
                 }
-
             }
         }
     }
