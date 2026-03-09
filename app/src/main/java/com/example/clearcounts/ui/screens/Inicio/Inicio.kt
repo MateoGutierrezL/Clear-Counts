@@ -79,14 +79,12 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel()
+    paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel(), navegarTodasTransacciones: () -> Unit
 ) {
 
     val formatter = NumberFormat.getInstance(Locale.forLanguageTag("es-ES")).apply {
         maximumFractionDigits = 0
     }
-
-    val listaMovimientos by viewModel.movimientosState.collectAsState()
 
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM", Locale.forLanguageTag("es-ES"))
 
@@ -101,6 +99,12 @@ fun HomeScreen(
 
     val chartData by viewModel.chartDataState.collectAsState()
 
+    val movimientosAgrupados by viewModel.movimientosAgrupados.collectAsState()
+
+    val totalIngresoMensual by viewModel.totalIngresoMensual.collectAsState()
+    val totalGastoMensual by viewModel.totalGastoMensual.collectAsState()
+    val balanceMensual by viewModel.balanceMensual.collectAsState()
+
     LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -111,17 +115,14 @@ fun HomeScreen(
 
                 Balance(
                     fechaActual = fechaActual,
-                    balance = formatter.format(balance)
+                    balance = formatter.format(balanceMensual.toInt())
                 )
             }
 
             item {
-                val totalIngreso = totalIngreso.toInt()
-                val totalGasto = totalGasto.toInt()
-
                 IngresosGastos(
-                    totalIngreso = formatter.format(totalIngreso),
-                    totalGasto = formatter.format(totalGasto)
+                    totalIngreso = formatter.format(totalIngresoMensual.toInt()),
+                    totalGasto = formatter.format(totalGastoMensual.toInt())
                 )
             }
 
@@ -137,36 +138,47 @@ fun HomeScreen(
             item {
                 Transacciones(
                     onVerTodoChange = {
-                        //Todo funcion para implementar sobre el texto de ver todos en el inicio
+                        navegarTodasTransacciones()
                     }
                 )
             }
-            items(
-                items = listaMovimientos,
-                // Clave única para que Compose no se confunda con IDs repetidos entre tablas
-                key = { item ->
-                    when (item) {
-                        is IncomeEntity -> "inc_${item.id}"
-                        is ExpenseEntity -> "exp_${item.id}"
+        items(
+            items = movimientosAgrupados,
+            key = { item ->
+                when (item) {
+                    is InicioViewModel.MovimientoItem.Header -> "header_${item.fecha}"
+                    is InicioViewModel.MovimientoItem.Transaccion -> when (val mov = item.movimiento) {
+                        is IncomeEntity -> "inc_${mov.id}"
+                        is ExpenseEntity -> "exp_${mov.id}"
                         else -> item.hashCode()
                     }
                 }
-            ) { movimiento ->
-                when (movimiento) {
-                    is IncomeEntity -> ItemIngreso(
-                        ingreso = movimiento,
-                        onPopUpIngreso = {
-                            ingresoSeleccionado = movimiento
-                        }
-                    )
-                    is ExpenseEntity -> ItemGasto(
-                        gasto = movimiento,
-                        onPopUpGasto = {
-                            gastoSeleccionado = movimiento
-                        }
+            }
+        ) { item ->
+            when (item) {
+                is InicioViewModel.MovimientoItem.Header -> {
+                    // 👇 Header de fecha
+                    Text(
+                        text = formatearFechaHeader(item.fecha),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
                     )
                 }
+                is InicioViewModel.MovimientoItem.Transaccion -> {
+                    when (val mov = item.movimiento) {
+                        is IncomeEntity -> ItemIngreso(
+                            ingreso = mov,
+                            onPopUpIngreso = { ingresoSeleccionado = mov }
+                        )
+                        is ExpenseEntity -> ItemGasto(
+                            gasto = mov,
+                            onPopUpGasto = { gastoSeleccionado = mov }
+                        )
+                    }
+                }
             }
+        }
         }
 
     ingresoSeleccionado?.let { ingreso ->
@@ -309,7 +321,7 @@ fun Balance(
             Text(text = fechaActual, style = MaterialTheme.typography.bodyMedium)
         }
 
-        Text(text = "Balance Total", style = MaterialTheme.typography.bodyLarge)
+        Text(text = "Balance del mes", style = MaterialTheme.typography.bodyLarge)
 
         Text(
             text = balance,
@@ -644,4 +656,27 @@ fun Float.formatToSinglePrecision(): String {
 // O si el resultado de tu operación es Int, úsala sobre Floats:
 fun Number.formatToSinglePrecision(): String {
     return "%.1f".format(this.toDouble())
+}
+
+fun formatearFechaHeader(fecha: String): String {
+    return try {
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        val date = LocalDate.parse(fecha, formatter)
+        val hoy = LocalDate.now()
+        val ayer = hoy.minusDays(1)
+        when (date) {
+            hoy -> "Hoy"
+            ayer -> "Ayer"
+            else -> {
+                val pattern = if (date.year == hoy.year) {
+                    "dd 'de' MMMM" // 👈 Sin año si es el mismo año
+                } else {
+                    "dd 'de' MMMM 'de' yyyy" // 👈 Con año si es diferente
+                }
+                date.format(DateTimeFormatter.ofPattern(pattern, Locale.forLanguageTag("es-ES")))
+            }
+        }
+    } catch (e: Exception) {
+        fecha
+    }
 }

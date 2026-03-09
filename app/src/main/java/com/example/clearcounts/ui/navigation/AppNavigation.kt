@@ -46,6 +46,7 @@ import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
+import com.example.clearcounts.ui.screens.Inicio.TodasTransacciones
 import com.example.clearcounts.ui.screens.Metas.DetalleBudget
 import com.example.clearcounts.ui.screens.Metas.Metas
 import com.example.clearcounts.ui.screens.Metas.MetasViewModel
@@ -165,7 +166,9 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    HomeScreen(paddingValues)
+                    HomeScreen(paddingValues, navegarTodasTransacciones = {
+                        navigationController.navigate(Pantallas.TodasTransacciones.pantalla)
+                    })
                 }
                 composable(Pantallas.Graficas.pantalla) {
 
@@ -389,6 +392,22 @@ fun AppNavigation(
                         icono = iconoFinal,
                         budgetAEditar = budgetAEditar,  // <- pasa el budget
                         botonVolver = { navigationController.popBackStack() }
+                    )
+
+                }
+
+                composable(Pantallas.TodasTransacciones.pantalla) {
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    TodasTransacciones(
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
                     )
                 }
 
