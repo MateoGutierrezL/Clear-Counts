@@ -276,6 +276,7 @@ fun CustomBottomAppBar(
                                         ingresos.forEach { categoria ->
                                             CategoriasItem(navigationController, categoria, sheetState, "ingreso")
                                         }
+
                                     }
                                 }
 
@@ -292,6 +293,7 @@ fun CustomBottomAppBar(
                                         gastos.forEach { categoria ->
                                             CategoriasItem(navigationController, categoria, sheetState, "gasto")
                                         }
+
                                     }
                                 }
                             } else {

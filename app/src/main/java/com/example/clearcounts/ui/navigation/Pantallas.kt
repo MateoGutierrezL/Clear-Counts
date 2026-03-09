@@ -29,4 +29,6 @@ sealed class Pantallas (val pantalla: String){
     object DetalleBudget : Pantallas("detalleBudget/{budgetId}") {
         fun createRoute(budgetId: Int) = "detalleBudget/$budgetId"
     }
+
+    data object TodasTransacciones: Pantallas("todasTransacciones")
 }
