@@ -6,6 +6,7 @@ enum class DrawerItem (
     val icon: Int,
     val text: String
 ){
+    PERFIL(icon = R.drawable.user, text = "Perfil"),
     EXPORT_PDF(icon = R.drawable.documento, "Exportar PDF/CSV"),
     PERSONALIZACION(icon = R.drawable.equalizer, text = "Personalización"),
     CONTACT(icon = R.drawable.phone_call, text = "Contactanos"),

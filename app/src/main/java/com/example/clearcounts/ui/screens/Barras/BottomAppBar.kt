@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -354,26 +355,26 @@ fun CustomBottomAppBar(
 
         // Perfil
         NavigationBarItem(
-            selected = selectedIcon.value == "profile",
+            selected = selectedIcon.value == "ajustes",
             onClick = {
-                selectedIcon.value = "profile"
-                navigationController.navigate(Pantallas.Perfil.pantalla) {
+                selectedIcon.value = "ajustes"
+                navigationController.navigate(Pantallas.Ajustes.pantalla) {
                     popUpTo(0)
                 }
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.user),
-                    contentDescription = "Perfil",
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "ajustes",
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "profile") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Perfil",
+                    text = "Ajustes",
                     fontSize = 12.sp,
-                    color = if (selectedIcon.value == "profile") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                    color = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             colors = NavigationBarItemDefaults.colors(

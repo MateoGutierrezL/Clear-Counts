@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -30,6 +32,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.clearcounts.ui.navigation.AppNavigation
 import com.example.clearcounts.ui.navigation.Pantallas
+import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaRegistro
@@ -75,11 +78,6 @@ class MainActivity : ComponentActivity() {
         // Canal para las notificaciones
         NotificationHelper.createNotificationChannel(this)
 
-        // Pedir permiso en Android 13+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
-        }
-
         lifecycleScope.launch{
             val user = auth.currentUser
             isUserLoggedIn = user != null
@@ -95,9 +93,15 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ClearCountTheme(darkTheme = isSystemInDarkTheme()) {
+            val themeViewModel: ThemeViewModel by viewModels()
+            val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
+
+            ClearCountTheme(darkTheme = isDarkMode) {
                 isUserLoggedIn?.let { loggedIn ->
-                    InicioUsuario(isLoggedIn = loggedIn )
+                    InicioUsuario(
+                        isLoggedIn = loggedIn,
+                        themeViewModel = themeViewModel   // pásalo hacia abajo
+                    )
                 }
             }
         }
@@ -165,7 +169,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun InicioUsuario(isLoggedIn: Boolean){
+fun InicioUsuario(
+    isLoggedIn: Boolean,
+    themeViewModel: ThemeViewModel
+){
 
     val rootNavController = rememberNavController()
 
@@ -258,7 +265,10 @@ fun InicioUsuario(isLoggedIn: Boolean){
         }
 
         composable ("Inicio"){
-            AppNavigation(rootNavController = rootNavController)
+            AppNavigation(
+                rootNavController = rootNavController,
+                themeViewModel = themeViewModel
+            )
         }
     }
 }

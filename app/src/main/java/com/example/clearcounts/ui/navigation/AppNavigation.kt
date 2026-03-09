@@ -34,6 +34,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clearcounts.R
+import com.example.clearcounts.ui.screens.Ajustes.Ajustes
+import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
 import com.example.clearcounts.ui.screens.graficas.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
@@ -55,13 +57,13 @@ import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
 import kotlinx.coroutines.launch
 
-//Funcion que maneja el topappbar bottombar y la barra desplegable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
     rootNavController: NavController,
     viewModel: UserSessionViewModel = hiltViewModel(),
-    notificacionesViewModel: NotificacionesViewModel = hiltViewModel()
+    notificacionesViewModel: NotificacionesViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel
 
 ) {
     val navigationController = rememberNavController()
@@ -85,6 +87,11 @@ fun AppNavigation(
                     items = DrawerItem.entries,
                 ) {
                     when (it) {
+                        DrawerItem.PERFIL -> {
+
+                            navigationController.navigate(Pantallas.Perfil.pantalla)
+
+                        }
                         DrawerItem.EXPORT_PDF -> {
 
                             navigationController.navigate(Pantallas.Exportar.pantalla)
@@ -101,7 +108,7 @@ fun AppNavigation(
                                 }
                             }
                         }
-                }
+                    }
                     scope.launch {
                         drawerState.close()
                     }
@@ -383,6 +390,33 @@ fun AppNavigation(
                         budgetAEditar = budgetAEditar,  // <- pasa el budget
                         botonVolver = { navigationController.popBackStack() }
                     )
+                }
+
+                composable(Pantallas.Ajustes.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+
+                    Ajustes(
+                        navegarPerfil = {
+                            navigationController.navigate(Pantallas.Perfil.pantalla)
+                        },
+                        navegarExportar = {
+                            navigationController.navigate(Pantallas.Exportar.pantalla)
+                        },
+                        onLogOut = {
+                            viewModel.logOut {
+                                rootNavController.navigate("InicioSesion") {
+                                    popUpTo("Inicio") { inclusive = true }
+                                }
+                            }
+                        },
+                        themeViewModel = themeViewModel
+                    )
+
                 }
             }
         }
