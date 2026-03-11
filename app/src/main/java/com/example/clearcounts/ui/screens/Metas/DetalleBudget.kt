@@ -43,11 +43,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -122,7 +124,7 @@ fun DetalleBudget(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver"
+                        contentDescription = stringResource(R.string.volver)
                     )
                 }
 
@@ -136,7 +138,7 @@ fun DetalleBudget(
                         .padding(horizontal = 8.dp)
                 ) {
                     Text(
-                        text = "Editar",
+                        text = stringResource(R.string.editar),
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -185,7 +187,7 @@ fun DetalleBudget(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Cantidad\nacumulada",
+                            text = stringResource(R.string.cantidad_acumulada),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                         )
@@ -206,7 +208,9 @@ fun DetalleBudget(
                                 valorIngresado = ""
                                 mostrarDialogo = true
                             },
-                            modifier = Modifier.weight(1f).height(32.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(32.dp),
                             border = BorderStroke(1.dp, color = Color(0xFF2196F3)),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
@@ -221,7 +225,9 @@ fun DetalleBudget(
                                 valorIngresado = ""
                                 mostrarDialogo = true
                             },
-                            modifier = Modifier.weight(1f).height(32.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(32.dp),
                             border = BorderStroke(1.dp, color = Color(0xFFE74C3C)),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
@@ -250,7 +256,7 @@ fun DetalleBudget(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Cantidad\nmeta",
+                            text = stringResource(R.string.cantidad_meta),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                         )
@@ -271,7 +277,9 @@ fun DetalleBudget(
                                 valorIngresado = ""
                                 mostrarDialogo = true
                             },
-                            modifier = Modifier.weight(1f).height(32.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(32.dp),
                             border = BorderStroke(1.dp, color = Color(0xFF2196F3)),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
@@ -286,7 +294,9 @@ fun DetalleBudget(
                                 valorIngresado = ""
                                 mostrarDialogo = true
                             },
-                            modifier = Modifier.weight(1f).height(32.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(32.dp),
                             border = BorderStroke(1.dp, color = Color(0xFFE74C3C)),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(0.dp),
@@ -301,20 +311,20 @@ fun DetalleBudget(
             Spacer(modifier = Modifier.height(24.dp))
 
             FilaDetalle(
-                label = "Fecha",
+                label = stringResource(R.string.fecha_simple),
                 valor = fechaInicio
             )
 
             if (!budget.prestador.isNullOrBlank()) {
                 FilaDetalle(
-                    label = "Prestador",
+                    label = stringResource(R.string.prestador),
                     valor = budget.prestador,
                     esTextoSimple = true
                 )
             }
 
             FilaDetalle(
-                label = "Fecha límite",
+                label = stringResource(R.string.fecha_l_mite),
                 valor = fechaLimite
             )
 
@@ -338,7 +348,7 @@ fun DetalleBudget(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Eliminar",
+                        contentDescription = stringResource(R.string.eliminar),
                         tint = Color(0xFFE74C3C)
                     )
                 }
@@ -354,7 +364,7 @@ fun DetalleBudget(
                     )
                 ) {
                     Text(
-                        text = "Marcar como completado",
+                        text = stringResource(R.string.marcar_como_completado),
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
@@ -386,9 +396,9 @@ fun DetalleBudget(
                     }
 
                     val mensaje = if (tipoOperacion == "sumar")
-                        "Se sumaron $ ${cantidad.formatMonto()}"
+                        context.getString(R.string.se_sumaron, cantidad.formatMonto())
                     else
-                        "Se restaron $ ${cantidad.formatMonto()}"
+                        context.getString(R.string.se_restaron, cantidad.formatMonto())
 
                     Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
                     mostrarDialogo = false
@@ -458,7 +468,9 @@ fun DialogoActualizarCantidad(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = if (tipoOperacion == "sumar") "Sumar cantidad" else "Restar cantidad",
+                text = if (tipoOperacion == "sumar") stringResource(R.string.sumar_cantidad) else stringResource(
+                    R.string.restar_cantidad
+                ),
                 fontWeight = FontWeight.Bold
             )
         },
@@ -466,9 +478,9 @@ fun DialogoActualizarCantidad(
             Column {
                 Text(
                     text = if (tipoOperacion == "sumar")
-                        "¿Cuánto deseas sumar a la cantidad?"
+                        stringResource(R.string.cu_nto_deseas_sumar_a_la_cantidad)
                     else
-                        "¿Cuánto deseas restar de la cantidad?",
+                        stringResource(R.string.cu_nto_deseas_restar_de_la_cantidad),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                 )
@@ -493,14 +505,16 @@ fun DialogoActualizarCantidad(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = if (tipoOperacion == "sumar") "Sumar" else "Restar",
+                    text = if (tipoOperacion == "sumar") stringResource(R.string.sumar) else stringResource(
+                        R.string.restar
+                    ),
                     fontWeight = FontWeight.Bold
                 )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar))
             }
         },
         shape = RoundedCornerShape(16.dp)

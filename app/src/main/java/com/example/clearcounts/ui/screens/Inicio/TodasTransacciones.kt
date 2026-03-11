@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -23,16 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.ui.screens.Inicio.DetalleGastoPopup
-import com.example.clearcounts.ui.screens.Inicio.DetalleIngresoPopup
-import com.example.clearcounts.ui.screens.Inicio.ItemGasto
-import com.example.clearcounts.ui.screens.Inicio.ItemIngreso
-
 
 @Composable
 fun TodasTransacciones(
@@ -54,12 +50,12 @@ fun TodasTransacciones(
             IconButton(onClick = botonVolver) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Volver",
+                    contentDescription = stringResource(R.string.volver),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
             Text(
-                text = "Todas las transacciones",
+                text = stringResource(R.string.todas_las_transacciones),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

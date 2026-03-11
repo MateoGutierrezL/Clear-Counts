@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
+import com.example.clearcounts.R
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -65,7 +67,8 @@ fun Graficas(
     val stats by viewModel.statsUiState.collectAsState()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(8.dp)
             .background(MaterialTheme.colorScheme.surface)
     ) {
@@ -73,8 +76,8 @@ fun Graficas(
             Spacer(modifier = Modifier.height(8.dp))
 
             Encabezado(
-                titulo = "Gráficas",
-                subtitulo = "Análisis de tus finanzas",
+                titulo = stringResource(R.string.graficas),
+                subtitulo = stringResource(R.string.analisis_de_tus_finanzas),
                  modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
             )
         }
@@ -133,23 +136,24 @@ fun PromediosDiarios(
     gastos: String
 ){
     Row(
-        modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         ItemPromedio(
-            titulo = "Promedio Diario",
+            titulo = stringResource(R.string.promedio_diario),
             monto = ingresos,
-            descripcion = "Ingresos",
+            descripcion = stringResource(R.string.ingresos),
             colorFondo = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.weight(1f)
         )
 
         ItemPromedio(
-            titulo = "Promedio Diario",
+            titulo = stringResource(R.string.promedio_diario),
             monto = gastos,
-            descripcion = "Gastos",
+            descripcion = stringResource(R.string.gastos),
             colorFondo = MaterialTheme.colorScheme.onError,
             modifier = Modifier.weight(1f)
         )
@@ -213,8 +217,8 @@ fun IngresosVsGastos(
 
     val donutChartData = PieChartData(
         slices = listOf(
-            PieChartData.Slice("Gastos", if (hayDatos) totalGastos.toFloat() else 0f, color = MaterialTheme.colorScheme.onError),
-            PieChartData.Slice("Ingresos", if (hayDatos) totalIngresos.toFloat() else 0f, color = MaterialTheme.colorScheme.primaryContainer)
+            PieChartData.Slice(stringResource(R.string.gastos), if (hayDatos) totalGastos.toFloat() else 0f, color = MaterialTheme.colorScheme.onError),
+            PieChartData.Slice(stringResource(R.string.ingresos), if (hayDatos) totalIngresos.toFloat() else 0f, color = MaterialTheme.colorScheme.primaryContainer)
         ),
         plotType = PlotType.Donut
     )
@@ -239,7 +243,7 @@ fun IngresosVsGastos(
             horizontalAlignment = Alignment.Start // Alinea el título a la izquierda
         ) {
             Text(
-                text = "Ingresos vs Gastos",
+                text = stringResource(R.string.ingresos_vs_gastos),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -254,7 +258,7 @@ fun IngresosVsGastos(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Sin datos aún",
+                        text = stringResource(R.string.sin_datos_aun),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -275,14 +279,14 @@ fun IngresosVsGastos(
                 ) {
                     LegendItem(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        text = "Ingresos"
+                        text = stringResource(R.string.ingresos)
                     )
 
                     Spacer(Modifier.width(16.dp))
 
                     LegendItem(
                         color = MaterialTheme.colorScheme.onError,
-                        text = "Gastos"
+                        text = stringResource(R.string.gastos)
                     )
                 }
             }
@@ -300,7 +304,11 @@ fun TendenciaSemanal(
     val colorIngresos = MaterialTheme.colorScheme.primaryContainer
     val colorGastos = MaterialTheme.colorScheme.onError
 
-    val etiquetasDias = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom")
+    val etiquetasDias = listOf(stringResource(R.string.lun),
+        stringResource(R.string.mar), stringResource(R.string.mi),
+        stringResource(R.string.jue), stringResource(R.string.vie),
+        stringResource(R.string.sab), stringResource(R.string.dom)
+    )
 
     // Calcula el máximo real para escalar el eje Y dinámicamente
     val todasLasCantidades = viewModel.diasSemana.flatMap { dia ->
@@ -394,7 +402,7 @@ fun TendenciaSemanal(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Tendencia Semanal",
+                text = stringResource(R.string.tendencia_semanal),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -415,9 +423,9 @@ fun TendenciaSemanal(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LegendItem(color = colorIngresos, text = "Ingresos")
+                LegendItem(color = colorIngresos, text = stringResource(R.string.ingresos))
                 Spacer(Modifier.width(16.dp))
-                LegendItem(color = colorGastos, text = "Gastos")
+                LegendItem(color = colorGastos, text = stringResource(R.string.gastos))
             }
         }
     }
@@ -485,7 +493,7 @@ fun GastosPorCategoria(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Gastos por categoría",
+                text = stringResource(R.string.gastos_por_categoria),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -502,7 +510,7 @@ fun GastosPorCategoria(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Sin gastos registrados",
+                            text = stringResource(R.string.sin_gastos_registrados),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -571,10 +579,18 @@ fun ComparacionMensual(
 
     // Mapeo de MM/yyyy → nombre de mes recortado
     val nombreMes = mapOf(
-        "01" to "Ene", "02" to "Feb", "03" to "Mar",
-        "04" to "Abr", "05" to "May", "06" to "Jun",
-        "07" to "Jul", "08" to "Ago", "09" to "Sep",
-        "10" to "Oct", "11" to "Nov", "12" to "Dic"
+        "01" to stringResource(R.string.ene), "02" to stringResource(R.string.feb), "03" to stringResource(
+            R.string.marzo
+        ),
+        "04" to stringResource(R.string.abr), "05" to stringResource(R.string.may), "06" to stringResource(
+            R.string.jun
+        ),
+        "07" to stringResource(R.string.jul), "08" to stringResource(R.string.ago), "09" to stringResource(
+            R.string.sep
+        ),
+        "10" to stringResource(R.string.oct), "11" to stringResource(R.string.nov), "12" to stringResource(
+            R.string.dic
+        )
     )
 
     val todasLasCantidades = monthlyData.flatMap {
@@ -665,7 +681,7 @@ fun ComparacionMensual(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Comparación Mensual",
+                text = stringResource(R.string.comparacion_mensual),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -680,7 +696,7 @@ fun ComparacionMensual(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Sin datos registrados",
+                        text = stringResource(R.string.sin_datos_registrados),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -701,9 +717,9 @@ fun ComparacionMensual(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                LegendItem(color = colorIngresos, text = "Ingresos")
+                LegendItem(color = colorIngresos, text = stringResource(R.string.ingresos))
                 Spacer(Modifier.width(16.dp))
-                LegendItem(color = colorGastos, text = "Gastos")
+                LegendItem(color = colorGastos, text = stringResource(R.string.gastos))
             }
         }
     }

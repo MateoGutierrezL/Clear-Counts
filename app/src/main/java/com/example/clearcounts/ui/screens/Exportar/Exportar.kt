@@ -33,11 +33,13 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.ui.screens.Inicio.ItemFinanciero
@@ -107,7 +109,8 @@ fun PantallaExportarGrafico(
                 output.write(csvContent.toByteArray())
             }
             viewModel.notificarExportacion("CSV")
-            Toast.makeText(context, "Guardado con éxito", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(R.string.guardado_con_exito), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -121,7 +124,7 @@ fun PantallaExportarGrafico(
     ) {
         // --- ZONA DE CAPTURA ---
         Text(
-            text = "Vista Previa del documento",
+            text = stringResource(R.string.vista_previa_del_documento),
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -144,7 +147,7 @@ fun PantallaExportarGrafico(
                     ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Resumen de Movimientos: $mesFiltro",
+                        text = stringResource(R.string.resumen_de_movimientos, mesFiltro),
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center
                     )
@@ -228,9 +231,11 @@ fun PantallaExportarGrafico(
             Button(
                 onClick = { launcher.launch("Reporte_${System.currentTimeMillis()}.pdf") },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
-                Text("Guardar PDF", color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(stringResource(R.string.guardar_pdf), color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }else{
             Button(
@@ -239,14 +244,18 @@ fun PantallaExportarGrafico(
                         csvContent = viewModel.generarCsvString(movimientos)
                         createDocumentLauncher.launch("Reporte_$mesFiltro.csv")
                     } else {
-                        Toast.makeText(context, "No hay datos para exportar", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.no_hay_datos_para_exportar), Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 enabled = movimientos.isNotEmpty(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
-                Text("Generar y Guardar CSV",
+                Text(
+                    stringResource(R.string.generar_y_guardar_csv),
                     color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
@@ -283,10 +292,12 @@ fun guardarPdfEnUri(context: Context, sourceBitmap: Bitmap, uri: Uri) {
             pdfDocument.writeTo(outputStream)
             outputStream.flush()
         }
-        Toast.makeText(context, "¡PDF generado con éxito!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,
+            context.getString(R.string.pdf_generado_con_xito), Toast.LENGTH_SHORT).show()
     } catch (e: Exception) {
         e.printStackTrace()
-        Toast.makeText(context, "Error al escribir archivo", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,
+            context.getString(R.string.error_al_escribir_archivo), Toast.LENGTH_SHORT).show()
     } finally {
         pdfDocument.close()
         // Liberamos memoria si creamos una copia
@@ -318,13 +329,13 @@ fun SelectorMesAnio(
         ) {
             Icon(Icons.Default.DateRange, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text(text = "Periodo: $mesAnioActual")
+            Text(text = stringResource(R.string.periodo, mesAnioActual))
         }
 
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
-                title = { Text("Seleccionar Mes y Año") },
+                title = { Text(stringResource(R.string.seleccionar_mes_y_año)) },
                 text = {
                     Row(
                         modifier = Modifier
@@ -334,7 +345,7 @@ fun SelectorMesAnio(
                     ) {
                         // Columna de Meses
                         ListaSelector(
-                            label = "Mes",
+                            label = stringResource(R.string.mes),
                             opciones = meses,
                             seleccionado = mesTemp,
                             onOptionSelected = { mesTemp = it }
@@ -342,7 +353,7 @@ fun SelectorMesAnio(
 
                         // Columna de Años
                         ListaSelector(
-                            label = "Año",
+                            label = stringResource(R.string.año),
                             opciones = anios,
                             seleccionado = anioTemp,
                             onOptionSelected = { anioTemp = it }
@@ -354,12 +365,12 @@ fun SelectorMesAnio(
                         onMesSeleccionado("$mesTemp-$anioTemp")
                         showDialog = false
                     }) {
-                        Text("Aceptar", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.aceptar), fontWeight = FontWeight.Bold)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDialog = false }) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.cancelar))
                     }
                 }
             )
@@ -394,7 +405,7 @@ fun ListaSelector(
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
                     ),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -411,16 +422,16 @@ fun VistaPreviaCSV(movimientos: List<Any>) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text("Vista Previa del CSV", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.vista_previa_del_csv), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
             // Encabezados
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Tipo", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
-                Text("Cat.", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
-                Text("Monto", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
-                Text("Fecha", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
-                Text("Nota", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.tipo), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.cat_csv), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.Monto_csv), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.fecha_csv), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.nota_csv), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 12.sp,color = MaterialTheme.colorScheme.onBackground)
             }
 
             LazyColumn {

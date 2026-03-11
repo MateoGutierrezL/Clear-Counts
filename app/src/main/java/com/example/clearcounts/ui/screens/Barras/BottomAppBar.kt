@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -79,14 +80,14 @@ fun CustomBottomAppBar(
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.home),
-                    contentDescription = "Inicio",
+                    contentDescription = stringResource(R.string.inicio),
                     modifier = Modifier.size(26.dp),
                     tint = if (selectedIcon.value == "home") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Inicio",
+                    text = stringResource(R.string.inicio),
                     fontSize = 12.sp,
                     color = if (selectedIcon.value == "home") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -112,14 +113,14 @@ fun CustomBottomAppBar(
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.graph),
-                    contentDescription = "Gráficas",
+                    contentDescription = stringResource(R.string.graficas),
                     modifier = Modifier.size(26.dp),
                     tint = if (selectedIcon.value == "charts") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Gráficas",
+                    text = stringResource(R.string.graficas),
                     fontSize = 12.sp,
                     color = if (selectedIcon.value == "charts") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -154,7 +155,7 @@ fun CustomBottomAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Añadir",
+                        contentDescription = stringResource(R.string.añadir),
                         tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier.size(24.dp)
                     )
@@ -183,7 +184,7 @@ fun CustomBottomAppBar(
                     if (ingreso) Color.Black else Color.Black
                 }
                 val colorTextoGasto = if (isSystemInDarkTheme()) {
-                    if (gasto) Color.Cyan else Color.Black
+                    if (gasto) MaterialTheme.colorScheme.primary else Color.Black
                 } else {
                     if (gasto) Color.Black else Color.Black
                 }
@@ -220,7 +221,7 @@ fun CustomBottomAppBar(
                                         )
                                 ) {
                                     Text(
-                                        text = "Ingresos",
+                                        text = stringResource(R.string.ingresos),
                                         color = colorTextoIngreso
                                     )
                                 }
@@ -236,7 +237,7 @@ fun CustomBottomAppBar(
                                         )
                                 ) {
                                     Text(
-                                        text = "Gastos",
+                                        text = stringResource(R.string.gastos),
                                         color = colorTextoGasto
                                     )
                                 }
@@ -254,7 +255,7 @@ fun CustomBottomAppBar(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        contentDescription = "Añadir",
+                                        contentDescription = stringResource(R.string.añadir),
                                         tint = Color.Black
                                     )
                                 }
@@ -308,7 +309,7 @@ fun CustomBottomAppBar(
                                         .clip(RoundedCornerShape(10.dp))
                                 ) {
                                     Text(
-                                        text = "Seleccione las Categorias que desea ver con los botones superiores.",
+                                        text = stringResource(R.string.seleccione_las_categorias_que_desea_ver_con_los_botones_superiores),
                                         textAlign = TextAlign.Center
 
                                     )
@@ -334,14 +335,14 @@ fun CustomBottomAppBar(
             icon = {
                 Icon(
                     imageVector = Icons.Default.TrackChanges,
-                    contentDescription = "Metas",
+                    contentDescription = stringResource(R.string.metas),
                     modifier = Modifier.size(26.dp),
                     tint = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Metas",
+                    text = stringResource(R.string.metas),
                     fontSize = 12.sp,
                     color = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -367,14 +368,14 @@ fun CustomBottomAppBar(
             icon = {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "ajustes",
+                    contentDescription = stringResource(R.string.ajustes),
                     modifier = Modifier.size(26.dp),
                     tint = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = "Ajustes",
+                    text = stringResource(R.string.ajustes),
                     fontSize = 12.sp,
                     color = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )

@@ -67,8 +67,8 @@ fun PreguntasComentarios(
 
 
     Box(modifier = Modifier
-        .fillMaxSize().
-        pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
+        .fillMaxSize()
+        .pointerInput(Unit) { // Usar Unit para que se ejecute una sola vez, se implementa en el contenedor principal
             detectTapGestures(onTap = {
 
                 focusManager.clearFocus()
@@ -85,7 +85,7 @@ fun PreguntasComentarios(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Volver",
+                contentDescription = stringResource(R.string.volver),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(30.dp)
             )
@@ -107,7 +107,7 @@ fun PreguntasComentarios(
 
                 OutlinedTextField(value = comentario,
                     onValueChange = { comentario = it },
-                    placeholder = {Text("Escribe un comentario...")},
+                    placeholder = {Text(stringResource(R.string.escribe_un_comentario))},
                     shape = RoundedCornerShape(16.dp),
                     colors = coloresOutlined,
                     maxLines = 15,
@@ -143,11 +143,13 @@ fun BotonesContacto(
         onClick = {
             viewModel.SendEmail(context, "clearcounts1@gmail.com", subject, body )
         },
-        modifier = Modifier.fillMaxWidth(). padding(start = 50.dp, end = 50.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 50.dp, end = 50.dp)
             .border(
-            border = BorderStroke(1.dp, gris),
-            shape = ButtonDefaults.shape
-        ),
+                border = BorderStroke(1.dp, gris),
+                shape = ButtonDefaults.shape
+            ),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.background
         )
@@ -166,7 +168,8 @@ fun BotonesContacto(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text("Enviar correo",
+            Text(
+                stringResource(R.string.enviar_correo),
                 color = MaterialTheme.colorScheme.onBackground
             )
 

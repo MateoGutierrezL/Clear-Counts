@@ -31,4 +31,6 @@ sealed class Pantallas (val pantalla: String){
     }
 
     data object TodasTransacciones: Pantallas("todasTransacciones")
+
+    data object Idiomas: Pantallas("idiomas")
 }

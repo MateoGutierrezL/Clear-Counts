@@ -36,11 +36,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.NotificationEntity
 
 
@@ -61,14 +63,14 @@ fun Notificaciones(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Notificaciones",
+                text = stringResource(R.string.notificaciones_pantalla),
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             if (notificaciones.isNotEmpty()) {
                 TextButton(onClick = { viewModel.deleteAllNotificaciones() }) {
                     Text(
-                        text = "Limpiar todo",
+                        text = stringResource(R.string.limpiar_todo),
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 14.sp
                     )
@@ -93,7 +95,7 @@ fun Notificaciones(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "No tienes notificaciones",
+                        text = stringResource(R.string.no_tienes_notificaciones),
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                         fontSize = 16.sp
                     )

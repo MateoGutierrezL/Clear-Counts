@@ -51,6 +51,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -68,6 +69,7 @@ import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.facebook.internal.Utility.locale
@@ -128,7 +130,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    text = "Últimos 7 días",
+                    text = stringResource(R.string.ultimos_7_dias),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -211,7 +213,7 @@ fun DetalleIngresoPopup(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Cerrar") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cerrar)) }
         },
         dismissButton = {
             Box(
@@ -226,21 +228,21 @@ fun DetalleIngresoPopup(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Eliminar"
+                        contentDescription = stringResource(R.string.eliminar)
                     )
                 }
             }
         },
-        title = { Text(text = "Detalle de Ingreso", fontWeight = FontWeight.Bold) },
+        title = { Text(text = stringResource(R.string.detalle_de_ingreso), fontWeight = FontWeight.Bold) },
         text = {
             Column {
-                Text("Categoría: ${ingreso.categoria}")
-                Text("Monto: ${ingreso.cantidad.toInt()}")
-                Text("Hora: ${ingreso.hora}")
-                Text("Fecha: ${ingreso.fecha}")
+                Text(stringResource(R.string.categoria, ingreso.categoria))
+                Text(stringResource(R.string.monto, ingreso.categoria))
+                Text(stringResource(R.string.hora, ingreso.categoria))
+                Text(stringResource(R.string.fecha, ingreso.categoria))
 
                 if (!ingreso.nota.isNullOrEmpty()) {
-                    Text("Nota: ${ingreso.nota}")
+                    Text(stringResource(R.string.nota, ingreso.nota))
                 }
             }
         },
@@ -257,7 +259,7 @@ fun DetalleGastoPopup(
     AlertDialog(
     onDismissRequest = onDismiss,
     confirmButton = {
-        TextButton(onClick = onDismiss) { Text("Cerrar") }
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.cerrar)) }
     },
     dismissButton = {
         Box(
@@ -272,21 +274,21 @@ fun DetalleGastoPopup(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Eliminar"
+                    contentDescription = stringResource(R.string.eliminar)
                 )
             }
         }
     },
-    title = { Text(text = "Detalle de Gasto", fontWeight = FontWeight.Bold) },
+    title = { Text(text = stringResource(R.string.detalle_de_gasto), fontWeight = FontWeight.Bold) },
     text = {
         Column {
-            Text("Categoría: ${gasto.categoria}")
-            Text("Monto: ${gasto.cantidad.toInt()}")
-            Text("Hora: ${gasto.hora}")
-            Text("Fecha: ${gasto.fecha}")
+            Text(stringResource(R.string.categoria, gasto.categoria))
+            Text(stringResource(R.string.monto, gasto.cantidad.toInt()))
+            Text(stringResource(R.string.hora, gasto.hora))
+            Text(stringResource(R.string.fecha, gasto.fecha))
 
             if (!gasto.nota.isNullOrEmpty()) {
-                Text("Nota: ${gasto.nota}")
+                Text(stringResource(R.string.nota, gasto.nota))
             }
         }
     },
@@ -321,7 +323,7 @@ fun Balance(
             Text(text = fechaActual, style = MaterialTheme.typography.bodyMedium)
         }
 
-        Text(text = "Balance del mes", style = MaterialTheme.typography.bodyLarge)
+        Text(text = stringResource(R.string.balance_del_mes), style = MaterialTheme.typography.bodyLarge)
 
         Text(
             text = balance,
@@ -338,13 +340,14 @@ fun IngresosGastos(
 ){
 
     Row(modifier =
-        Modifier.fillMaxWidth()
-        .padding(horizontal = 20.dp, vertical = 10.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         ItemFinanciero(
-            titulo = "Ingresos",
+            titulo = stringResource(R.string.ingresos),
             monto = totalIngreso,
             icono = Icons.AutoMirrored.Default.TrendingUp,
             modifier = Modifier.weight(1f),
@@ -352,7 +355,7 @@ fun IngresosGastos(
         )
 
         ItemFinanciero(
-            titulo = "Gastos",
+            titulo = stringResource(R.string.gastos),
             monto = totalGasto,
             icono = Icons.AutoMirrored.Default.TrendingDown,
             modifier = Modifier.weight(1f),
@@ -371,7 +374,11 @@ fun ItemFinanciero(
 ) {
     Column(
         modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                RoundedCornerShape(16.dp)
+            )
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(16.dp),
@@ -409,9 +416,10 @@ fun ItemIngreso(
 ){
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable{
+            .clickable {
                 onPopUpIngreso()
             },
         shape = RoundedCornerShape(16.dp),
@@ -439,7 +447,9 @@ fun ItemIngreso(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp).rotate(45f),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .rotate(45f),
                     tint = iconColor
                 )
             }
@@ -487,9 +497,10 @@ fun ItemGasto(
 ){
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .clickable{
+            .clickable {
                 onPopUpGasto()
             },
         shape = RoundedCornerShape(16.dp),
@@ -517,7 +528,9 @@ fun ItemGasto(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp).rotate(45f),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .rotate(45f),
                     tint = iconColor
                 )
             }
@@ -563,11 +576,13 @@ fun Transacciones(
     onVerTodoChange:() -> Unit
 ){
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Transacciones",
+            text = stringResource(R.string.transacciones),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -575,7 +590,7 @@ fun Transacciones(
             modifier = Modifier.clickable{
                 onVerTodoChange()
             },
-            text = "Ver todas",
+            text = stringResource(R.string.ver_todas),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.End
@@ -644,7 +659,9 @@ fun GraficoLineChart(data: Triple<List<Point>, List<String>, List<Float>>) {
     )
 
     LineChart(
-        modifier = Modifier.fillMaxWidth().height(300.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
         lineChartData = lineChartData
     )
 }

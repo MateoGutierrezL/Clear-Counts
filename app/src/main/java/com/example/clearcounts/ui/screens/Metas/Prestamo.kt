@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material3.Text
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.ui.screens.IngresosGastos.CampoFecha
@@ -102,7 +104,9 @@ fun Prestamo(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(8.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
     ) {
         
         item {
@@ -119,7 +123,7 @@ fun Prestamo(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
+                        contentDescription = stringResource(R.string.volver),
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(30.dp)
                     )
@@ -167,7 +171,7 @@ fun Prestamo(
 
         item {
             Prestador(
-                label = "Nombre del prestador",
+                label = stringResource(R.string.nombre_del_prestador),
                 value = prestador,
                 onValueChange = { nuevoTexto ->
 
@@ -187,7 +191,7 @@ fun Prestamo(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Fechas",
+                        text = stringResource(R.string.fechas),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color(0xFF2196F3),
                         fontWeight = FontWeight.Bold
@@ -213,7 +217,7 @@ fun Prestamo(
                             tipoFechaEdicion = "inicio"
                         },
                         modifier = Modifier.weight(1f),
-                        label = "Fecha inicio"
+                        label = stringResource(R.string.fecha_inicio)
                     )
 
                     CampoFecha(
@@ -222,7 +226,7 @@ fun Prestamo(
                             tipoFechaEdicion = "limite"
                         },
                         modifier = Modifier.weight(1f),
-                        label = "Fecha límite"
+                        label = stringResource(R.string.fecha_l_mite)
                     )
                 }
             }
@@ -231,10 +235,12 @@ fun Prestamo(
         item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
                 Text(
-                    text = "Nota",
+                    text = stringResource(R.string.nota_prestamo),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(0xFF2196F3),
                     fontWeight = FontWeight.Bold
@@ -319,18 +325,6 @@ fun Prestamo(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewPrestamo(){
-    Prestamo(
-        botonVolver = {
-
-        },
-        titulo = "Meta",
-        icono = Icons.Default.Person
-    )
-}
-
 @Composable
 fun TituloPantalla(
     titulo: String
@@ -359,7 +353,7 @@ fun Montos(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Montos",
+                text = stringResource(R.string.montos),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF2196F3),
                 fontWeight = FontWeight.Bold
@@ -379,13 +373,13 @@ fun Montos(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MontoInput(
-                label = "Cantidad requerida",
+                label = stringResource(R.string.cantidad_requerida),
                 value = cantidadRequerida,
                 onValueChange = onCantidadRequeridaChange,
                 modifier = Modifier.weight(1f)
             )
             MontoInput(
-                label = "Cantidad acumulada",
+                label = stringResource(R.string.cantidad_acumulada),
                 value = cantidadAcumulada,
                 onValueChange = onCantidadAcumuladaChange,
                 modifier = Modifier.weight(1f)
@@ -412,7 +406,7 @@ fun MontoInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Cantidad", color = MaterialTheme.colorScheme.onBackground)},
+            placeholder = { Text(stringResource(R.string.cantidad), color = MaterialTheme.colorScheme.onBackground)},
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
@@ -449,7 +443,10 @@ fun CardEncabezadoSimple(
             Box(
                 modifier = Modifier
                     .size(56.dp)
-                    .background(color = MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(16.dp)),
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        RoundedCornerShape(16.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -468,7 +465,7 @@ fun CardEncabezadoSimple(
                     value = nombre,
                     onValueChange = onNombreChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Ej. Préstamo personal", color = MaterialTheme.colorScheme.onBackground) },
+                    placeholder = { Text(stringResource(R.string.ej_pr_stamo_personal), color = MaterialTheme.colorScheme.onBackground) },
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.Edit,
@@ -485,7 +482,7 @@ fun CardEncabezadoSimple(
                 )
 
                 Text(
-                    text = "Toca para editar el nombre",
+                    text = stringResource(R.string.toca_para_editar_el_nombre),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                     modifier = Modifier.padding(start = 12.dp, top = 2.dp)
@@ -509,7 +506,7 @@ fun Prestador(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Prestador",
+                text = stringResource(R.string.prestador),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color(0xFF2196F3),
                 fontWeight = FontWeight.Bold
@@ -534,7 +531,7 @@ fun Prestador(
             OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
-                placeholder = {Text("El: Banco, Persona, Entidad... ", color = MaterialTheme.colorScheme.onBackground)},
+                placeholder = {Text(stringResource(R.string.el_banco_persona_entidad), color = MaterialTheme.colorScheme.onBackground)},
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import com.example.clearcounts.ui.theme.AzulBotones
@@ -86,11 +87,11 @@ fun NavigationDrawer(
             ) {
                 Icon(
                     painter = painterResource(id = it.icon), // Usar item.icon aquí
-                    contentDescription = it.text,
+                    contentDescription = stringResource(it.text),
                     modifier = Modifier.size(30.dp)
                 )
                 Spacer(modifier = Modifier.width(25.dp))
-                Text(text = it.text)
+                Text(text = stringResource(it.text))
             }
         }
 
@@ -111,11 +112,11 @@ fun NavigationDrawer(
     ) {
         Icon(
             painter = painterResource(id = DrawerItem.LOG_OUT.icon), // <-- Usar item.icon aquí
-            contentDescription = DrawerItem.LOG_OUT.text,
+            contentDescription = stringResource(DrawerItem.LOG_OUT.text),
             modifier = Modifier.size(30.dp)
         )
         Spacer(modifier = Modifier.width(25.dp))
-        Text(text = DrawerItem.LOG_OUT.text)
+        Text(text = stringResource(DrawerItem.LOG_OUT.text))
     } }
 
 }

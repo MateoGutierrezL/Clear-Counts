@@ -43,9 +43,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 
 
@@ -88,14 +90,14 @@ fun crearCategoria(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
+                        contentDescription = stringResource(R.string.volver),
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(30.dp)
                     )
                 }
                 Text(
                     modifier = Modifier.padding(top = 22.dp, start = 10.dp),
-                    text = "Nueva categoría",
+                    text = stringResource(R.string.nueva_categoria),
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -121,11 +123,15 @@ fun crearCategoria(
                         Image(
                             painter = painterResource(iconoId),
                             contentDescription = nombre,
-                            modifier = Modifier.size(70.dp).padding(5.dp)
+                            modifier = Modifier
+                                .size(70.dp)
+                                .padding(5.dp)
                         )
                     } else {
                         Box(
-                            modifier = Modifier.size(70.dp).padding(5.dp),
+                            modifier = Modifier
+                                .size(70.dp)
+                                .padding(5.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -138,7 +144,7 @@ fun crearCategoria(
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = if (nombre.isNotEmpty()) nombre else "Nombre de categoría",
+                        text = if (nombre.isNotEmpty()) nombre else stringResource(R.string.nombre_de_categoria),
                         fontSize = 20.sp,
                         color = if (nombre.isNotEmpty()) MaterialTheme.colorScheme.onSurface
                         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
@@ -153,23 +159,27 @@ fun crearCategoria(
                 value = nombre,
                 singleLine = true,
                 onValueChange = { if (it.length <= 20) nombre = it },
-                label = { Text("Nombre") },
-                placeholder = { Text("Ej: Mascota") },
+                label = { Text(stringResource(R.string.nombre)) },
+                placeholder = { Text(stringResource(R.string.ej_mascota)) },
                 shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Selector tipo
             Text(
-                text = "Tipo de categoría",
+                text = stringResource(R.string.tipo_de_categoria),
                 modifier = Modifier.padding(start = 14.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
@@ -180,7 +190,7 @@ fun crearCategoria(
                             MaterialTheme.colorScheme.primaryContainer
                         else MaterialTheme.colorScheme.secondaryContainer
                     )
-                ) { Text("Ingreso", color = MaterialTheme.colorScheme.onPrimaryContainer) }
+                ) { Text(stringResource(R.string.ingreso), color = MaterialTheme.colorScheme.onPrimaryContainer) }
 
                 Button(
                     onClick = { tipoSeleccionado = "gasto" },
@@ -190,21 +200,24 @@ fun crearCategoria(
                             MaterialTheme.colorScheme.primaryContainer
                         else MaterialTheme.colorScheme.secondaryContainer
                     )
-                ) { Text("Gasto", color = MaterialTheme.colorScheme.onPrimaryContainer) }
+                ) { Text(stringResource(R.string.gasto), color = MaterialTheme.colorScheme.onPrimaryContainer) }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Selector de iconos
             Text(
-                text = "Selecciona un ícono",
+                text = stringResource(R.string.selecciona_un_icono),
                 modifier = Modifier.padding(start = 14.dp),
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(5),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).height(200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .height(200.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -226,7 +239,9 @@ fun crearCategoria(
                             Image(
                                 painter = painterResource(iconoId),
                                 contentDescription = icono,
-                                modifier = Modifier.size(38.dp).padding(4.dp)
+                                modifier = Modifier
+                                    .size(38.dp)
+                                    .padding(4.dp)
                             )
                         }
                     }
@@ -238,7 +253,10 @@ fun crearCategoria(
 
         // Botones inferiores
         Box(
-            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(bottom = 16.dp),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Column {

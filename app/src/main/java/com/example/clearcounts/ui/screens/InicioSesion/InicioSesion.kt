@@ -158,14 +158,14 @@ fun PantallaInicioSesion(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Ingrese a su cuenta",
+                    text = stringResource(R.string.ingrese_a_su_cuenta),
                     fontSize = 25.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
 
                 Column {
                     Text(
-                        text = "Correo",
+                        text = stringResource(R.string.correo),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -177,7 +177,7 @@ fun PantallaInicioSesion(
                     OutlinedTextField(
                         value = correoUsuario,
                         onValueChange = { correoUsuario = it },
-                        placeholder = { Text("Ingrese su correo electrónico") },
+                        placeholder = { Text(stringResource(R.string.ingrese_su_correo_electr_nico)) },
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         colors = coloresOutlined
@@ -186,7 +186,7 @@ fun PantallaInicioSesion(
 
                 Column {
                     Text(
-                        text = "Contraseña",
+                        text = stringResource(R.string.contrasena),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -198,7 +198,7 @@ fun PantallaInicioSesion(
                     OutlinedTextField(
                         value = contrasena,
                         onValueChange = { contrasena = it },
-                        placeholder = { Text("Ingrese su contraseña") },
+                        placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a)) },
                         visualTransformation = PasswordVisualTransformation(),
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
@@ -225,7 +225,7 @@ fun PantallaInicioSesion(
                         containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
-                    Text("Ingresar", color = MaterialTheme.colorScheme.onBackground)
+                    Text(stringResource(R.string.ingresar), color = MaterialTheme.colorScheme.onBackground)
                 }
 
                 Row(
@@ -306,7 +306,7 @@ fun PantallaInicioSesion(
                 Row (horizontalArrangement = Arrangement.Center){
                     //Texto para navegar hacia la pantalla de olvido su contraseña
                     Text(
-                        text = "¿Olvidó su clave?",
+                        text = stringResource(R.string.olvido_su_clave),
                         modifier = Modifier
                         .clickable {
 
@@ -319,7 +319,7 @@ fun PantallaInicioSesion(
                     Spacer(modifier = Modifier.width(42.dp))
 
                     Text(
-                        text = "¿No tiene cuenta?\n Regístrese aquí",
+                        text = stringResource(R.string.no_tiene_cuenta_reg_strese_aqu),
                         modifier = Modifier
                             .clickable {
 
@@ -335,7 +335,7 @@ fun PantallaInicioSesion(
         if (showDialog) {
             AlertaCamposVacios(
                 onDismiss = { showDialog = false },
-                titulo = "Llenar todos los campos",
+                titulo = stringResource(R.string.llenar_todos_los_campos),
                 mensaje = stringResource(R.string.llenar_campos)
             )
         }
@@ -376,7 +376,7 @@ fun LoginError(onDismiss: () -> Unit){
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¡Inicio sesión Fallido!",
+                    text = stringResource(R.string.inicio_sesi_n_fallido),
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.error
@@ -385,7 +385,7 @@ fun LoginError(onDismiss: () -> Unit){
 
 
                 Text(
-                    text = "Correo electronico o contraseña no validos",
+                    text = stringResource(R.string.correo_electronico_o_contrase_a_no_validos),
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -398,7 +398,7 @@ fun LoginError(onDismiss: () -> Unit){
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.aceptar))
                 }
             }
         }

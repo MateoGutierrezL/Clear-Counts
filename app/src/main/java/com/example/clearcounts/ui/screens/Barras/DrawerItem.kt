@@ -1,16 +1,17 @@
 package com.example.clearcounts.ui.screens.Barras
 
+import androidx.annotation.StringRes
 import com.example.clearcounts.R
 
 enum class DrawerItem (
     val icon: Int,
-    val text: String
+    @StringRes val text: Int
 ){
-    PERFIL(icon = R.drawable.user, text = "Perfil"),
-    EXPORT_PDF(icon = R.drawable.documento, "Exportar PDF/CSV"),
-    PERSONALIZACION(icon = R.drawable.equalizer, text = "Personalización"),
-    CONTACT(icon = R.drawable.phone_call, text = "Contactanos"),
-    TUTORIAL(icon = R.drawable.question, text = "Tutorial"),
-    LOG_OUT(icon = R.drawable.log_out, text = "Cerrar sesión")
+    PERFIL(icon = R.drawable.user, text = R.string.perfil),
+    EXPORT_PDF(icon = R.drawable.documento, text = R.string.exportar_pdf_csv),
+    PERSONALIZACION(icon = R.drawable.equalizer, text = R.string.personalizacion),
+    CONTACT(icon = R.drawable.phone_call, text = R.string.contactanos),
+    TUTORIAL(icon = R.drawable.question, text = R.string.tutorial),
+    LOG_OUT(icon = R.drawable.log_out, text = R.string.cerrar_sesion)
 
 }

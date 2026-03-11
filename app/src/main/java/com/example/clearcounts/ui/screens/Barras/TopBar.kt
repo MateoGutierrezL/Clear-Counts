@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,7 +74,7 @@ fun TopBar(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.customer_service),
-                    contentDescription = "preguntas y comentarios",
+                    contentDescription = stringResource(R.string.preguntas_y_comentarios),
                     modifier = Modifier.size(30.dp),
                     tint = if (selectedIcon.value == "pqr") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -96,7 +97,7 @@ fun TopBar(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.notification),
-                        contentDescription = "Notificaciones",
+                        contentDescription = stringResource(R.string.notificaciones),
                         modifier = Modifier.size(30.dp),
                         tint = if (selectedIcon.value == "notification") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                     )

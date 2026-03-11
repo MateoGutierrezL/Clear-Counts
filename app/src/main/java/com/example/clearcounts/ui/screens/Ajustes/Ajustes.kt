@@ -40,16 +40,19 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
+import com.example.clearcounts.R
 
 private val LogoutRed  = Color(0xFFDC2626)
-private val SubtitleGray = Color(0xFF6B7280)
-private val DividerGray  = Color(0xFFE5E7EB)
+val SubtitleGray = Color(0xFF6B7280)
+val DividerGray  = Color(0xFFE5E7EB)
 
 @Composable
 fun Ajustes(
     navegarPerfil: () -> Unit = {},
     navegarExportar: () -> Unit = {},
+    navegarIdioma: () -> Unit = {},
     onLogOut: () -> Unit = {},
     viewModel: UserSessionViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel
@@ -110,19 +113,19 @@ fun Ajustes(
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Cerrar sesión") },
-            text  = { Text("¿Estás seguro de que deseas cerrar sesión?") },
+            title = { Text(stringResource(R.string.cerrar_sesion)) },
+            text  = { Text(stringResource(R.string.estas_seguro_de_que_deseas_cerrar_sesion)) },
             confirmButton = {
                 TextButton(onClick = {
                     showLogoutDialog = false
                     onLogOut()
                 }) {
-                    Text("Cerrar sesión", color = LogoutRed)
+                    Text(stringResource(R.string.cerrar_sesion), color = LogoutRed)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showLogoutDialog = false }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.cancelar))
                 }
             }
         )
@@ -138,12 +141,12 @@ fun Ajustes(
                     tint = MaterialTheme.colorScheme.primary
                 )
             },
-            title = { Text("Activar notificaciones") },
+            title = { Text(stringResource(R.string.activar_notificaciones)) },
             text  = {
                 Text(
-                    "Para recibir alertas importantes necesitas activar " +
-                            "las notificaciones manualmente desde los ajustes de tu dispositivo." +
-                            "\n\n¿Deseas ir ahora?"
+                    stringResource(R.string.para_recibir_alertas_importantes_necesitas_activar) +
+                            stringResource(R.string.las_notificaciones_manualmente_desde_los_ajustes_de_tu_dispositivo) +
+                            stringResource(R.string.deseas_ir_ahora)
                 )
             },
             confirmButton = {
@@ -154,12 +157,12 @@ fun Ajustes(
                     }
                     context.startActivity(intent)
                 }) {
-                    Text("Ir a Ajustes")
+                    Text(stringResource(R.string.ir_a_ajustes))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showPermissionRationaleDialog = false }) {
-                    Text("Ahora no")
+                    Text(stringResource(R.string.ahora_no))
                 }
             }
         )
@@ -180,20 +183,21 @@ fun Ajustes(
 
         Spacer(Modifier.height(24.dp))
 
-        SectionHeader("GENERAL")
+        SectionHeader(stringResource(R.string.general))
         Spacer(Modifier.height(8.dp))
         SettingsCard {
             RowNavigable(
                 icon = Icons.Default.Language,
-                title = "Idioma",
-                subtitle = "Español"
+                title = stringResource(R.string.idioma),
+                subtitle = "Español",
+                onClick = navegarIdioma
             )
             RowDivider()
 
             RowToggle(
                 icon = Icons.Default.DarkMode,
-                title = "Modo Oscuro",
-                subtitle = "Apariencia oscura para la app",
+                title = stringResource(R.string.modo_oscuro),
+                subtitle = stringResource(R.string.apariencia_oscura_para_la_app),
                 checked = isDarkMode,
                 onChecked = { themeViewModel.toggleDarkMode(it) }
             )
@@ -201,16 +205,16 @@ fun Ajustes(
 
         Spacer(Modifier.height(24.dp))
 
-        SectionHeader("NOTIFICACIONES")
+        SectionHeader(stringResource(R.string.notificaciones))
         Spacer(Modifier.height(8.dp))
         SettingsCard {
             RowToggle(
                 icon = Icons.Default.NotificationsNone,
-                title = "Notificaciones Push",
+                title = stringResource(R.string.notificaciones_push),
                 subtitle = if (notificationsGranted)
-                    "Activadas - Toca para gestionar"
+                    stringResource(R.string.activadas_toca_para_gestionar)
                 else
-                    "Desactivadas - Toca para activar",
+                    stringResource(R.string.desactivadas_toca_para_activar),
                 checked   = notificationsGranted,
                 onChecked = {
                     when {
@@ -240,24 +244,24 @@ fun Ajustes(
 
         Spacer(Modifier.height(24.dp))
 
-        SectionHeader("DATOS Y SOPORTE")
+        SectionHeader(stringResource(R.string.datos_y_soporte))
         Spacer(Modifier.height(8.dp))
         SettingsCard {
             RowNavigable(
                 icon = Icons.Default.FileDownload,
-                title = "Exportar Datos",
+                title = stringResource(R.string.exportar_datos),
                 subtitle = "CSV, PDF",
                 onClick = navegarExportar
             )
             RowDivider()
             RowNavigable(
                 icon  = Icons.AutoMirrored.Filled.HelpOutline,
-                title = "Contactar"
+                title = stringResource(R.string.contactar)
             )
             RowDivider()
             RowNavigable(
                 icon  = Icons.Default.Shield,
-                title = "Términos y Condiciones"
+                title = stringResource(R.string.terminos_y_condiciones)
             )
         }
 
@@ -289,7 +293,7 @@ fun Ajustes(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "Cerrar Sesión",
+                    text = stringResource(R.string.cerrar_sesion),
                     color = LogoutRed,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp

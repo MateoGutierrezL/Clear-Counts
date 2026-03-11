@@ -60,6 +60,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -143,7 +144,7 @@ fun ingresos(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
+                        contentDescription = stringResource(R.string.volver),
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(30.dp)
                     )
@@ -151,7 +152,7 @@ fun ingresos(
 
                 Text(
                     modifier = Modifier.padding(top = 22.dp, start = 10.dp),
-                    text = "Realiza un $ruta",
+                    text = stringResource(R.string.realiza_un, ruta),
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -160,7 +161,8 @@ fun ingresos(
             Spacer(modifier = Modifier.height(20.dp))
 
             Surface(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .background(color = MaterialTheme.colorScheme.background)
                     .padding(start = 10.dp, end = 10.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)),
@@ -173,7 +175,9 @@ fun ingresos(
                     Image(
                         painter = if (iconoId != 0) painterResource(iconoId) else painterResource(R.drawable.camion),
                         contentDescription = nombre,
-                        modifier = Modifier.size(70.dp).padding(5.dp)
+                        modifier = Modifier
+                            .size(70.dp)
+                            .padding(5.dp)
                     )
 
                     Spacer(modifier = Modifier.width(10.dp))
@@ -187,7 +191,9 @@ fun ingresos(
             }
 
             Row (
-                modifier = Modifier.fillMaxWidth().padding(start = 10.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp)
             ){
 
             }
@@ -195,7 +201,8 @@ fun ingresos(
             Spacer(modifier = Modifier.height(10.dp))
 
             Row (
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ){
@@ -229,15 +236,15 @@ fun ingresos(
                         showDatePicker = true
                     },
                     modifier = Modifier.weight(1f),
-                    label = "Fecha"
+                    label = stringResource(R.string.fecha_ingresosGastos)
                 )
 
                 CampoDiasDesplegable(
-                    onDiaSelected = { option ->
-                        when (option) {
-                            "Ayer" -> updateDate(LocalDate.now().minusDays(1))
-                            "Mañana" -> updateDate(LocalDate.now().plusDays(1))
-                            "Hoy" -> updateDate(LocalDate.now())
+                    onDiaSelected = { dia ->
+                        when (dia) {
+                            DiaOpcion.AYER   -> updateDate(LocalDate.now().minusDays(1))
+                            DiaOpcion.HOY    -> updateDate(LocalDate.now())
+                            DiaOpcion.MANANA -> updateDate(LocalDate.now().plusDays(1))
                         }
                     },
                     modifier = Modifier.weight(1.1f)
@@ -258,7 +265,10 @@ fun ingresos(
         }
 
         Box(
-            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(bottom = 16.dp),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             contentAlignment = Alignment.BottomCenter
         ){
             Column {
@@ -397,9 +407,11 @@ fun CampoNota(
         minLines = 3,
         maxLines = 5,
         shape = RoundedCornerShape(20.dp),
-        label = { Text("Nota") },
-        placeholder = { Text("Escribe una nota")},
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)
+        label = { Text(stringResource(R.string.nota_ingresos_gastos)) },
+        placeholder = { Text(stringResource(R.string.escribe_una_nota))},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp)
     )
 }
 
@@ -414,11 +426,11 @@ fun CampoCantidad(
         singleLine = true,
         onValueChange = onCantidadChange,
         shape = RoundedCornerShape(20.dp),
-        label = { Text("Cantidad") },
+        label = { Text(stringResource(R.string.cantidad)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         modifier = modifier,
         trailingIcon = {
-            Icon(Icons.Default.Calculate, contentDescription = "Escribir cantidad")
+            Icon(Icons.Default.Calculate, contentDescription = stringResource(R.string.escribir_cantidad))
         }
     )
 }
@@ -434,11 +446,11 @@ fun CampoHora(
         onValueChange = {},
         readOnly = true,
         shape = RoundedCornerShape(20.dp),
-        label = { Text("Hora") },
+        label = { Text(stringResource(R.string.hora_ingresos_gastos)) },
         modifier = modifier,
         trailingIcon = {
 
-            Icon(Icons.Default.Schedule, contentDescription = "Seleccionar Hora",
+            Icon(Icons.Default.Schedule, contentDescription = stringResource(R.string.seleccionar_hora),
                 modifier = Modifier.clickable(
                     onClick = onHoraSelecccionadaChange
                 ))
@@ -446,33 +458,45 @@ fun CampoHora(
     )
 }
 
+enum class DiaOpcion {
+    AYER, HOY, MANANA
+}
 @Composable
 fun CampoDiasDesplegable(
-    onDiaSelected:(String) -> Unit,
+    onDiaSelected: (DiaOpcion) -> Unit,
     modifier: Modifier = Modifier
-){
-
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    val options = listOf("Ayer", "Hoy", "Mañana")
+    val options = listOf(
+        DiaOpcion.AYER  to stringResource(R.string.ayer),
+        DiaOpcion.HOY   to stringResource(R.string.hoy),
+        DiaOpcion.MANANA to stringResource(R.string.mañana)
+    )
 
-    var mainButtonText by remember { mutableStateOf(options[1]) }
+    var diaSeleccionado by remember { mutableStateOf(DiaOpcion.HOY) }
+
+    val mainButtonText = options.first { it.first == diaSeleccionado }.second
 
     Box(
         modifier = modifier.wrapContentSize(Alignment.TopStart)
-    ){
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
         ) {
             Button(
                 onClick = {
-                    if (mainButtonText != "Hoy") {
-                        mainButtonText = "Hoy"
-                        onDiaSelected("Hoy")
+                    if (diaSeleccionado != DiaOpcion.HOY) {
+                        diaSeleccionado = DiaOpcion.HOY
+                        onDiaSelected(DiaOpcion.HOY)
                     }
                 },
                 shape = MaterialTheme.shapes.medium.copy(topEnd = ZeroCornerSize, bottomEnd = ZeroCornerSize),
-                modifier = Modifier.weight(1f).height(50.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -494,7 +518,7 @@ fun CampoDiasDesplegable(
             ) {
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Desplegar opciones de fecha",
+                    contentDescription = null,
                     modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -504,12 +528,12 @@ fun CampoDiasDesplegable(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                options.forEach { option ->
+                options.forEach { (dia, label) ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = { Text(label) },
                         onClick = {
-                            mainButtonText = option
-                            onDiaSelected(option)
+                            diaSeleccionado = dia
+                            onDiaSelected(dia)
                             expanded = false
                         }
                     )
@@ -527,24 +551,29 @@ fun BotonesInferiores(
 ){
 
     Button(
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp),
         onClick = {
             onCreateChange()
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
-        Text("Crear",
+        Text(
+            stringResource(R.string.crear),
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 15.sp
         )
     }
 
     OutlinedButton(
-        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp),
         onClick = onCancelChange
     ){
-        Text("Cancelar",
+        Text(stringResource(R.string.cancelar),
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 15.sp
         )
@@ -586,7 +615,8 @@ fun TimePickerDialog(
                     Icon(
                         imageVector = Icons.Default.Keyboard,
                         contentDescription = "Hora escrita",
-                        modifier = Modifier.padding(start = 10.dp)
+                        modifier = Modifier
+                            .padding(start = 10.dp)
                             .clickable(
                                 onClick = onIconChange
                             )
@@ -604,7 +634,7 @@ fun TimePickerDialog(
                                 contentColor = MaterialTheme.colorScheme.onBackground
                             )
                         ) {
-                            Text("Cancelar")
+                            Text(stringResource(R.string.cancelar))
                         }
 
                         TextButton(onClick = {
@@ -615,7 +645,7 @@ fun TimePickerDialog(
                             onConfirm(selectedTime)
                             onDismiss()
                         }) {
-                            Text("Aceptar")
+                            Text(stringResource(R.string.aceptar))
                         }
                     }
 
@@ -660,7 +690,8 @@ fun TimeInputDialog(
                     Icon(
                         imageVector = Icons.Default.Schedule,
                         contentDescription = "Hora escrita",
-                        modifier = Modifier.padding(start = 10.dp)
+                        modifier = Modifier
+                            .padding(start = 10.dp)
                             .clickable(
                                 onClick = onIconChange
                             )
@@ -678,7 +709,7 @@ fun TimeInputDialog(
                                 contentColor = MaterialTheme.colorScheme.onBackground
                             )
                         ) {
-                            Text("Cancelar")
+                            Text(stringResource(R.string.cancelar))
                         }
 
                         TextButton(onClick = {
@@ -689,7 +720,7 @@ fun TimeInputDialog(
                             onConfirm(selectedTime)
                             onDismiss()
                         }) {
-                            Text("Aceptar")
+                            Text(stringResource(R.string.aceptar))
                         }
                     }
 
@@ -724,12 +755,12 @@ fun DatePickerDialogComposable(
                 }
                 onDismiss()
             }) {
-                Text("Aceptar")
+                Text(stringResource(R.string.aceptar))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar))
             }
         }
     ) {

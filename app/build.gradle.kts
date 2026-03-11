@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.clearcounts"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -58,7 +58,6 @@ dependencies {
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.compose.remote.creation.compose)
     ksp(libs.hilt.compiler)
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 

@@ -133,14 +133,14 @@ fun PantallaRegistro(
 
             // CAMBIO: Color del texto usa onSurface para contraste
             Text(
-                "Registrar nueva cuenta",
+                stringResource(R.string.registrar_nueva_cuenta),
                 fontSize = 25.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Column {
                 Text(
-                    text = "Nombre",
+                    text = stringResource(R.string.nombre),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
@@ -153,7 +153,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = nombreUsuario,
                     onValueChange = { nombreUsuario = it },
-                    placeholder = { Text("Ingrese su nombre completo", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_nombre_completo), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
                     colors = coloresOutlined,
@@ -166,7 +166,7 @@ fun PantallaRegistro(
             Column {
 
                 Text(
-                    text = "Número de celular",
+                    text = stringResource(R.string.numero_de_celular),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
@@ -179,7 +179,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = numero,
                     onValueChange = { numero = it },
-                    placeholder = { Text("Ingrese su número", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_n_mero), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
@@ -191,7 +191,7 @@ fun PantallaRegistro(
             Column {
 
                 Text(
-                    text = "Correo",
+                    text = stringResource(R.string.correo),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
@@ -204,7 +204,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = correoUsuario,
                     onValueChange = { correoUsuario = it },
-                    placeholder = { Text("Ingrese su correo electrónico", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_correo_electr_nico), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
                     colors = coloresOutlined
@@ -214,7 +214,7 @@ fun PantallaRegistro(
             Column {
 
                 Text(
-                    text = "Contraseña",
+                    text = stringResource(R.string.contrasena),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     // CAMBIO: Color del texto usa onSurface para contraste
@@ -227,7 +227,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = contrasena,
                     onValueChange = { contrasena = it },
-                    placeholder = { Text("Ingrese su contraseña", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a), color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp),
@@ -235,8 +235,6 @@ fun PantallaRegistro(
                 )
 
             }
-
-
 
             //Verficacion de que todo este debidamente diligenciado
             Button(
@@ -265,12 +263,12 @@ fun PantallaRegistro(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Registrarme")
+                Text(stringResource(R.string.registrarme))
             }
 
             val annotatedString = buildAnnotatedString {
                 withStyle(style = SpanStyle(MaterialTheme.colorScheme.onSurface)) {
-                    append("¿Ya tienes una cuenta? ")
+                    append(stringResource(R.string.ya_tienes_una_cuenta))
                 }
 
                 withStyle(
@@ -279,7 +277,7 @@ fun PantallaRegistro(
                         color = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    append("Inicia sesión")
+                    append(stringResource(R.string.inicia_sesion))
                 }
             }
 
@@ -296,7 +294,7 @@ fun PantallaRegistro(
     // Llama a la Alerta solo si la variable de estado es true
     if (showDialog) {
         AlertaCamposVacios(onDismiss = { showDialog = false },
-            titulo = "Llenar todos los campos" ,
+            titulo = stringResource(R.string.llenar_todos_los_campos) ,
             stringResource(R.string.llenar_campos)
         )
     }
@@ -307,8 +305,8 @@ fun PantallaRegistro(
                 showSuccesDialog = false
                 navegarBotonRegistrarme()
             },
-            title = "¡Registro Exitoso!",
-            text = "Tus datos han sido guardados correctamente."
+            title = stringResource(R.string.registro_exitoso),
+            text = stringResource(R.string.tus_datos_han_sido_guardados_correctamente)
         )
     }
 
@@ -360,7 +358,7 @@ fun RegisterSucces(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(onClick = onDismiss) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.aceptar))
                 }
             }
         }
@@ -385,14 +383,14 @@ fun RegisterError(onDismiss: () -> Unit){
 
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    contentDescription = "Registro Fallido",
+                    contentDescription = stringResource(R.string.registro_fallido),
                     tint = Color.Red, // Color rojo
                     modifier = Modifier.size(60.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "¡Registro Fallido!",
+                    text = stringResource(R.string.registro_fallido),
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.error
@@ -401,7 +399,7 @@ fun RegisterError(onDismiss: () -> Unit){
 
 
                 Text(
-                    text = "Ocurrió un error inesperado. Por favor, intenta de nuevo.",
+                    text = stringResource(R.string.ocurri_un_error_inesperado_por_favor_intenta_de_nuevo),
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -414,20 +412,10 @@ fun RegisterError(onDismiss: () -> Unit){
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.aceptar))
                 }
             }
         }
     }
 
 }
-
-@Preview
-@Composable
-fun previewError(){
-    RegisterError(onDismiss = {})
-}
-
-
-
-

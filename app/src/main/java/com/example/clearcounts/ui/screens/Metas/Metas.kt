@@ -49,11 +49,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.BudgetEntity
 
 
@@ -79,22 +81,22 @@ fun Metas(
             lista = metas,
             icono = Icons.Default.TrackChanges,
             tint = MaterialTheme.colorScheme.primaryContainer,
-            labelResumen = "Metas completadas",
-            labelVacio = "No hay metas"
+            labelResumen = stringResource(R.string.metas_completadas),
+            labelVacio = stringResource(R.string.no_hay_metas)
         )
         "Deudas" -> MetasTabConfig(
             lista = deudas,
             icono = Icons.Default.ErrorOutline,
             tint = Color(0xFFE74C3C),
-            labelResumen = "Deudas pagadas",
-            labelVacio = "No hay deudas"
+            labelResumen = stringResource(R.string.deudas_pagadas),
+            labelVacio = stringResource(R.string.no_hay_deudas)
         )
         else -> MetasTabConfig(
             lista = prestamos,
             icono = Icons.Default.VerifiedUser,
             tint = Color(0xFF2ECC71),
-            labelResumen = "Prestamos pagados",
-            labelVacio = "No hay prestamos"
+            labelResumen = stringResource(R.string.prestamos_pagados),
+            labelVacio = stringResource(R.string.no_hay_prestamos)
         )
     }
 
@@ -155,7 +157,7 @@ fun Metas(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Actual",
+                            text = stringResource(R.string.actual),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.bodyLarge
                         )
@@ -209,7 +211,7 @@ fun Encabezados(
     ) {
         ItemEncabezado(
             icono = Icons.Default.TrackChanges,
-            titulo = "Metas",
+            titulo = stringResource(R.string.metas),
             contenido = cantidadMetas.toString(),
             tint = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.weight(1f)
@@ -217,7 +219,7 @@ fun Encabezados(
 
         ItemEncabezado(
             icono = Icons.Default.ErrorOutline,
-            titulo = "Deudas",
+            titulo = stringResource(R.string.deudas),
             contenido = totalDeudas.formatMonto(),
             tint = Color(0xFFE74C3C),
             modifier = Modifier.weight(1f)
@@ -225,7 +227,7 @@ fun Encabezados(
 
         ItemEncabezado(
             icono = Icons.Default.VerifiedUser,
-            titulo = "Te deben",
+            titulo = stringResource(R.string.te_deben),
             contenido = totalTeDeben.formatMonto(),
             tint = Color(0xFF2ECC71),
             modifier = Modifier.weight(1f)
@@ -243,7 +245,11 @@ fun ItemEncabezado(
 ){
     Column(
         modifier = modifier
-            .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                RoundedCornerShape(16.dp)
+            )
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(16.dp),
@@ -272,7 +278,11 @@ fun RowEncabezado(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f), RoundedCornerShape(50.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                RoundedCornerShape(50.dp)
+            )
             .background(MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(50.dp))
             .padding(4.dp)
     ) {
@@ -324,7 +334,7 @@ fun BotonCrear(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = "Añadir",
+            contentDescription = stringResource(R.string.añadir),
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
@@ -425,7 +435,7 @@ fun ItemBudgetCard(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Falta: $ ${restante.formatMonto()}",
+                text = stringResource(R.string.falta, restante.formatMonto()),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 modifier = Modifier.align(Alignment.End)
@@ -464,7 +474,7 @@ fun EstadoVacio(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Presiona para crear",
+            text = stringResource(R.string.presiona_para_crear),
             style = MaterialTheme.typography.bodyLarge,
             color = Color(0xFF2196F3),
             fontWeight = FontWeight.Medium,
@@ -496,7 +506,7 @@ fun ResumenCards(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Total restante",
+                text = stringResource(R.string.total_restante),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )

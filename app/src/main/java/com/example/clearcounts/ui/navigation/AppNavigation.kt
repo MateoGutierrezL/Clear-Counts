@@ -33,8 +33,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Ajustes.Ajustes
+import com.example.clearcounts.ui.screens.Ajustes.SeleccionarIdioma
 import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
 import com.example.clearcounts.ui.screens.graficas.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
@@ -420,6 +422,9 @@ fun AppNavigation(
                     }
 
                     Ajustes(
+                        navegarIdioma = {
+                            navigationController.navigate(Pantallas.Idiomas.pantalla)
+                        },
                         navegarPerfil = {
                             navigationController.navigate(Pantallas.Perfil.pantalla)
                         },
@@ -437,6 +442,25 @@ fun AppNavigation(
                     )
 
                 }
+
+                composable(Pantallas.Idiomas.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+
+                    SeleccionarIdioma(
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
+                    )
+                }
+
+
             }
         }
     }

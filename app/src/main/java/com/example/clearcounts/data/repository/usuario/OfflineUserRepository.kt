@@ -13,6 +13,7 @@ import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -38,6 +39,7 @@ class OfflineUserRepository @Inject constructor(
 
     override suspend fun updateUser(userEntity: UserEntity) = userDao.update(userEntity)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getCurrentLoggedInUser(): Flow<UserEntity?> {
         return sessionDataStore.loggedInUserIdFlow
             .flatMapLatest { userId ->
