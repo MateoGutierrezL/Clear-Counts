@@ -198,6 +198,28 @@
     <string name="no_tienes_notificaciones">No tienes notificaciones</string>
     <string name="escribe_un_comentario">Escribe un comentario...</string>
     <string name="enviar_correo">Enviar correo</string>
+    <string name="no_olvides_registrar_tus_movimientos">¡No olvides registrar tus movimientos!</string>
+    <string name="lleva_un_control_de_tus_gastos_e_ingresos_de_hoy">Lleva un control de tus gastos e ingresos de hoy.</string>
+    <string name="c_mo_van_tus_finanzas_hoy">¿Cómo van tus finanzas hoy?</string>
+    <string name="revisa_tu_resumen_del_d_a_en_clearcounts">Revisa tu resumen del día en ClearCounts.</string>
+    <string name="pr_stamos">Préstamos</string>
+    <string name="tab_deudas">Deuda</string>
+    <string name="tab_metas">Meta</string>
+    <string name="cat_comida">Comida</string>
+    <string name="cat_transporte">Transporte</string>
+    <string name="cat_salud">Salud</string>
+    <string name="cat_deporte">Deporte</string>
+    <string name="cat_educacion">Educación</string>
+    <string name="cat_ropa">Ropa</string>
+    <string name="cat_alquiler">Alquiler</string>
+    <string name="cat_libros">Libros</string>
+    <string name="cat_maquillaje">Maquillaje</string>
+    <string name="cat_plan_datos">Plan datos</string>
+    <string name="cat_salario">Salario</string>
+    <string name="cat_comision">Comisión</string>
+    <string name="cat_inversiones">Inversiones</string>
+    <string name="cat_regalo">Regalo</string>
+    <string name="cat_reembolso">Reembolso</string>
 
 
 </resources>

@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,8 +37,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Ajustes.Ajustes
+import com.example.clearcounts.ui.screens.Ajustes.LocaleManager
 import com.example.clearcounts.ui.screens.Ajustes.SeleccionarIdioma
 import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
+import com.example.clearcounts.ui.screens.Ajustes.idiomasDisponibles
 import com.example.clearcounts.ui.screens.graficas.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
@@ -377,10 +380,12 @@ fun AppNavigation(
                     val allBudgets by viewModelMetas.allBudgets.collectAsState()
                     val budgetAEditar = allBudgets.find { it.id == budgetId }
 
+                    val context = LocalContext.current
+
                     val (tituloFinal, iconoFinal) = when(tipo) {
-                        "Deuda" -> "Deuda" to Icons.Default.ErrorOutline
-                        "Te deben" -> "Te deben" to Icons.Default.VerifiedUser
-                        else -> "Meta" to Icons.Default.TrackChanges
+                        "Deuda"    -> context.getString(R.string.tab_deudas) to Icons.Default.ErrorOutline
+                        "Te deben" -> context.getString(R.string.te_deben)   to Icons.Default.VerifiedUser
+                        else       -> context.getString(R.string.tab_metas)  to Icons.Default.TrackChanges
                     }
 
                     DisposableEffect(Unit) {
@@ -451,7 +456,13 @@ fun AppNavigation(
                         onDispose {}
                     }
 
+                    val context = LocalContext.current
+
                     SeleccionarIdioma(
+                        idiomaSeleccionado = LocaleManager.getCurrentLocaleTag(context),
+                        onIdiomaSeleccionado = { idioma ->
+                            LocaleManager.setLocale(context, idioma.codigo)
+                        },
                         botonVolver = {
                             if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
@@ -459,8 +470,6 @@ fun AppNavigation(
                         }
                     )
                 }
-
-
             }
         }
     }

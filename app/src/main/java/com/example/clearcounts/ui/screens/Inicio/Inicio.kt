@@ -237,9 +237,9 @@ fun DetalleIngresoPopup(
         text = {
             Column {
                 Text(stringResource(R.string.categoria, ingreso.categoria))
-                Text(stringResource(R.string.monto, ingreso.categoria))
-                Text(stringResource(R.string.hora, ingreso.categoria))
-                Text(stringResource(R.string.fecha, ingreso.categoria))
+                Text(stringResource(R.string.monto, ingreso.cantidad.toInt()))
+                Text(stringResource(R.string.hora, ingreso.hora))
+                Text(stringResource(R.string.fecha, ingreso.fecha))
 
                 if (!ingreso.nota.isNullOrEmpty()) {
                     Text(stringResource(R.string.nota, ingreso.nota))

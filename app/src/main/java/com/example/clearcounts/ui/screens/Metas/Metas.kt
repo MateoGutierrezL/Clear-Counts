@@ -66,7 +66,7 @@ fun Metas(
     viewModel: MetasViewModel = hiltViewModel(),
     onVerDetalle: (BudgetEntity) -> Unit,
 ) {
-    var currentTab by remember { mutableStateOf("Metas") }
+    var currentTabIndex by remember { mutableStateOf(0) }
 
     val metas by viewModel.metas.collectAsStateWithLifecycle()
     val deudas by viewModel.deudas.collectAsStateWithLifecycle()
@@ -76,15 +76,15 @@ fun Metas(
     val totalDeudas by viewModel.totalDeudas.collectAsState()
     val totalTeDeben by viewModel.totalTeDeben.collectAsState()
 
-    val (listaActual, iconoItem, tintItem, labelResumen, labelVacio) = when (currentTab) {
-        "Metas" -> MetasTabConfig(
+    val (listaActual, iconoItem, tintItem, labelResumen, labelVacio) = when (currentTabIndex) {
+        0 -> MetasTabConfig(
             lista = metas,
             icono = Icons.Default.TrackChanges,
             tint = MaterialTheme.colorScheme.primaryContainer,
             labelResumen = stringResource(R.string.metas_completadas),
             labelVacio = stringResource(R.string.no_hay_metas)
         )
-        "Deudas" -> MetasTabConfig(
+        1 -> MetasTabConfig(
             lista = deudas,
             icono = Icons.Default.ErrorOutline,
             tint = Color(0xFFE74C3C),
@@ -105,7 +105,14 @@ fun Metas(
 
     Scaffold(
         floatingActionButton = {
-            BotonCrear(onBotonCrear = { onBotonCrear(currentTab) })
+            BotonCrear(onBotonCrear = {
+                val tipo = when (currentTabIndex) {
+                    0 -> "Metas"
+                    1 -> "Deuda"
+                    else -> "Te deben"
+                }
+                onBotonCrear(tipo)
+            })
         },
         floatingActionButtonPosition = FabPosition.End
     ) {
@@ -124,7 +131,7 @@ fun Metas(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                RowEncabezado(onTabSelected = { currentTab = it })
+                RowEncabezado(onTabSelected = { index -> currentTabIndex = index })
             }
 
             item {
@@ -141,7 +148,14 @@ fun Metas(
                 item {
                     EstadoVacio(
                         mensaje = labelVacio,
-                        onCrearClick = { onBotonCrear(currentTab) }
+                        onCrearClick = {
+                            val tipo = when (currentTabIndex) {
+                                0 -> "Metas"
+                                1 -> "Deuda"
+                                else -> "Te deben"
+                            }
+                            onBotonCrear(tipo)
+                        }
                     )
                 }
             } else {
@@ -270,9 +284,13 @@ fun ItemEncabezado(
 
 @Composable
 fun RowEncabezado(
-    onTabSelected: (String) -> Unit
+    onTabSelected: (Int) -> Unit
 ) {
-    val tabs = listOf("Metas", "Deudas", "Préstamos")
+    val tabs = listOf(
+        stringResource(R.string.metas),
+        stringResource(R.string.deudas),
+        stringResource(R.string.pr_stamos)
+    )
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Box(
@@ -303,7 +321,7 @@ fun RowEncabezado(
                         )
                         .clickable {
                             selectedTab = index
-                            onTabSelected(title)
+                            onTabSelected(index)
                         }
                         .padding(vertical = 10.dp)
                 ) {

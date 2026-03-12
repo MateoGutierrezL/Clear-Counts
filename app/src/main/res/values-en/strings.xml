@@ -199,4 +199,26 @@
     <string name="no_tienes_notificaciones">You have no notifications</string>
     <string name="escribe_un_comentario">Write a comment...</string>
     <string name="enviar_correo">Send email</string>
+    <string name="no_olvides_registrar_tus_movimientos">" Don't forget to record your transactions!"</string>
+    <string name="lleva_un_control_de_tus_gastos_e_ingresos_de_hoy">" Keep track of your expenses and income today."</string>
+    <string name="c_mo_van_tus_finanzas_hoy">" How are your finances today?"</string>
+    <string name="revisa_tu_resumen_del_d_a_en_clearcounts">Check your daily summary on ClearCounts.</string>
+    <string name="pr_stamos">Loans</string>
+    <string name="tab_deudas">Debt</string>
+    <string name="tab_metas">Goal</string>
+    <string name="cat_comida">Food</string>
+    <string name="cat_transporte">Transport</string>
+    <string name="cat_salud">Health</string>
+    <string name="cat_deporte">Sports</string>
+    <string name="cat_educacion">Education</string>
+    <string name="cat_ropa">Clothing</string>
+    <string name="cat_alquiler">Rent</string>
+    <string name="cat_libros">Books</string>
+    <string name="cat_maquillaje">Makeup</string>
+    <string name="cat_plan_datos">Data Plan</string>
+    <string name="cat_salario">Salary</string>
+    <string name="cat_comision">Commission</string>
+    <string name="cat_inversiones">Investments</string>
+    <string name="cat_regalo">Gift</string>
+    <string name="cat_reembolso">Refund</string>
 </resources>

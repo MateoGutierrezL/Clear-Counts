@@ -62,6 +62,10 @@ fun Ajustes(
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
+    val idiomaActual = remember {
+        val tag = LocaleManager.getCurrentLocaleTag(context)
+        idiomasDisponibles.find { it.codigo == tag }?.nombreNativo ?: "Español"
+    }
 
     fun checkNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -189,7 +193,7 @@ fun Ajustes(
             RowNavigable(
                 icon = Icons.Default.Language,
                 title = stringResource(R.string.idioma),
-                subtitle = "Español",
+                subtitle = idiomaActual,
                 onClick = navegarIdioma
             )
             RowDivider()

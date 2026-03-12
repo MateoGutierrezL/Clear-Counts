@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Ajustes
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 
 import androidx.compose.foundation.background
@@ -14,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,8 +29,8 @@ data class IdiomaItem(
 )
 
 val idiomasDisponibles = listOf(
-    IdiomaItem("ES", "Español", "Spanish"),
-    IdiomaItem("US", "English", "English")
+    IdiomaItem("es", "Español", "Spanish"),
+    IdiomaItem("en", "English", "English")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +41,8 @@ fun SeleccionarIdioma(
     botonVolver: () -> Unit = {}
 ) {
     var seleccionado by remember { mutableStateOf(idiomaSeleccionado) }
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -85,6 +89,8 @@ fun SeleccionarIdioma(
                     isSelected = seleccionado == idioma.codigo,
                     onClick = {
                         seleccionado = idioma.codigo
+                        Log.d("IDIOMA", "Presionado: ${idioma.codigo}")
+                        LocaleManager.setLocale(context, idioma.codigo)
                         onIdiomaSeleccionado(idioma)
                     }
                 )

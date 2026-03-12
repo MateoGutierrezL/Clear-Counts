@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -63,7 +64,7 @@ No falle ni pierda el progreso del usuario cuando se gire la pantalla entre la o
  */
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -130,8 +131,8 @@ class MainActivity : ComponentActivity() {
         )
             .setInitialDelay(java.time.Duration.ofMillis(target1.timeInMillis - now.timeInMillis))
             .setInputData(workDataOf(
-                "titulo" to "¡No olvides registrar tus movimientos!",
-                "mensaje" to "Lleva un control de tus gastos e ingresos de hoy."
+                "titulo_key" to "no_olvides_registrar_tus_movimientos",
+                "mensaje_key" to "lleva_un_control_de_tus_gastos_e_ingresos_de_hoy"
             ))
             .build()
 
@@ -140,8 +141,8 @@ class MainActivity : ComponentActivity() {
         )
             .setInitialDelay(java.time.Duration.ofMillis(target2.timeInMillis - now.timeInMillis))
             .setInputData(workDataOf(
-                "titulo" to "¿Cómo van tus finanzas hoy?",
-                "mensaje" to "Revisa tu resumen del día en ClearCounts."
+                "titulo_key" to "c_mo_van_tus_finanzas_hoy",
+                "mensaje_key" to "revisa_tu_resumen_del_d_a_en_clearcounts"
             ))
             .build()
 

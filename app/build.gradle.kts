@@ -95,7 +95,8 @@ dependencies {
     //Facebook
     implementation("com.facebook.android:facebook-login:latest.release")
 
-   //ggg
+   //lo normal
+    implementation(libs.androidx.appcompat)
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.core.ktx)

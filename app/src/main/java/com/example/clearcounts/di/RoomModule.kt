@@ -41,10 +41,10 @@ object RoomModule {
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
-                    Log.d("RoomDB", "onCreate llamado - insertando categorías") // 👈
+                    Log.d("RoomDB", "onCreate llamado - insertando categorías")
                     CoroutineScope(Dispatchers.IO).launch {
-                        database.categoryDao().insertAll(UserDatabase.DEFAULT_CATEGORIES) // 👈
-                        Log.d("RoomDB", "Categorías insertadas: ${UserDatabase.DEFAULT_CATEGORIES.size}") // 👈
+                        database.categoryDao().insertAll(UserDatabase.DEFAULT_CATEGORIES)
+                        Log.d("RoomDB", "Categorías insertadas: ${UserDatabase.DEFAULT_CATEGORIES.size}")
                     }
                 }
             })

@@ -73,7 +73,7 @@ fun CategoriasItem(
             }
             Text(
                 modifier = Modifier.padding(start = 8.dp, top = 11.dp, bottom = 11.dp),
-                text = categorias.nombre,
+                text = categorias.getNombreTraducido(),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp
             )
