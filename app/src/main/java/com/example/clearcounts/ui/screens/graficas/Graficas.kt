@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +46,7 @@ import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import com.example.clearcounts.R
+import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -460,11 +462,12 @@ fun GastosPorCategoria(
     viewModel: GraficasViewModel = hiltViewModel()
 ) {
     val expensesByCategory by viewModel.expensesByCategory.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val slices = remember(expensesByCategory) {
         expensesByCategory.mapIndexed { index, category ->
             PieChartData.Slice(
-                label = category.categoria,
+                label = context.traducirCategoria(category.categoria),
                 value = category.total.toFloat(),
                 color = sliceColors[index % sliceColors.size]
             )
@@ -551,7 +554,7 @@ fun GastosPorCategoria(
                                         .background(slice.color, CircleShape)
                                 )
                                 Text(
-                                    text = categoria.categoria,
+                                    text = context.traducirCategoria(categoria.categoria),
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }

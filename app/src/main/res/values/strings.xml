@@ -220,6 +220,8 @@
     <string name="cat_inversiones">Inversiones</string>
     <string name="cat_regalo">Regalo</string>
     <string name="cat_reembolso">Reembolso</string>
-
-
+    <string name="ingreso_registrado">Ingreso registrado</string>
+    <string name="se_registr_un_ingreso_de_en">Se registró un ingreso de %1$s en %2$s.</string>
+    <string name="gasto_registrado">Gasto registrado</string>
+    <string name="se_registr_un_gasto_de_en">Se registró un gasto de %1$s en %2$s.</string>
 </resources>

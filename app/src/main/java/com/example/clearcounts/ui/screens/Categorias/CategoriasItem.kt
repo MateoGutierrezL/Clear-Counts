@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.clearcounts.data.database.entities.CategoryEntity
+import com.example.clearcounts.utils.CategoryTranslator.getNombreTraducido
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

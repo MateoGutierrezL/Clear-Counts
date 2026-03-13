@@ -77,6 +77,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import com.example.clearcounts.R
+import com.example.clearcounts.utils.CategoryTranslator
+import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 
 const val MAX_LENGHT_OF_AMOUNT = 10
 const val MAX_LENGHT_OF_NOTE = 200
@@ -121,6 +123,14 @@ fun ingresos(
         context.resources.getIdentifier(icono, "drawable", context.packageName)
     }
 
+    val nombreTraducido = context.traducirCategoria(nombre)
+
+    val rutaTraducida = when (ruta) {
+        "ingreso" -> stringResource(R.string.ingreso)
+        "gasto"   -> stringResource(R.string.gasto)
+        else      -> ruta
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -152,7 +162,7 @@ fun ingresos(
 
                 Text(
                     modifier = Modifier.padding(top = 22.dp, start = 10.dp),
-                    text = stringResource(R.string.realiza_un, ruta),
+                    text = stringResource(R.string.realiza_un, rutaTraducida),
                     fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -183,7 +193,7 @@ fun ingresos(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = nombre,
+                        text = nombreTraducido,
                         fontSize = 20.sp
                     )
                 }

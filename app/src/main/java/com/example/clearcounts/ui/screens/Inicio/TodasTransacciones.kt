@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ fun TodasTransacciones(
     val movimientosAgrupados by viewModel.movimientosAgrupadosSinLimite.collectAsState()
     var ingresoSeleccionado by remember { mutableStateOf<IncomeEntity?>(null) }
     var gastoSeleccionado by remember { mutableStateOf<ExpenseEntity?>(null) }
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
@@ -80,7 +82,7 @@ fun TodasTransacciones(
                 when (item) {
                     is InicioViewModel.MovimientoItem.Header -> {
                         Text(
-                            text = formatearFechaHeader(item.fecha),
+                            text = formatearFechaHeader(item.fecha, context),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)

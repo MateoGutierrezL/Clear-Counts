@@ -1,27 +1,42 @@
 package com.example.clearcounts.utils
 
+import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.example.clearcounts.R
+import com.example.clearcounts.data.database.entities.CategoryEntity
 
 object CategoryTranslator {
 
-    fun getStringRes(icono: String): Int? {
-        return when (icono) {
-            "comida"      -> R.string.cat_comida
-            "trasnporte"  -> R.string.cat_transporte  // mantiene el typo que tienes en DB
-            "salud"       -> R.string.cat_salud
-            "deporte"     -> R.string.cat_deporte
-            "educacion"   -> R.string.cat_educacion
-            "ropa"        -> R.string.cat_ropa
-            "alquiler"    -> R.string.cat_alquiler
-            "libros"      -> R.string.cat_libros
-            "maquillaje"  -> R.string.cat_maquillaje
-            "plan_datos"  -> R.string.cat_plan_datos
-            "salario"     -> R.string.cat_salario
-            "comision"    -> R.string.cat_comision
-            "inversiones" -> R.string.cat_inversiones
-            "regalo"      -> R.string.cat_regalo
-            "reembolso"   -> R.string.cat_reembolso
-            else          -> null  // categoría personalizada, usar nombre guardado en DB
+    fun getStringResByNombre(nombre: String): Int? {
+        return when (nombre) {
+            "Comida"      -> R.string.cat_comida
+            "Transporte"  -> R.string.cat_transporte
+            "Salud"       -> R.string.cat_salud
+            "Deporte"     -> R.string.cat_deporte
+            "Educación"   -> R.string.cat_educacion
+            "Ropa"        -> R.string.cat_ropa
+            "Alquiler"    -> R.string.cat_alquiler
+            "Libros"      -> R.string.cat_libros
+            "Maquillaje"  -> R.string.cat_maquillaje
+            "Plan datos"  -> R.string.cat_plan_datos
+            "Salario"     -> R.string.cat_salario
+            "Comision"    -> R.string.cat_comision
+            "Inversiones" -> R.string.cat_inversiones
+            "Regalo"      -> R.string.cat_regalo
+            "Reembolso"   -> R.string.cat_reembolso
+            else          -> null
         }
+    }
+
+    @Composable
+    fun CategoryEntity.getNombreTraducido(): String {
+        val resId = getStringResByNombre(nombre)
+        return if (resId != null) stringResource(resId) else nombre
+    }
+
+    fun Context.traducirCategoria(nombre: String): String {
+        val resId = getStringResByNombre(nombre)
+        return if (resId != null) getString(resId) else nombre
     }
 }

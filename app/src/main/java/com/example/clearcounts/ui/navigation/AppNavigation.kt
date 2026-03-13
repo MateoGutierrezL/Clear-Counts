@@ -171,7 +171,7 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    HomeScreen(paddingValues, navegarTodasTransacciones = {
+                    HomeScreen(navegarTodasTransacciones = {
                         navigationController.navigate(Pantallas.TodasTransacciones.pantalla)
                     })
                 }

@@ -1,7 +1,9 @@
 package com.example.clearcounts.ui.screens.Inicio
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,16 +53,19 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
 import co.yml.charts.ui.linechart.model.LineChartData
@@ -72,6 +77,7 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import com.facebook.internal.Utility.locale
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -81,14 +87,21 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    paddingValues: PaddingValues, viewModel: InicioViewModel = hiltViewModel(), navegarTodasTransacciones: () -> Unit
+    viewModel: InicioViewModel = hiltViewModel(),
+    navegarTodasTransacciones: () -> Unit
 ) {
 
     val formatter = NumberFormat.getInstance(Locale.forLanguageTag("es-ES")).apply {
         maximumFractionDigits = 0
     }
 
-    val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd 'de' MMMM", Locale.forLanguageTag("es-ES"))
+    val context = LocalContext.current
+
+    val locale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
+        ?: Locale.getDefault()
+    val isSpanish = locale.language == "es"
+    val pattern = if (isSpanish) "dd 'de' MMMM" else "MMMM dd"
+    val formatoFecha = DateTimeFormatter.ofPattern(pattern, locale)
 
     var fechaActual by remember { mutableStateOf(LocalDate.now().format(formatoFecha)) }
 
@@ -161,7 +174,7 @@ fun HomeScreen(
                 is InicioViewModel.MovimientoItem.Header -> {
                     // 👇 Header de fecha
                     Text(
-                        text = formatearFechaHeader(item.fecha),
+                        text = formatearFechaHeader(item.fecha, context),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
@@ -210,6 +223,9 @@ fun DetalleIngresoPopup(
     onDismiss: () -> Unit,
     onDelete: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -236,7 +252,7 @@ fun DetalleIngresoPopup(
         title = { Text(text = stringResource(R.string.detalle_de_ingreso), fontWeight = FontWeight.Bold) },
         text = {
             Column {
-                Text(stringResource(R.string.categoria, ingreso.categoria))
+                Text(stringResource(R.string.categoria, context.traducirCategoria(ingreso.categoria)))
                 Text(stringResource(R.string.monto, ingreso.cantidad.toInt()))
                 Text(stringResource(R.string.hora, ingreso.hora))
                 Text(stringResource(R.string.fecha, ingreso.fecha))
@@ -256,6 +272,9 @@ fun DetalleGastoPopup(
     onDismiss: () -> Unit,
     onDelete: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
     AlertDialog(
     onDismissRequest = onDismiss,
     confirmButton = {
@@ -282,7 +301,7 @@ fun DetalleGastoPopup(
     title = { Text(text = stringResource(R.string.detalle_de_gasto), fontWeight = FontWeight.Bold) },
     text = {
         Column {
-            Text(stringResource(R.string.categoria, gasto.categoria))
+            Text(stringResource(R.string.categoria, context.traducirCategoria(gasto.categoria)))
             Text(stringResource(R.string.monto, gasto.cantidad.toInt()))
             Text(stringResource(R.string.hora, gasto.hora))
             Text(stringResource(R.string.fecha, gasto.fecha))
@@ -318,7 +337,11 @@ fun Balance(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(18.dp))
+            Icon(
+                Icons.Default.DateRange,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
             Spacer(Modifier.width(8.dp))
             Text(text = fechaActual, style = MaterialTheme.typography.bodyMedium)
         }
@@ -330,6 +353,7 @@ fun Balance(
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold
         )
+
     }
 }
 
@@ -415,6 +439,8 @@ fun ItemIngreso(
     onPopUpIngreso:() -> Unit
 ){
 
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -458,7 +484,7 @@ fun ItemIngreso(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = ingreso.categoria,
+                    text = context.traducirCategoria(ingreso.categoria),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -495,6 +521,8 @@ fun ItemGasto(
     gasto: ExpenseEntity,
     onPopUpGasto: () -> Unit
 ){
+
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -539,7 +567,7 @@ fun ItemGasto(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = gasto.categoria,
+                    text = context.traducirCategoria(gasto.categoria),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -599,14 +627,18 @@ fun Transacciones(
 }
 
 @Composable
-fun GraficoLineChart(data: Triple<List<Point>, List<String>, List<Float>>) {
+fun GraficoLineChart(
+    data: Triple<List<Point>, List<String>, List<Float>>,
+    context: Context = LocalContext.current
+) {
     val pointsData = data.first
     val labelsX = data.second
     val yValues = data.third
 
     if (pointsData.isEmpty()) return
 
-    val locale = Locale.forLanguageTag("es-ES")
+    val locale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
+        ?: Locale.getDefault()
     val currencyFormat = NumberFormat.getInstance(locale).apply {
         maximumFractionDigits = 0
     }
@@ -675,22 +707,26 @@ fun Number.formatToSinglePrecision(): String {
     return "%.1f".format(this.toDouble())
 }
 
-fun formatearFechaHeader(fecha: String): String {
+fun formatearFechaHeader(fecha: String, context: Context): String {
     return try {
         val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
         val date = LocalDate.parse(fecha, formatter)
         val hoy = LocalDate.now()
         val ayer = hoy.minusDays(1)
         when (date) {
-            hoy -> "Hoy"
-            ayer -> "Ayer"
+            hoy  -> context.getString(R.string.hoy)
+            ayer -> context.getString(R.string.ayer)
             else -> {
-                val pattern = if (date.year == hoy.year) {
-                    "dd 'de' MMMM" // 👈 Sin año si es el mismo año
-                } else {
-                    "dd 'de' MMMM 'de' yyyy" // 👈 Con año si es diferente
+                val locale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
+                    ?: Locale.getDefault()
+                val isSpanish = locale.language == "es"
+                val pattern = when {
+                    isSpanish && date.year == hoy.year  -> "dd 'de' MMMM"
+                    isSpanish && date.year != hoy.year  -> "dd 'de' MMMM 'de' yyyy"
+                    !isSpanish && date.year == hoy.year -> "MMMM dd"
+                    else                                -> "MMMM dd, yyyy"
                 }
-                date.format(DateTimeFormatter.ofPattern(pattern, Locale.forLanguageTag("es-ES")))
+                date.format(DateTimeFormatter.ofPattern(pattern, locale))
             }
         }
     } catch (e: Exception) {

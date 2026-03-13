@@ -30,7 +30,9 @@ data class IdiomaItem(
 
 val idiomasDisponibles = listOf(
     IdiomaItem("es", "Español", "Spanish"),
-    IdiomaItem("en", "English", "English")
+    IdiomaItem("en", "English", "English"),
+    IdiomaItem("pt", "Português", "Portuguese"),
+    IdiomaItem("fr", "Français",   "French")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

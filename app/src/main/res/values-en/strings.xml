@@ -221,4 +221,8 @@
     <string name="cat_inversiones">Investments</string>
     <string name="cat_regalo">Gift</string>
     <string name="cat_reembolso">Refund</string>
+    <string name="ingreso_registrado">Income recorded</string>
+    <string name="se_registr_un_ingreso_de_en">An income of %1$s was recorded in %2$s.</string>
+    <string name="gasto_registrado">Expense recorded</string>
+    <string name="se_registr_un_gasto_de_en">An expense of %1$s was recorded in %2$s.</string>
 </resources>
