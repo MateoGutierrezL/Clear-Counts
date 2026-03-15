@@ -225,4 +225,11 @@
     <string name="se_registr_un_ingreso_de_en">Un revenu de %1$s a été enregistré dans %2$s.</string>
     <string name="gasto_registrado">Dépense enregistrée</string>
     <string name="se_registr_un_gasto_de_en">Une dépense de %1$s a été enregistrée dans %2$s.</string>
+    <string name="como_realizaste_movimiento">Comment as-tu effectué le mouvement ?</string>
+    <string name="payment_efectivo">espèces</string>
+    <string name="payment_debito">débit</string>
+    <string name="payment_credito">crédit</string>
+    <string name="agregar_metodo_pago">Ajouter un mode de paiement</string>
+    <string name="nuevo_metodo_pago">Nouveau mode de paiement</string>
+    <string name="metodo_pago">Méthode de paiement</string>
 </resources>

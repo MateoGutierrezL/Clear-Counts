@@ -44,6 +44,7 @@ object RoomModule {
                     Log.d("RoomDB", "onCreate llamado - insertando categorías")
                     CoroutineScope(Dispatchers.IO).launch {
                         database.categoryDao().insertAll(UserDatabase.DEFAULT_CATEGORIES)
+                        database.paymentMethodDao().insertAll(UserDatabase.DEFAULT_PAYMENT_METHODS)
                         Log.d("RoomDB", "Categorías insertadas: ${UserDatabase.DEFAULT_CATEGORIES.size}")
                     }
                 }
@@ -76,5 +77,9 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideBudgetDao(db: UserDatabase) = db.budgetDao()
+
+    @Singleton
+    @Provides
+    fun providePaymentMethodDao(db: UserDatabase) = db.paymentMethodDao()
 
 }

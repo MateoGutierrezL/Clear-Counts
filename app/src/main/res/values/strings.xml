@@ -224,4 +224,11 @@
     <string name="se_registr_un_ingreso_de_en">Se registró un ingreso de %1$s en %2$s.</string>
     <string name="gasto_registrado">Gasto registrado</string>
     <string name="se_registr_un_gasto_de_en">Se registró un gasto de %1$s en %2$s.</string>
+    <string name="como_realizaste_movimiento">¿Cómo realizaste el movimiento?</string>
+    <string name="payment_efectivo">Efectivo</string>
+    <string name="payment_debito">Débito</string>
+    <string name="payment_credito">Crédito</string>
+    <string name="agregar_metodo_pago">Agregar método de pago</string>
+    <string name="nuevo_metodo_pago">Nuevo método de pago</string>
+    <string name="metodo_pago">Método de pago: %s</string>
 </resources>

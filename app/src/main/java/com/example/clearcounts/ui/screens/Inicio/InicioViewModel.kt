@@ -10,6 +10,8 @@ import com.example.clearcounts.data.repository.gasto.ExpenseRepository
 import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.data.database.entities.PaymentMethodEntity
+import com.example.clearcounts.data.repository.pago.PaymentMethodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +31,8 @@ import kotlin.collections.emptyList
 @HiltViewModel
 class InicioViewModel @Inject constructor(
     private val incomeRepository: IncomeRepository,
-    private val expenseRepository: ExpenseRepository
+    private val expenseRepository: ExpenseRepository,
+    private val paymentMethodRepository: PaymentMethodRepository
 ): ViewModel(){
 
     val movimientosState: StateFlow<List<Any>> = combine(
@@ -222,4 +225,37 @@ class InicioViewModel @Inject constructor(
     ) { ingresos, gastos ->
         ingresos - gastos
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+
+    val balancePorMetodoPago: StateFlow<Map<String, Pair<String, Double>>> = combine(
+        incomeRepository.getAllIncomes(),
+        expenseRepository.getAllExpenses(),
+        paymentMethodRepository.getAllPaymentMethods() // 👈
+    ) { ingresos, gastos, metodos ->
+        val mesActual = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-yyyy"))
+
+        metodos.associate { metodo ->
+            val ingresoMetodo = ingresos
+                .filter { ingreso ->
+                    val partes = ingreso.fecha.split("-")
+                    val mesFecha = "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}"
+                    mesFecha == mesActual && ingreso.metodoPago == metodo.nombre
+                }.sumOf { it.cantidad }
+
+            val gastoMetodo = gastos
+                .filter { gasto ->
+                    val partes = gasto.fecha.split("-")
+                    val mesFecha = "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}"
+                    mesFecha == mesActual && gasto.metodoPago == metodo.nombre
+                }.sumOf { it.cantidad }
+
+            // nombre -> (icono, balance)
+            metodo.nombre to Pair(metodo.icono, ingresoMetodo - gastoMetodo)
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    val metodosPago: StateFlow<List<PaymentMethodEntity>> = paymentMethodRepository
+        .getAllPaymentMethods()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
 }

@@ -89,6 +89,7 @@ fun ingresos(
     ruta: String,
     icono: String,
     nombre: String,
+    metodoPago: String = "Efectivo",
     botonVolver:() -> Unit,
     viewModel: IngresosGastosViewModel = hiltViewModel(),
     botonCrearNavegacion:() -> Unit
@@ -285,9 +286,7 @@ fun ingresos(
                 BotonesInferiores(
                     onCancelChange = botonVolver,
                     onCreateChange = {
-
                         if (cantidad.isNotBlank() && cantidad.toDoubleOrNull() != null) {
-
                             val onSuccess = { botonCrearNavegacion() }
 
                             if (ruta == "ingreso") {
@@ -297,7 +296,8 @@ fun ingresos(
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
-                                    nota = nota
+                                    nota = nota,
+                                    metodoPago = metodoPago // 👈
                                 )
                                 viewModel.insertIncome(newIncome, onSuccess)
                             } else {
@@ -307,12 +307,12 @@ fun ingresos(
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
-                                    nota = nota
+                                    nota = nota,
+                                    metodoPago = metodoPago // 👈
                                 )
                                 viewModel.insertExpense(newExpense, onSuccess)
                             }
                         }
-
                     }
                 )
             }

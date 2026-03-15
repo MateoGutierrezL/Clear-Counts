@@ -11,7 +11,10 @@ sealed class Pantallas (val pantalla: String){
 
     data object PreguntasComentarios: Pantallas("preguntasComentarios")
 
-    data object ingresos: Pantallas("ingresos")
+    data object ingresos: Pantallas("{ruta}/{icono}/{nombre}/{metodoPago}") {
+        fun createRoute(ruta: String, icono: String, nombre: String, metodoPago: String) =
+            "$ruta/$icono/$nombre/$metodoPago"
+    }
 
     data object Exportar: Pantallas("exportar")
 
@@ -33,4 +36,8 @@ sealed class Pantallas (val pantalla: String){
     data object TodasTransacciones: Pantallas("todasTransacciones")
 
     data object Idiomas: Pantallas("idiomas")
+
+    object TransaccionesPorMetodo : Pantallas("transaccionesPorMetodo/{metodoPago}") {
+        fun createRoute(metodoPago: String) = "transaccionesPorMetodo/$metodoPago"
+    }
 }
