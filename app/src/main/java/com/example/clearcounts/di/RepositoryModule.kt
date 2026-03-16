@@ -15,6 +15,8 @@ import com.example.clearcounts.data.repository.pago.OfflinePaymentMethodReposito
 import com.example.clearcounts.data.repository.pago.PaymentMethodRepository
 import com.example.clearcounts.data.repository.presupuesto.BudgetRepository
 import com.example.clearcounts.data.repository.presupuesto.OfflineBudgetRepository
+import com.example.clearcounts.data.repository.recurrente.OfflineRecurringRepository
+import com.example.clearcounts.data.repository.recurrente.RecurringRepository
 import com.google.firebase.sessions.dagger.Provides
 
 import dagger.Binds
@@ -68,5 +70,11 @@ abstract class RepositoryModule {
     abstract fun bindPaymentMethodRepository(
         offlinePaymentMethodRepository: OfflinePaymentMethodRepository
     ): PaymentMethodRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRecurringRepository(
+        offlineRecurringRepository: OfflineRecurringRepository
+    ): RecurringRepository
 
 }

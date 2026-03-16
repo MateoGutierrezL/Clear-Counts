@@ -12,6 +12,7 @@ import com.example.clearcounts.data.database.dao.ExpenseDao
 import com.example.clearcounts.data.database.dao.IncomeDao
 import com.example.clearcounts.data.database.dao.NotificationDao
 import com.example.clearcounts.data.database.dao.PaymentMethodDao
+import com.example.clearcounts.data.database.dao.RecurringDao
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import com.example.clearcounts.data.database.entities.CategoryEntity
@@ -19,6 +20,7 @@ import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.data.database.entities.NotificationEntity
 import com.example.clearcounts.data.database.entities.PaymentMethodEntity
+import com.example.clearcounts.data.database.entities.RecurringEntity
 import com.example.clearcounts.data.database.entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +34,9 @@ import kotlinx.coroutines.launch
         CategoryEntity::class,
         NotificationEntity::class,
         BudgetEntity::class,
-        PaymentMethodEntity::class],
-    version = 12,
+        PaymentMethodEntity::class,
+        RecurringEntity::class],
+    version = 15,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -49,6 +52,8 @@ abstract class UserDatabase: RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
 
     abstract fun paymentMethodDao(): PaymentMethodDao
+
+    abstract fun recurringDao(): RecurringDao
 
     abstract fun budgetDao(): BudgetDao
 

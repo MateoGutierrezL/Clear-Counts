@@ -232,4 +232,16 @@
     <string name="agregar_metodo_pago">Adicionar método de pagamento</string>
     <string name="nuevo_metodo_pago">Novo método de pagamento</string>
     <string name="metodo_pago">Método de pagamento</string>
+    <string name="recurrentes">recorrente</string>
+    <string name="ingresos_recurrentes">Receitas Recorrentes</string>
+    <string name="gastos_recurrentes">Despesas Recorrentes</string>
+    <string name="no_hay_ingresos_recurrentes">Sem receitas recorrentes</string>
+    <string name="no_hay_gastos_recurrentes">Sem despesas recorrentes</string>
+    <string name="nuevo_recurrente">Novo recorrente</string>
+    <string name="dia_del_mes">Dia do mês</string>
+    <string name="cada_dia">Todo dia %1$d</string>
+    <string name="ej_netflix">Ex. Netflix</string>
+    <string name="ej_entretenimiento">Ex. Entretenimento</string>
+    <string name="categor_a_recurrente">Categoria</string>
+    <string name="m_todo_de_pago">Método de pagamento</string>
 </resources>

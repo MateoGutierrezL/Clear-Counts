@@ -8,6 +8,6 @@ import androidx.room.PrimaryKey
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "nombre") val nombre: String,
-    @ColumnInfo(name = "icono") val icono: String,       // Nombre del recurso drawable, ej: "ic_food"
-    @ColumnInfo(name = "tipo") val tipo: String        // "INCOME" o "EXPENSE"
+    @ColumnInfo(name = "icono") val icono: String,
+    @ColumnInfo(name = "tipo") val tipo: String
 )

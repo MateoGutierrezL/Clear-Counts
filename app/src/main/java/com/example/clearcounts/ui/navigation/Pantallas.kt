@@ -40,4 +40,7 @@ sealed class Pantallas (val pantalla: String){
     object TransaccionesPorMetodo : Pantallas("transaccionesPorMetodo/{metodoPago}") {
         fun createRoute(metodoPago: String) = "transaccionesPorMetodo/$metodoPago"
     }
+
+    data object Recurrentes : Pantallas("recurrentes")
+    data object CrearRecurrente : Pantallas("crearRecurrente")
 }

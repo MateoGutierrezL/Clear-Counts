@@ -62,6 +62,8 @@ import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
 import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
 import com.example.clearcounts.ui.screens.Perfil.Perfil
+import com.example.clearcounts.ui.screens.Recurrentes.CrearRecurrente
+import com.example.clearcounts.ui.screens.Recurrentes.Recurrentes
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,14 +97,17 @@ fun AppNavigation(
                 ) {
                     when (it) {
                         DrawerItem.PERFIL -> {
-
                             navigationController.navigate(Pantallas.Perfil.pantalla)
-
                         }
-                        DrawerItem.EXPORT_PDF -> {
 
+                        DrawerItem.AJUSTES -> {
+                            navigationController.navigate(Pantallas.Ajustes.pantalla)
+                        }
+
+                        DrawerItem.EXPORT_PDF -> {
                             navigationController.navigate(Pantallas.Exportar.pantalla)
                         }
+
                         DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {}
                         DrawerItem.TUTORIAL -> {}
@@ -496,6 +501,30 @@ fun AppNavigation(
                                 navigationController.popBackStack()
                             }
                         }
+                    )
+                }
+
+                composable(Pantallas.Recurrentes.pantalla) {
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = true
+                        topBarVisible.value = true
+                        onDispose {}
+                    }
+                    Recurrentes(
+                        onBotonCrear = {
+                            navigationController.navigate(Pantallas.CrearRecurrente.pantalla)
+                        }
+                    )
+                }
+
+                composable(Pantallas.CrearRecurrente.pantalla) {
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    CrearRecurrente(
+                        botonVolver = { navigationController.popBackStack() }
                     )
                 }
             }

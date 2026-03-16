@@ -82,4 +82,8 @@ object RoomModule {
     @Provides
     fun providePaymentMethodDao(db: UserDatabase) = db.paymentMethodDao()
 
+    @Provides
+    @Singleton
+    fun provideRecurringDao(db: UserDatabase) = db.recurringDao()
+
 }

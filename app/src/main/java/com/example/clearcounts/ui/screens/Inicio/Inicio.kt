@@ -632,16 +632,6 @@ fun ItemGasto(
                     metodoPago = gasto.metodoPago,
                     icono = metodosPago.find { it.nombre == gasto.metodoPago }?.icono ?: "efectivo"
                 )
-
-                if (!gasto.nota.isNullOrBlank()){
-                    Text(
-                        text = gasto.nota,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.width(8.dp))

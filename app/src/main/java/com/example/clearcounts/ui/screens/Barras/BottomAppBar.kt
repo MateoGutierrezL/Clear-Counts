@@ -76,6 +76,7 @@ import com.example.clearcounts.ui.screens.Categorias.CategoriasViewModel
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.filled.Alarm
 import com.example.clearcounts.utils.PaymentMethodTranslator.traducirMetodoPago
 
 
@@ -522,26 +523,26 @@ fun CustomBottomAppBar(
 
         // Perfil
         NavigationBarItem(
-            selected = selectedIcon.value == "ajustes",
+            selected = selectedIcon.value == "recurrentes",
             onClick = {
-                selectedIcon.value = "ajustes"
-                navigationController.navigate(Pantallas.Ajustes.pantalla) {
+                selectedIcon.value = "recurrentes"
+                navigationController.navigate(Pantallas.Recurrentes.pantalla) {
                     popUpTo(0)
                 }
             },
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.ajustes),
+                    imageVector = Icons.Default.Alarm,
+                    contentDescription = stringResource(R.string.recurrentes),
                     modifier = Modifier.size(26.dp),
-                    tint = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = if (selectedIcon.value == "recurrentes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             label = {
                 Text(
-                    text = stringResource(R.string.ajustes),
+                    text = stringResource(R.string.recurrentes),
                     fontSize = 12.sp,
-                    color = if (selectedIcon.value == "ajustes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
+                    color = if (selectedIcon.value == "recurrentes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             colors = NavigationBarItemDefaults.colors(
