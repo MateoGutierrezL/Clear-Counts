@@ -13,6 +13,7 @@ data class IncomeEntity (
     @ColumnInfo(name = "cantidad") val cantidad: Double,
     @ColumnInfo(name = "hora")val hora: String,
     @ColumnInfo(name = "fecha") val fecha: String,
-    @ColumnInfo(name = "nota")val nota: String?
+    @ColumnInfo(name = "nota")val nota: String?,
+    @ColumnInfo(name = "metodo_pago") val metodoPago: String = "Efectivo"
 
 )

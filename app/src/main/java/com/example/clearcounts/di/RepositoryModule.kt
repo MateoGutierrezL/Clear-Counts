@@ -11,6 +11,8 @@ import com.example.clearcounts.data.repository.usuario.UserRepository
 import com.example.clearcounts.data.database.UserDatabase
 import com.example.clearcounts.data.repository.notificacion.NotificationRepository
 import com.example.clearcounts.data.repository.notificacion.OfflineNotificationRepository
+import com.example.clearcounts.data.repository.pago.OfflinePaymentMethodRepository
+import com.example.clearcounts.data.repository.pago.PaymentMethodRepository
 import com.example.clearcounts.data.repository.presupuesto.BudgetRepository
 import com.example.clearcounts.data.repository.presupuesto.OfflineBudgetRepository
 import com.google.firebase.sessions.dagger.Provides
@@ -61,5 +63,10 @@ abstract class RepositoryModule {
         offlineBudgetRepository: OfflineBudgetRepository
     ): BudgetRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindPaymentMethodRepository(
+        offlinePaymentMethodRepository: OfflinePaymentMethodRepository
+    ): PaymentMethodRepository
 
 }

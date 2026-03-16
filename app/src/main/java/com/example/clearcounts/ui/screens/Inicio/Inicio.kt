@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Inicio
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -16,23 +17,29 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +68,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import co.yml.charts.axis.AxisData
@@ -77,7 +85,9 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
+import com.example.clearcounts.data.database.entities.PaymentMethodEntity
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
+import com.example.clearcounts.utils.PaymentMethodTranslator.traducirMetodoPago
 import com.facebook.internal.Utility.locale
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -85,10 +95,12 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun HomeScreen(
     viewModel: InicioViewModel = hiltViewModel(),
-    navegarTodasTransacciones: () -> Unit
+    navegarTodasTransacciones: () -> Unit,
+    navegarTransaccionesPorMetodo: (String) -> Unit
 ) {
 
     val formatter = NumberFormat.getInstance(Locale.forLanguageTag("es-ES")).apply {
@@ -119,6 +131,9 @@ fun HomeScreen(
     val totalIngresoMensual by viewModel.totalIngresoMensual.collectAsState()
     val totalGastoMensual by viewModel.totalGastoMensual.collectAsState()
     val balanceMensual by viewModel.balanceMensual.collectAsState()
+    val balancePorMetodo by viewModel.balancePorMetodoPago.collectAsState()
+    val metodosPago by viewModel.metodosPago.collectAsState()
+
 
     LazyColumn(
             modifier = Modifier
@@ -148,6 +163,34 @@ fun HomeScreen(
                     modifier = Modifier.padding(16.dp)
                 )
                 GraficoLineChart(data = chartData)
+            }
+
+            item{
+                if (balancePorMetodo.isNotEmpty()) {
+                    Text(
+                        text = "Métodos de pago",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    )
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(balancePorMetodo.entries.toList()) { (metodo, iconoYBalance) ->
+                            val (icono, balance) = iconoYBalance
+                            TarjetaMetodoPago(
+                                nombre = metodo,
+                                balance = balance,
+                                icono = icono,
+                                formatter = formatter,
+                                onClick = {
+                                    navegarTransaccionesPorMetodo(metodo)
+                                }
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
 
             item {
@@ -184,10 +227,12 @@ fun HomeScreen(
                     when (val mov = item.movimiento) {
                         is IncomeEntity -> ItemIngreso(
                             ingreso = mov,
+                            metodosPago = metodosPago,
                             onPopUpIngreso = { ingresoSeleccionado = mov }
                         )
                         is ExpenseEntity -> ItemGasto(
                             gasto = mov,
+                            metodosPago = metodosPago,
                             onPopUpGasto = { gastoSeleccionado = mov }
                         )
                     }
@@ -254,6 +299,7 @@ fun DetalleIngresoPopup(
             Column {
                 Text(stringResource(R.string.categoria, context.traducirCategoria(ingreso.categoria)))
                 Text(stringResource(R.string.monto, ingreso.cantidad.toInt()))
+                Text(stringResource(R.string.metodo_pago, context.traducirMetodoPago(ingreso.metodoPago)))
                 Text(stringResource(R.string.hora, ingreso.hora))
                 Text(stringResource(R.string.fecha, ingreso.fecha))
 
@@ -303,6 +349,7 @@ fun DetalleGastoPopup(
         Column {
             Text(stringResource(R.string.categoria, context.traducirCategoria(gasto.categoria)))
             Text(stringResource(R.string.monto, gasto.cantidad.toInt()))
+            Text(stringResource(R.string.metodo_pago, context.traducirMetodoPago(gasto.metodoPago)))
             Text(stringResource(R.string.hora, gasto.hora))
             Text(stringResource(R.string.fecha, gasto.fecha))
 
@@ -436,6 +483,7 @@ fun ItemFinanciero(
 @Composable
 fun ItemIngreso(
     ingreso: IncomeEntity,
+    metodosPago: List<PaymentMethodEntity>,
     onPopUpIngreso:() -> Unit
 ){
 
@@ -491,6 +539,10 @@ fun ItemIngreso(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                MetodoPagoChip(
+                    metodoPago = ingreso.metodoPago,
+                    icono = metodosPago.find { it.nombre == ingreso.metodoPago }?.icono ?: "efectivo" // 👈
+                )
 
                 if (!ingreso.nota.isNullOrBlank()){
                     Text(
@@ -519,6 +571,7 @@ fun ItemIngreso(
 @Composable
 fun ItemGasto(
     gasto: ExpenseEntity,
+    metodosPago: List<PaymentMethodEntity>,
     onPopUpGasto: () -> Unit
 ){
 
@@ -575,6 +628,11 @@ fun ItemGasto(
                     overflow = TextOverflow.Ellipsis
                 )
 
+                MetodoPagoChip(
+                    metodoPago = gasto.metodoPago,
+                    icono = metodosPago.find { it.nombre == gasto.metodoPago }?.icono ?: "efectivo"
+                )
+
                 if (!gasto.nota.isNullOrBlank()){
                     Text(
                         text = gasto.nota,
@@ -626,6 +684,7 @@ fun Transacciones(
     }
 }
 
+@SuppressLint("LocalContextConfigurationRead")
 @Composable
 fun GraficoLineChart(
     data: Triple<List<Point>, List<String>, List<Float>>,
@@ -732,4 +791,284 @@ fun formatearFechaHeader(fecha: String, context: Context): String {
     } catch (e: Exception) {
         fecha
     }
+
+}
+
+
+@Composable
+fun TarjetaMetodoPago(
+    nombre: String,
+    balance: Double,
+    icono: String,
+    formatter: NumberFormat,
+    onClick: () -> Unit
+) {
+    val context = LocalContext.current
+    val iconoId = remember(icono) {
+        context.resources.getIdentifier(icono, "drawable", context.packageName)
+    }
+
+    val gradientColors = remember(nombre) {
+        val gradientes = listOf(
+            listOf(Color(0xFF1A237E), Color(0xFF283593)), // azul oscuro
+            listOf(Color(0xFF1B5E20), Color(0xFF2E7D32)), // verde oscuro
+            listOf(Color(0xFF4A148C), Color(0xFF6A1B9A)), // púrpura
+            listOf(Color(0xFF880E4F), Color(0xFFAD1457)), // rosa oscuro
+            listOf(Color(0xFF004D40), Color(0xFF00695C)), // teal oscuro
+            listOf(Color(0xFF33691E), Color(0xFF558B2F)), // verde oliva
+            listOf(Color(0xFFBF360C), Color(0xFFD84315)), // naranja oscuro
+            listOf(Color(0xFF1565C0), Color(0xFF1976D2)), // azul medio
+        )
+        gradientes[Math.abs(nombre.hashCode()) % gradientes.size]
+    }
+
+    Box(
+        modifier = Modifier
+            .width(200.dp)
+            .height(120.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = Brush.linearGradient(colors = gradientColors)
+            )
+            .clickable { onClick() }
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Header con icono y nombre
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (iconoId != 0) {
+                    Image(
+                        painter = painterResource(id = iconoId),
+                        contentDescription = nombre,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Text(
+                    text = context.traducirMetodoPago(nombre),
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // Balance
+            Column {
+                Text(
+                    text = "Balance",
+                    color = Color.White.copy(alpha = 0.7f),
+                    fontSize = 11.sp
+                )
+                Text(
+                    text = formatter.format(balance.toInt()),
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        // Círculos decorativos estilo tarjeta
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .offset(x = 130.dp, y = (-20).dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.08f))
+        )
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .offset(x = 150.dp, y = 20.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.05f))
+        )
+    }
+}
+
+@Composable
+fun MetodoPagoChip(metodoPago: String, icono: String) {
+    val context = LocalContext.current
+    val iconoId = remember(icono) {
+        context.resources.getIdentifier(icono, "drawable", context.packageName)
+    }
+
+    Row(
+        modifier = Modifier
+            .padding(top = 4.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .padding(horizontal = 8.dp, vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        if (iconoId != 0) {
+            Image(
+                painter = painterResource(id = iconoId),
+                contentDescription = null,
+                modifier = Modifier.size(12.dp)
+            )
+        }
+        Text(
+            text = context.traducirMetodoPago(metodoPago),
+            fontSize = 10.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+fun TransaccionesPorMetodo(
+    metodoPago: String,
+    botonVolver: () -> Unit,
+    viewModel: InicioViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
+    val movimientosFiltrados by viewModel.movimientosAgrupadosSinLimite.collectAsState()
+    var ingresoSeleccionado by remember { mutableStateOf<IncomeEntity?>(null) }
+    var gastoSeleccionado by remember { mutableStateOf<ExpenseEntity?>(null) }
+    val metodosPago by viewModel.metodosPago.collectAsState()
+
+    // Filtra solo los del método de pago seleccionado
+    val movimientosPorMetodo = remember(movimientosFiltrados, metodoPago) {
+        movimientosFiltrados.filter { item ->
+            when (item) {
+                is InicioViewModel.MovimientoItem.Header -> {
+                    // Incluir header solo si tiene transacciones del método
+                    true
+                }
+                is InicioViewModel.MovimientoItem.Transaccion -> {
+                    when (val mov = item.movimiento) {
+                        is IncomeEntity -> mov.metodoPago == metodoPago
+                        is ExpenseEntity -> mov.metodoPago == metodoPago
+                        else -> false
+                    }
+                }
+            }
+        }.filterIndexed { index, item ->
+            // Eliminar headers que no tienen transacciones después
+            if (item is InicioViewModel.MovimientoItem.Header) {
+                val siguiente = movimientosFiltrados.getOrNull(index + 1)
+                siguiente is InicioViewModel.MovimientoItem.Transaccion
+            } else true
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = botonVolver) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            Text(
+                text = context.traducirMetodoPago(metodoPago),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        HorizontalDivider()
+
+        if (movimientosPorMetodo.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.Inbox,
+                        contentDescription = null,
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "No hay registros para ${context.traducirMetodoPago(metodoPago)}",
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                    )
+                }
+            }
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    items = movimientosPorMetodo,
+                    key = { item ->
+                        when (item) {
+                            is InicioViewModel.MovimientoItem.Header -> "header_${item.fecha}"
+                            is InicioViewModel.MovimientoItem.Transaccion -> when (val mov = item.movimiento) {
+                                is IncomeEntity -> "inc_${mov.id}"
+                                is ExpenseEntity -> "exp_${mov.id}"
+                                else -> item.hashCode()
+                            }
+                        }
+                    }
+                ) { item ->
+                    when (item) {
+                        is InicioViewModel.MovimientoItem.Header -> {
+                            Text(
+                                text = formatearFechaHeader(item.fecha, context),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                            )
+                        }
+                        is InicioViewModel.MovimientoItem.Transaccion -> {
+                            when (val mov = item.movimiento) {
+                                is IncomeEntity -> ItemIngreso(
+                                    ingreso = mov,
+                                    metodosPago = metodosPago,
+                                    onPopUpIngreso = { ingresoSeleccionado = mov }
+                                )
+                                is ExpenseEntity -> ItemGasto(
+                                    gasto = mov,
+                                    metodosPago = metodosPago,
+                                    onPopUpGasto = { gastoSeleccionado = mov }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    ingresoSeleccionado?.let { ingreso ->
+        DetalleIngresoPopup(
+            ingreso = ingreso,
+            onDismiss = { ingresoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteIncome(ingreso)
+                ingresoSeleccionado = null
+            }
+        )
+    }
+
+    gastoSeleccionado?.let { gasto ->
+        DetalleGastoPopup(
+            gasto = gasto,
+            onDismiss = { gastoSeleccionado = null },
+            onDelete = {
+                viewModel.deleteExpense(gasto)
+                gastoSeleccionado = null
+            }
+        )
+    }
+}
+
+
+fun obtenerIcono(metodoPago: String, metodos: List<PaymentMethodEntity>): String {
+    return metodos.find { it.nombre == metodoPago }?.icono ?: "efectivo"
 }

@@ -11,12 +11,14 @@ import com.example.clearcounts.data.database.dao.CategoryDao
 import com.example.clearcounts.data.database.dao.ExpenseDao
 import com.example.clearcounts.data.database.dao.IncomeDao
 import com.example.clearcounts.data.database.dao.NotificationDao
+import com.example.clearcounts.data.database.dao.PaymentMethodDao
 import com.example.clearcounts.data.database.dao.UserDao
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import com.example.clearcounts.data.database.entities.CategoryEntity
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.data.database.entities.NotificationEntity
+import com.example.clearcounts.data.database.entities.PaymentMethodEntity
 import com.example.clearcounts.data.database.entities.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +31,9 @@ import kotlinx.coroutines.launch
         ExpenseEntity::class,
         CategoryEntity::class,
         NotificationEntity::class,
-        BudgetEntity::class],
-    version = 11,
+        BudgetEntity::class,
+        PaymentMethodEntity::class],
+    version = 12,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -44,6 +47,8 @@ abstract class UserDatabase: RoomDatabase() {
     abstract fun notificationDao(): NotificationDao
 
     abstract fun categoryDao(): CategoryDao
+
+    abstract fun paymentMethodDao(): PaymentMethodDao
 
     abstract fun budgetDao(): BudgetDao
 
@@ -67,6 +72,11 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Inversiones", icono = "inversiones", tipo = "ingreso"),
                 CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso"),
                 CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso"),
+            )
+            val DEFAULT_PAYMENT_METHODS = listOf(
+                PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),
+                PaymentMethodEntity(nombre = "Débito", icono = "debito", esDefault = true),
+                PaymentMethodEntity(nombre = "Crédito", icono = "credito", esDefault = true),
             )
 
         }

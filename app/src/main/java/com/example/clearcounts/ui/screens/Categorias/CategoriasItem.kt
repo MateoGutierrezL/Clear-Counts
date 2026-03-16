@@ -35,7 +35,8 @@ fun CategoriasItem(
     navController: NavController,
     categorias: CategoryEntity,
     sheetState: SheetState,
-    ruta: String
+    ruta: String,
+    metodoPago: String = "Efectivo"
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -50,7 +51,7 @@ fun CategoriasItem(
             scope.launch {
                 delay(500)
                 sheetState.hide()
-                navController.navigate("$ruta/${categorias.icono}/${categorias.nombre}")
+                navController.navigate("$ruta/${categorias.icono}/${categorias.nombre}/$metodoPago")
             }
         },
         modifier = Modifier.fillMaxWidth(),

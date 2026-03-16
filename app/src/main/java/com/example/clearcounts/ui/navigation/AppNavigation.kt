@@ -52,6 +52,7 @@ import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.Inicio.TodasTransacciones
+import com.example.clearcounts.ui.screens.Inicio.TransaccionesPorMetodo
 import com.example.clearcounts.ui.screens.Metas.DetalleBudget
 import com.example.clearcounts.ui.screens.Metas.Metas
 import com.example.clearcounts.ui.screens.Metas.MetasViewModel
@@ -173,7 +174,10 @@ fun AppNavigation(
 
                     HomeScreen(navegarTodasTransacciones = {
                         navigationController.navigate(Pantallas.TodasTransacciones.pantalla)
-                    })
+                    },
+                        navegarTransaccionesPorMetodo = { metodo ->
+                            navigationController.navigate(Pantallas.TransaccionesPorMetodo.createRoute(metodo))
+                        })
                 }
                 composable(Pantallas.Graficas.pantalla) {
 
@@ -311,16 +315,18 @@ fun AppNavigation(
                 }
 
                 composable(
-                    route = "{ruta}/{icono}/{nombre}",
+                    route = "{ruta}/{icono}/{nombre}/{metodoPago}",
                     arguments = listOf(
                         navArgument("ruta") { type = NavType.StringType },
                         navArgument("icono") { type = NavType.StringType },
-                        navArgument("nombre") { type = NavType.StringType }
+                        navArgument("nombre") { type = NavType.StringType },
+                        navArgument("metodoPago") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
-                    val ruta = backStackEntry.arguments?.getString("ruta") ?: "ingresos"
+                    val ruta = backStackEntry.arguments?.getString("ruta") ?: "ingreso"
                     val icono = backStackEntry.arguments?.getString("icono") ?: ""
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
+                    val metodoPago = backStackEntry.arguments?.getString("metodoPago") ?: "Efectivo" // 👈
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false
@@ -332,6 +338,7 @@ fun AppNavigation(
                         ruta = ruta,
                         icono = icono,
                         nombre = nombre,
+                        metodoPago = metodoPago, // 👈
                         botonVolver = {
                             if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
@@ -341,7 +348,6 @@ fun AppNavigation(
                             navigationController.navigate(Pantallas.Inicio.pantalla)
                         }
                     )
-
                 }
 
                 composable(
@@ -463,6 +469,28 @@ fun AppNavigation(
                         onIdiomaSeleccionado = { idioma ->
                             LocaleManager.setLocale(context, idioma.codigo)
                         },
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
+                    )
+                }
+
+                composable(
+                    route = Pantallas.TransaccionesPorMetodo.pantalla,
+                    arguments = listOf(navArgument("metodoPago") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val metodoPago = backStackEntry.arguments?.getString("metodoPago") ?: "Efectivo"
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+
+                    TransaccionesPorMetodo(
+                        metodoPago = metodoPago,
                         botonVolver = {
                             if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
