@@ -543,16 +543,6 @@ fun ItemIngreso(
                     metodoPago = ingreso.metodoPago,
                     icono = metodosPago.find { it.nombre == ingreso.metodoPago }?.icono ?: "efectivo" // 👈
                 )
-
-                if (!ingreso.nota.isNullOrBlank()){
-                    Text(
-                        text = ingreso.nota,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -745,15 +735,6 @@ fun GraficoLineChart(
             .height(300.dp),
         lineChartData = lineChartData
     )
-}
-
-fun Float.formatToSinglePrecision(): String {
-    return String.format("%.1f", this)
-}
-
-// O si el resultado de tu operación es Int, úsala sobre Floats:
-fun Number.formatToSinglePrecision(): String {
-    return "%.1f".format(this.toDouble())
 }
 
 fun formatearFechaHeader(fecha: String, context: Context): String {

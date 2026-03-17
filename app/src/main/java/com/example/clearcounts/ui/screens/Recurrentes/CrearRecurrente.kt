@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.RecurringEntity
 import com.example.clearcounts.ui.screens.Barras.PaymentMethodViewModel
+import com.example.clearcounts.ui.screens.Categorias.CategoriasViewModel
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.utils.PaymentMethodTranslator
 import com.example.clearcounts.utils.PaymentMethodTranslator.getNombreTraducido
@@ -55,18 +56,21 @@ import com.example.clearcounts.utils.PaymentMethodTranslator.getNombreTraducido
 fun CrearRecurrente(
     botonVolver: () -> Unit,
     viewModel: RecurringViewModel = hiltViewModel(),
-    paymentViewModel: PaymentMethodViewModel = hiltViewModel()
+    paymentViewModel: PaymentMethodViewModel = hiltViewModel(),
+    categoriasViewModel: CategoriasViewModel = hiltViewModel()
 ) {
     val metodosPago by paymentViewModel.metodosPago.collectAsState()
     var metodoPago by remember { mutableStateOf("Efectivo") }
+    val ingresos by categoriasViewModel.ingresos.collectAsState()
+    val gastos by categoriasViewModel.gastos.collectAsState()
     var expandidoMetodoPago by remember { mutableStateOf(false) }
+    var expandidoCategoria by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var nombre by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("") }
     var diaDelMes by remember { mutableStateOf("1") }
     var tipo by remember { mutableStateOf("gasto") } // "ingreso" o "gasto"
-    var icono by remember { mutableStateOf("💳") }
 
     LazyColumn(
         modifier = Modifier
@@ -160,14 +164,59 @@ fun CrearRecurrente(
             Spacer(modifier = Modifier.height(16.dp))
             Text(stringResource(R.string.categor_a_recurrente), style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = categoria,
-                onValueChange = { categoria = it },
-                placeholder = { Text(stringResource(R.string.ej_entretenimiento)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                singleLine = true
-            )
+
+            val categoriasFiltradas = if (tipo == "ingreso") ingresos else gastos
+
+            ExposedDropdownMenuBox(
+                expanded = expandidoCategoria,
+                onExpandedChange = { expandidoCategoria = !expandidoCategoria }
+            ) {
+                OutlinedTextField(
+                    value = categoria,
+                    onValueChange = {},
+                    readOnly = true,
+                    placeholder = { Text(stringResource(R.string.ej_entretenimiento)) },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandidoCategoria)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandidoCategoria,
+                    onDismissRequest = { expandidoCategoria = false }
+                ) {
+                    categoriasFiltradas.forEach { cat ->
+                        val iconoId = context.resources.getIdentifier(
+                            cat.icono, "drawable", context.packageName
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (iconoId != 0) {
+                                        Icon(
+                                            painter = painterResource(id = iconoId),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp),
+                                            tint = Color.Unspecified
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                    }
+                                    Text(text = cat.nombre)
+                                }
+                            },
+                            onClick = {
+                                categoria = cat.nombre
+                                expandidoCategoria = false
+                            }
+                        )
+                    }
+                }
+            }
         }
 
         // Día del mes

@@ -11,6 +11,8 @@ sealed class Pantallas (val pantalla: String){
 
     data object PreguntasComentarios: Pantallas("preguntasComentarios")
 
+    data object Contactos: Pantallas("contactos")
+
     data object ingresos: Pantallas("{ruta}/{icono}/{nombre}/{metodoPago}") {
         fun createRoute(ruta: String, icono: String, nombre: String, metodoPago: String) =
             "$ruta/$icono/$nombre/$metodoPago"

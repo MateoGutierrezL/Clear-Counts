@@ -47,6 +47,7 @@ import com.example.clearcounts.ui.screens.Barras.DrawerItem
 import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.screens.Categorias.crearCategoria
+import com.example.clearcounts.ui.screens.Contactos.Contactos
 import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
@@ -438,6 +439,9 @@ fun AppNavigation(
                     }
 
                     Ajustes(
+                        navegarContacto = {
+                            navigationController.navigate(Pantallas.Contactos.pantalla)
+                        },
                         navegarIdioma = {
                             navigationController.navigate(Pantallas.Idiomas.pantalla)
                         },
@@ -525,6 +529,23 @@ fun AppNavigation(
                     }
                     CrearRecurrente(
                         botonVolver = { navigationController.popBackStack() }
+                    )
+                }
+
+                composable(Pantallas.Contactos.pantalla) {
+
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+
+                    Contactos(
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            }
+                        }
                     )
                 }
             }

@@ -54,6 +54,7 @@ fun Ajustes(
     navegarExportar: () -> Unit = {},
     navegarIdioma: () -> Unit = {},
     onLogOut: () -> Unit = {},
+    navegarContacto: () -> Unit = {},
     viewModel: UserSessionViewModel = hiltViewModel(),
     themeViewModel: ThemeViewModel
 ) {
@@ -260,7 +261,8 @@ fun Ajustes(
             RowDivider()
             RowNavigable(
                 icon  = Icons.AutoMirrored.Filled.HelpOutline,
-                title = stringResource(R.string.contactar)
+                title = stringResource(R.string.contactar),
+                onClick = navegarContacto
             )
             RowDivider()
             RowNavigable(
