@@ -394,7 +394,7 @@ fun CustomBottomAppBar(
                                 OutlinedTextField(
                                     value = nuevoMetodoNombre,
                                     onValueChange = { nuevoMetodoNombre = it },
-                                    label = { Text("Nombre") },
+                                    label = { Text(stringResource(R.string.nombre)) },
                                     shape = RoundedCornerShape(12.dp),
                                     singleLine = true,
                                     modifier = Modifier.fillMaxWidth()
@@ -464,7 +464,7 @@ fun CustomBottomAppBar(
                                 if (nuevoMetodoNombre.isNotBlank()) {
                                     paymentViewModel.insertMetodoPago(
                                         nombre = nuevoMetodoNombre,
-                                        icono = iconoSeleccionado // 👈 Usa el icono seleccionado
+                                        icono = iconoSeleccionado
                                     )
                                     nuevoMetodoNombre = ""
                                     iconoSeleccionado = "efectivo"
