@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.R
-import com.example.clearcounts.data.repository.gasto.ExpenseRepository
-import com.example.clearcounts.data.repository.ingreso.IncomeRepository
-import com.example.clearcounts.data.database.entities.ExpenseEntity
-import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.example.clearcounts.data.local.database.entities.ExpenseEntity
+import com.example.clearcounts.data.local.database.entities.IncomeEntity
+import com.example.clearcounts.data.local.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.local.repository.ingreso.IncomeRepository
+import com.example.clearcounts.data.local.repository.notificacion.NotificationRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

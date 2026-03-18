@@ -42,14 +42,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.clearcounts.data.database.entities.RecurringEntity
 import com.example.clearcounts.ui.screens.Metas.formatMonto
-import java.util.Locale
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.utils.PaymentMethodTranslator
-
-
+import com.example.clearcounts.data.local.database.entities.RecurringEntity
 @Composable
 fun ItemRecurrente(
     item: RecurringEntity,

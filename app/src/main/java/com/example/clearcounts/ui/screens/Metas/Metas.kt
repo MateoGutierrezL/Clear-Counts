@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.BudgetEntity
+import com.example.clearcounts.data.local.database.entities.BudgetEntity
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

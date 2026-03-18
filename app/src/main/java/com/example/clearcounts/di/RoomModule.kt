@@ -7,11 +7,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.clearcounts.data.repository.categoria.CategoryRepository
-import com.example.clearcounts.data.repository.categoria.OfflineCategoryRepository
-import com.example.clearcounts.data.database.UserDatabase
-import com.example.clearcounts.data.database.dao.BudgetDao
-import com.example.clearcounts.data.database.dao.CategoryDao
+import com.example.clearcounts.data.local.database.UserDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,26 +27,13 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): UserDatabase {
-        lateinit var database: UserDatabase
-        database = Room.databaseBuilder(
+        return Room.databaseBuilder(
             context,
             UserDatabase::class.java,
             USER_DATABASE_NAME
         )
             .fallbackToDestructiveMigration()
-            .addCallback(object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    Log.d("RoomDB", "onCreate llamado - insertando categorías")
-                    CoroutineScope(Dispatchers.IO).launch {
-                        database.categoryDao().insertAll(UserDatabase.DEFAULT_CATEGORIES)
-                        database.paymentMethodDao().insertAll(UserDatabase.DEFAULT_PAYMENT_METHODS)
-                        Log.d("RoomDB", "Categorías insertadas: ${UserDatabase.DEFAULT_CATEGORIES.size}")
-                    }
-                }
-            })
             .build()
-        return database
     }
 
 

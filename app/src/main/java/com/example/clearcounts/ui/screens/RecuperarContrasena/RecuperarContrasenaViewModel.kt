@@ -2,14 +2,9 @@ package com.example.clearcounts.ui.screens.RecuperarContrasena
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.repository.usuario.UserRepository
-import com.facebook.share.Sharer
-import com.google.firebase.auth.FirebaseAuth
+import com.example.clearcounts.data.local.repository.usuario.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch

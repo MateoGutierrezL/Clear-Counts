@@ -1,24 +1,23 @@
 package com.example.clearcounts.di
 
-import com.example.clearcounts.data.repository.categoria.CategoryRepository
-import com.example.clearcounts.data.repository.gasto.ExpenseRepository
-import com.example.clearcounts.data.repository.ingreso.IncomeRepository
-import com.example.clearcounts.data.repository.categoria.OfflineCategoryRepository
-import com.example.clearcounts.data.repository.gasto.OfflineExpenseRepository
-import com.example.clearcounts.data.repository.ingreso.OfflineIncomeRepository
-import com.example.clearcounts.data.repository.usuario.OfflineUserRepository
-import com.example.clearcounts.data.repository.usuario.UserRepository
-import com.example.clearcounts.data.database.UserDatabase
-import com.example.clearcounts.data.repository.notificacion.NotificationRepository
-import com.example.clearcounts.data.repository.notificacion.OfflineNotificationRepository
-import com.example.clearcounts.data.repository.pago.OfflinePaymentMethodRepository
-import com.example.clearcounts.data.repository.pago.PaymentMethodRepository
-import com.example.clearcounts.data.repository.presupuesto.BudgetRepository
-import com.example.clearcounts.data.repository.presupuesto.OfflineBudgetRepository
-import com.example.clearcounts.data.repository.recurrente.OfflineRecurringRepository
-import com.example.clearcounts.data.repository.recurrente.RecurringRepository
-import com.google.firebase.sessions.dagger.Provides
-
+import com.example.clearcounts.data.local.repository.categoria.CategoryRepository
+import com.example.clearcounts.data.local.repository.categoria.OfflineCategoryRepository
+import com.example.clearcounts.data.local.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.local.repository.gasto.OfflineExpenseRepository
+import com.example.clearcounts.data.local.repository.ingreso.IncomeRepository
+import com.example.clearcounts.data.local.repository.ingreso.OfflineIncomeRepository
+import com.example.clearcounts.data.local.repository.notificacion.NotificationRepository
+import com.example.clearcounts.data.local.repository.notificacion.OfflineNotificationRepository
+import com.example.clearcounts.data.local.repository.pago.OfflinePaymentMethodRepository
+import com.example.clearcounts.data.local.repository.pago.PaymentMethodRepository
+import com.example.clearcounts.data.local.repository.presupuesto.BudgetRepository
+import com.example.clearcounts.data.local.repository.presupuesto.OfflineBudgetRepository
+import com.example.clearcounts.data.local.repository.recurrente.OfflineRecurringRepository
+import com.example.clearcounts.data.local.repository.recurrente.RecurringRepository
+import com.example.clearcounts.data.local.repository.usuario.OfflineUserRepository
+import com.example.clearcounts.data.local.repository.usuario.UserRepository
+import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
+import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -76,5 +75,11 @@ abstract class RepositoryModule {
     abstract fun bindRecurringRepository(
         offlineRecurringRepository: OfflineRecurringRepository
     ): RecurringRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFirestoreSyncRepository(
+        firestoreSyncRepositoryImpl: FirestoreSyncRepositoryImpl
+    ): FirestoreSyncRepository
 
 }

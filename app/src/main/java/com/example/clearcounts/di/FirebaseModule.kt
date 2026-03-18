@@ -1,6 +1,10 @@
 package com.example.clearcounts.di
 
+import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
+import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +19,15 @@ object FirebaseModule {
     @Singleton
     fun provideFireBaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
-    /*
-    TODO Si en un futuro se busca usar firestore u otra tecnologia de firebase es necesario
-    realizar el mismo proceso que con el FireBaseAuth
-     */
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        val firestore = FirebaseFirestore.getInstance()
+        val settings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+        firestore.firestoreSettings = settings
+        return firestore
+    }
 
 }

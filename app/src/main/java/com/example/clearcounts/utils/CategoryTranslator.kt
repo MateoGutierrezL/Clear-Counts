@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.CategoryEntity
+import com.example.clearcounts.data.local.database.entities.CategoryEntity
 
 object CategoryTranslator {
 

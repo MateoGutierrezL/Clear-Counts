@@ -2,8 +2,8 @@ package com.example.clearcounts.ui.screens.Barras
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.database.entities.PaymentMethodEntity
-import com.example.clearcounts.data.repository.pago.PaymentMethodRepository
+import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
+import com.example.clearcounts.data.local.repository.pago.PaymentMethodRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

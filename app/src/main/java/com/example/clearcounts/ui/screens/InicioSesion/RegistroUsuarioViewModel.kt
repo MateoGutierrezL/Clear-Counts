@@ -2,8 +2,8 @@ package com.example.clearcounts.ui.screens.InicioSesion
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.repository.usuario.UserRepository
-import com.example.clearcounts.data.database.entities.UserEntity
+import com.example.clearcounts.data.local.database.entities.UserEntity
+import com.example.clearcounts.data.local.repository.usuario.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

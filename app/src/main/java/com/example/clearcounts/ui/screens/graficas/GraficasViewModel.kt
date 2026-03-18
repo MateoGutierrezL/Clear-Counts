@@ -2,10 +2,10 @@ package com.example.clearcounts.ui.screens.graficas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.database.dao.CategoryExpenseSummary
-import com.example.clearcounts.data.database.dao.MonthlySummary
-import com.example.clearcounts.data.repository.gasto.ExpenseRepository
-import com.example.clearcounts.data.repository.ingreso.IncomeRepository
+import com.example.clearcounts.data.local.database.dao.CategoryExpenseSummary
+import com.example.clearcounts.data.local.database.dao.MonthlySummary
+import com.example.clearcounts.data.local.repository.gasto.ExpenseRepository
+import com.example.clearcounts.data.local.repository.ingreso.IncomeRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

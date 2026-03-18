@@ -1,7 +1,6 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
 import android.content.Context
-import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -12,41 +11,29 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.repository.usuario.UserRepository
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.UserEntity
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
+import com.example.clearcounts.data.local.repository.usuario.UserRepository
 
 @HiltViewModel
 class ViewModelInicioSesion @Inject constructor(
-
     private val userRepository: UserRepository
-): ViewModel(){
+) : ViewModel() {
 
     private val _loginStatus = MutableStateFlow<InicioSesionUiState>(InicioSesionUiState.Idle)
     val loginStatus : StateFlow<InicioSesionUiState> = _loginStatus
 
-    fun validateUser(
-        email: String,
-        password: String
-    ){
-
+    fun validateUser(email: String, password: String) {
         viewModelScope.launch {
-
             _loginStatus.value = InicioSesionUiState.Loading
-
             val result = userRepository.signIn(email, password)
-
             result.onSuccess {
                 _loginStatus.value = InicioSesionUiState.Success
             }.onFailure {
@@ -55,9 +42,7 @@ class ViewModelInicioSesion @Inject constructor(
         }
     }
 
-
-
-    fun onFacebookLoginSucces(token: String){
+    fun onFacebookLoginSucces(token: String) {
         viewModelScope.launch {
             _loginStatus.value = InicioSesionUiState.Loading
             val result = userRepository.signInFacebook(token)
@@ -70,11 +55,9 @@ class ViewModelInicioSesion @Inject constructor(
     }
 
     fun signInWithGoogle(activityContext: Context) {
-
         val credentialManager = CredentialManager.create(activityContext)
         viewModelScope.launch {
             _loginStatus.value = InicioSesionUiState.Loading
-
             try {
                 val googleIdOption = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
@@ -98,7 +81,6 @@ class ViewModelInicioSesion @Inject constructor(
 
             } catch (e: GetCredentialCancellationException) {
                 _loginStatus.value = InicioSesionUiState.Idle
-                // Usuario canceló, no mostramos error
             } catch (e: NoCredentialException) {
                 _loginStatus.value = InicioSesionUiState.ErrorEspecifico("No se encontraron credenciales")
             } catch (e: GetCredentialException) {
@@ -116,9 +98,7 @@ class ViewModelInicioSesion @Inject constructor(
                     try {
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
-
                         authenticateWithFirebase(googleIdTokenCredential.idToken)
-
                     } catch (e: GoogleIdTokenParsingException) {
                         _loginStatus.value = InicioSesionUiState.ErrorEspecifico("Error al procesar credencial de Google")
                     }
@@ -134,8 +114,7 @@ class ViewModelInicioSesion @Inject constructor(
 
     private suspend fun authenticateWithFirebase(token: String) {
         val result = userRepository.signInGoogle(token)
-        result.onSuccess { authResult ->
-
+        result.onSuccess {
             _loginStatus.value = InicioSesionUiState.Success
         }.onFailure { exception ->
             _loginStatus.value = InicioSesionUiState.ErrorEspecifico(
@@ -144,12 +123,9 @@ class ViewModelInicioSesion @Inject constructor(
         }
     }
 
-
-
     fun clearLoginStatus() {
-        _loginStatus.value = InicioSesionUiState.Idle // O un nuevo objeto Idle
+        _loginStatus.value = InicioSesionUiState.Idle
     }
-
 }
 
 sealed interface InicioSesionUiState {

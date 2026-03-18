@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.RecurringEntity
+import com.example.clearcounts.data.local.database.entities.RecurringEntity
 import com.example.clearcounts.ui.screens.Barras.PaymentMethodViewModel
 import com.example.clearcounts.ui.screens.Categorias.CategoriasViewModel
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores

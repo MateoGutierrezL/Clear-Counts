@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.BudgetEntity
+import com.example.clearcounts.data.local.database.entities.BudgetEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale

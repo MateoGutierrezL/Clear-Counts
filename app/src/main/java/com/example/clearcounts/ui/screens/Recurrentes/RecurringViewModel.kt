@@ -2,8 +2,8 @@ package com.example.clearcounts.ui.screens.Recurrentes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.database.entities.RecurringEntity
-import com.example.clearcounts.data.repository.recurrente.RecurringRepository
+import com.example.clearcounts.data.local.database.entities.RecurringEntity
+import com.example.clearcounts.data.local.repository.recurrente.RecurringRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject

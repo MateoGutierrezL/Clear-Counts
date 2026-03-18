@@ -23,8 +23,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,7 +36,6 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -54,9 +51,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.ExpenseEntity
-import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.ui.screens.Inicio.ItemFinanciero
+import com.example.clearcounts.data.local.database.entities.ExpenseEntity
+import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

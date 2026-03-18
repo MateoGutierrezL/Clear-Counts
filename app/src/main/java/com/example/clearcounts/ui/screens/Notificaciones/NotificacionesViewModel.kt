@@ -2,8 +2,8 @@ package com.example.clearcounts.ui.screens.Notificaciones
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clearcounts.data.database.entities.NotificationEntity
-import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.example.clearcounts.data.local.database.entities.NotificationEntity
+import com.example.clearcounts.data.local.repository.notificacion.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

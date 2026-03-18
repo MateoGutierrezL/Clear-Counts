@@ -12,12 +12,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,6 +50,8 @@ import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
 import com.example.clearcounts.ui.screens.Inicio.HomeScreen
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaRegistro
+import com.example.clearcounts.ui.screens.InicioSesion.SyncState
+import com.example.clearcounts.ui.screens.InicioSesion.SyncViewModel
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCodigo
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarVerificacionCorreo
@@ -265,11 +280,38 @@ fun InicioUsuario(
             )
         }
 
-        composable ("Inicio"){
-            AppNavigation(
-                rootNavController = rootNavController,
-                themeViewModel = themeViewModel
-            )
+        composable("Inicio") {
+            val syncViewModel: SyncViewModel = hiltViewModel()
+            val syncState by syncViewModel.syncState.collectAsState()
+
+            // Sincroniza al entrar por primera vez
+            LaunchedEffect(Unit) {
+                syncViewModel.sincronizarDesdFirestore()
+            }
+
+            when (syncState) {
+                is SyncState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text("Sincronizando datos...")
+                        }
+                    }
+                }
+                else -> {
+                    // SyncState.Success, SyncState.Error o SyncState.Idle
+                    // En cualquier caso mostramos la app normal
+                    // Si hay error los datos locales de Room siguen disponibles
+                    AppNavigation(
+                        rootNavController = rootNavController,
+                        themeViewModel = themeViewModel
+                    )
+                }
+            }
         }
     }
 }

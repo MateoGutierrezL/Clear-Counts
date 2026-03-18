@@ -66,9 +66,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.clearcounts.data.repository.gasto.ExpenseRepository
-import com.example.clearcounts.data.database.entities.ExpenseEntity
-import com.example.clearcounts.data.database.entities.IncomeEntity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -77,7 +74,8 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import com.example.clearcounts.R
-import com.example.clearcounts.utils.CategoryTranslator
+import com.example.clearcounts.data.local.database.entities.ExpenseEntity
+import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 
 const val MAX_LENGHT_OF_AMOUNT = 10

@@ -83,9 +83,9 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.ExpenseEntity
-import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.data.database.entities.PaymentMethodEntity
+import com.example.clearcounts.data.local.database.entities.ExpenseEntity
+import com.example.clearcounts.data.local.database.entities.IncomeEntity
+import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import com.example.clearcounts.utils.PaymentMethodTranslator.traducirMetodoPago
 import com.facebook.internal.Utility.locale

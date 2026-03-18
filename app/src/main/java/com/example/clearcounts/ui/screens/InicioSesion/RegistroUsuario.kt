@@ -55,9 +55,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
-import com.example.clearcounts.data.database.entities.UserEntity
 import com.example.clearcounts.utils.AlertaCamposVacios
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.example.clearcounts.data.local.database.entities.UserEntity
 
 
 @Composable

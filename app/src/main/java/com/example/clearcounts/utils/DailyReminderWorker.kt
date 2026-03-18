@@ -8,7 +8,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.clearcounts.R
-import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.example.clearcounts.data.local.repository.notificacion.NotificationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
