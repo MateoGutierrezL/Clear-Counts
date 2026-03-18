@@ -45,4 +45,5 @@ sealed class Pantallas (val pantalla: String){
 
     data object Recurrentes : Pantallas("recurrentes")
     data object CrearRecurrente : Pantallas("crearRecurrente")
+    data object CambiarContrasena : Pantallas("cambiarContrasena")
 }

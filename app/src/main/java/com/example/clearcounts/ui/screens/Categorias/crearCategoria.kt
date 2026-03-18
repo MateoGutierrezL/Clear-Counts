@@ -69,7 +69,8 @@ fun crearCategoria(
         "comida", "trasnporte", "salud", "deporte", "educacion",
         "ropa", "alquiler", "libros", "maquillaje", "plan_datos",
         "salario", "comision", "inversiones", "regalo", "reembolso",
-        "gasolina", "camion", "corazon", "administracion", "alerta"
+        "gasolina", "camion", "corazon", "administracion", "alerta",
+        "calculadora"
 
     )
 

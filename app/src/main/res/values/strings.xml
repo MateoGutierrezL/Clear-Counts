@@ -231,11 +231,15 @@
     <string name="agregar_metodo_pago">Agregar método de pago</string>
     <string name="nuevo_metodo_pago">Nuevo método de pago</string>
     <string name="metodo_pago">Método de pago: %s</string>
-    <string name="recurrentes">Recurrentes</string>
-    <string name="ingresos_recurrentes">Ingresos Recurrentes</string>
-    <string name="gastos_recurrentes">Gastos Recurrentes</string>
-    <string name="no_hay_ingresos_recurrentes">No hay ingresos recurrentes</string>
-    <string name="no_hay_gastos_recurrentes">No hay gastos recurrentes</string>
+    <string name="reporte_financiero">Reporte Financiero %1$s</string>
+    <string name="analisis_de_ingresos_y_gastos">Análisis de Ingresos y Gastos</string>
+    <string name="total_ingresos">Total Ingresos</string>
+    <string name="total_gastos">Total Gastos</string>
+    <string name="grafica_analisis_ingresos">Gráfica de análisis de Ingresos</string>
+    <string name="enero_diciembre">(Enero - Diciembre %1$s)</string>
+    <string name="grafica_analisis_gastos">Gráfica de análisis de Gastos</string>
+    <string name="generado_por_clearcounts">Generado por: ClearCounts</string>
+    <string name="fecha_exportacion">Fecha de exportación: %1$s</string>
     <string name="nuevo_recurrente">Nuevo recurrente</string>
     <string name="dia_del_mes">Día del mes</string>
     <string name="cada_dia">Cada día %1$d</string>
@@ -243,4 +247,29 @@
     <string name="ej_entretenimiento">Ej. Entretenimiento</string>
     <string name="categor_a_recurrente">Categoría</string>
     <string name="m_todo_de_pago">Método de pago</string>
+    <string name="recurrentes">Recurrentes</string>
+    <string name="ingresos_recurrentes">Ingresos Recurrentes</string>
+    <string name="gastos_recurrentes">Gastos Recurrentes</string>
+    <string name="no_hay_ingresos_recurrentes">No hay ingresos recurrentes</string>
+    <string name="no_hay_gastos_recurrentes">No hay gastos recurrentes</string>
+    <string name="categorias">Categorías</string>
+    <string name="selecciona_tu_avatar">Selecciona tu avatar</string>
+    <string name="informacion_personal">Información Personal</string>
+    <string name="nombre_completo">Nombre completo</string>
+    <string name="telefono">Teléfono</string>
+    <string name="seguridad_y_cuenta">Seguridad y Cuenta</string>
+    <string name="cambiar_contrasena">Cambiar Contraseña</string>
+    <string name="actualiza_tu_contrasena">Actualiza tu contraseña de acceso</string>
+    <string name="metodos_de_pago">Métodos de pago</string>
+    <string name="contrasena_actual">Contraseña actual</string>
+    <string name="nueva_contrasena">Nueva contraseña</string>
+    <string name="confirmar_contrasena">Confirmar contraseña</string>
+    <string name="completa_todos_los_campos">Completa todos los campos</string>
+    <string name="contrasenas_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="contrasena_minimo_6">La contraseña debe tener mínimo 6 caracteres</string>
+    <string name="contrasena_actualizada">¡Contraseña actualizada con éxito!</string>
+    <string name="contrasena_actual_incorrecta">La contraseña actual es incorrecta</string>
+    <string name="actualizar_contrasena">Actualizar Contraseña</string>
+
+    // contraseña
 </resources>
