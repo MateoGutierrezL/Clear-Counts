@@ -61,7 +61,7 @@ import com.example.clearcounts.ui.screens.Metas.Prestamo
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
-import com.example.clearcounts.ui.screens.Perfil.EditarPerfil
+import com.example.clearcounts.ui.screens.Perfil.CambiarContrasena
 import com.example.clearcounts.ui.screens.Perfil.Perfil
 import com.example.clearcounts.ui.screens.Recurrentes.CrearRecurrente
 import com.example.clearcounts.ui.screens.Recurrentes.Recurrentes
@@ -205,8 +205,8 @@ fun AppNavigation(
                     }
 
                     Perfil(
-                        navegarPantallaEditarPerfil = {
-                            navigationController.navigate(Pantallas.EditarPerfil.pantalla)
+                        navegarCambiarContrasena = {
+                            navigationController.navigate(Pantallas.CambiarContrasena.pantalla)
                         }
                     )
                 }
@@ -259,22 +259,17 @@ fun AppNavigation(
                     }
                 }
 
-                composable(Pantallas.EditarPerfil.pantalla) {
-
+                composable(Pantallas.CambiarContrasena.pantalla) {
                     DisposableEffect(Unit) {
-                        bottomBarVisible.value = false // Ocultar barra inferior
-                        topBarVisible.value = true
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
                         onDispose {}
                     }
-
-                    EditarPerfil(
+                    CambiarContrasena(
                         botonVolver = {
                             if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
                             }
-                        },
-                        navegarPerfil = {
-                            navigationController.navigate(Pantallas.Perfil.pantalla)
                         }
                     )
                 }

@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Exportar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfDocument
@@ -7,7 +8,10 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -15,6 +19,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
@@ -27,24 +33,36 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.R
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.ui.screens.Inicio.ItemFinanciero
+import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun PantallaExportarGrafico(
@@ -56,6 +74,7 @@ fun PantallaExportarGrafico(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
+    val isDarkTheme = isSystemInDarkTheme()
     var pdf by rememberSaveable {
         mutableStateOf(true)
     }
@@ -72,20 +91,18 @@ fun PantallaExportarGrafico(
     } else {
         if (csv) Color.Black else Color.Black
     }
-
+    val ingresosPorMes by viewModel.ingresosPorMes.collectAsState()
+    val gastosPorCategoria by viewModel.gastosPorCategoria.collectAsState()
+    val comparacionMensual by viewModel.comparacionMensual.collectAsState()
+    val totalIngresoVsGasto by viewModel.totalIngresoVsGastoMes.collectAsState()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/pdf")
     ) { uri ->
         uri?.let { seleccionadoUri ->
             coroutineScope.launch {
                 try {
-                    // Damos un respiro para que el record() del layer termine
                     delay(150)
-
-                    // 1. Capturamos el bitmap (inicialmente será Hardware Bitmap)
                     val hardwareBitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
-
-                    // 2. Guardamos pasando por la conversión de software
                     guardarPdfEnUri(context, hardwareBitmap, seleccionadoUri)
                     viewModel.notificarExportacion("PDF")
                 } catch (e: Exception) {
@@ -128,62 +145,51 @@ fun PantallaExportarGrafico(
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(10.dp))
-        if (pdf){
+        if (pdf) {
             Box(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow) // Fondo blanco para evitar transparencia negra en PDF
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        if (isDarkTheme) MaterialTheme.colorScheme.surfaceContainerLow
+                        else Color.White
+                    )
+                    .padding(8.dp)
+            ) {
+                ContenidoPDF(
+                    mesFiltro = mesFiltro,
+                    ingresosTotales = ingresosTotales,
+                    gastosTotales = gastosTotales,
+                    ingresosPorMes = ingresosPorMes,
+                    gastosPorCategoria = gastosPorCategoria,
+                    comparacionMensual = comparacionMensual,
+                    totalIngresoVsGasto = totalIngresoVsGasto,
+                    isDarkTheme = isDarkTheme
+                )
+            }
+
+            //Caja invisible solo para captura — siempre blanca
+            Box(
+                modifier = Modifier
+                    .size(1.dp)
+                    .background(Color.White)
                     .drawWithContent {
                         graphicsLayer.record {
                             this@drawWithContent.drawContent()
                         }
                         drawLayer(graphicsLayer)
                     }
-                    .padding(8.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-
-                    ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.resumen_de_movimientos, mesFiltro),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-
-                        ItemFinanciero(
-                            titulo = "Ingresos",
-                            monto = "${ingresosTotales.toInt()}",
-                            icono = Icons.AutoMirrored.Default.TrendingUp,
-                            modifier = Modifier.weight(1f),
-                            tint = Color(0xFF2ECC71)
-                        )
-
-                        ItemFinanciero(
-                            titulo = "Gastos",
-                            monto = "${gastosTotales.toInt()}",
-                            icono = Icons.AutoMirrored.Default.TrendingDown,
-                            modifier = Modifier.weight(1f),
-                            tint = Color(0xFFE74C3C)
-                        )
-                    }
-                    /*
-
-                    GraficoLineChart()
-
-                     */
-                }
-
-
+                ContenidoPDF(
+                    mesFiltro = mesFiltro,
+                    ingresosTotales = ingresosTotales,
+                    gastosTotales = gastosTotales,
+                    ingresosPorMes = ingresosPorMes,
+                    gastosPorCategoria = gastosPorCategoria,
+                    comparacionMensual = comparacionMensual,
+                    totalIngresoVsGasto = totalIngresoVsGasto,
+                    isDarkTheme = false
+                )
             }
         }else{
             VistaPreviaCSV(movimientos)
@@ -229,7 +235,7 @@ fun PantallaExportarGrafico(
 
         if (pdf){
             Button(
-                onClick = { launcher.launch("Reporte_${System.currentTimeMillis()}.pdf") },
+                onClick = { launcher.launch("Report_${System.currentTimeMillis()}.pdf") },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -242,7 +248,7 @@ fun PantallaExportarGrafico(
                 onClick = {
                     if (movimientos.isNotEmpty()) {
                         csvContent = viewModel.generarCsvString(movimientos)
-                        createDocumentLauncher.launch("Reporte_$mesFiltro.csv")
+                        createDocumentLauncher.launch("Report_$mesFiltro.csv")
                     } else {
                         Toast.makeText(context,
                             context.getString(R.string.no_hay_datos_para_exportar), Toast.LENGTH_SHORT).show()
@@ -485,6 +491,609 @@ fun VistaPreviaCSV(movimientos: List<Any>) {
                     }
                 }
             }
+        }
+    }
+}
+
+@SuppressLint("LocalContextConfigurationRead")
+@Composable
+fun ContenidoPDF(
+    mesFiltro: String,
+    ingresosTotales: Double,
+    gastosTotales: Double,
+    ingresosPorMes: Map<String, Double>,
+    gastosPorCategoria: Map<String, Double>,
+    comparacionMensual: List<Triple<String, Double, Double>>,
+    totalIngresoVsGasto: Pair<Double, Double>,
+    isDarkTheme: Boolean = false
+) {
+    val context = LocalContext.current
+    val anio = mesFiltro.split("-").getOrElse(1) { "2026" }
+    val locale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
+        ?: Locale.getDefault()
+
+    val isSpanish = locale.language == "es"
+    val pattern = if (isSpanish) "dd 'de' MMMM 'de' yyyy" else "MMMM dd, yyyy"
+
+    val fechaGeneracion = LocalDate.now().format(
+        DateTimeFormatter.ofPattern(pattern, locale)
+    )
+
+    // Colores que cambian según el tema
+    val fondoColor = if (isDarkTheme) Color(0xFF1E1E1E) else Color.White
+    val textoColor = if (isDarkTheme) Color.White else Color.Black
+    val textoSecundario = if (isDarkTheme) Color.LightGray else Color.Gray
+    val bordeColor = if (isDarkTheme) Color(0xFF3A3A3A) else Color.LightGray
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(fondoColor)
+    ) {
+        // ── HEADER ──
+        Box(modifier = Modifier.fillMaxWidth()) {
+            // Esquinas decorativas
+            EsquinaDecorativa(Modifier.align(Alignment.TopStart))
+            EsquinaDecorativa(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    .rotate(90f)
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Logo
+                Image(
+                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.reporte_financiero, anio),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textoColor,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.analisis_de_ingresos_y_gastos),
+                    fontSize = 12.sp,
+                    color = textoSecundario,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider(color = bordeColor)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // ── RESUMEN TOTAL ──
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            TarjetaResumenPDF(
+                titulo = stringResource(R.string.total_ingresos),
+                monto = ingresosTotales.toInt().toString(),
+                color = Color(0xFF2ECC71),
+                textoColor = textoColor,
+                bordeColor = bordeColor,
+                modifier = Modifier.weight(1f)
+            )
+            TarjetaResumenPDF(
+                titulo = stringResource(R.string.total_gastos),
+                monto = gastosTotales.toInt().toString(),
+                color = Color(0xFFE74C3C),
+                textoColor = textoColor,
+                bordeColor = bordeColor,
+                modifier = Modifier.weight(1f)
+            )
+            TarjetaResumenPDF(
+                titulo = stringResource(R.string.balance_del_mes),
+                monto = (ingresosTotales - gastosTotales).toInt().toString(),
+                color = Color(0xFF3498DB),
+                textoColor = textoColor,
+                bordeColor = bordeColor,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // ── GRÁFICA DE BARRAS — INGRESOS POR MES ──
+        if (ingresosPorMes.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.grafica_analisis_ingresos),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textoColor,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val nombresMeses = listOf("Ene","Feb","Mar","Abr","May","Jun",
+                "Jul","Ago","Sep","Oct","Nov","Dic")
+            val valoresMeses = (1..12).map { mes ->
+                ingresosPorMes[mes.toString().padStart(2, '0')] ?: 0.0
+            }
+            val maxValor = valoresMeses.maxOrNull()?.takeIf { it > 0 } ?: 1.0
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .border(1.dp, bordeColor, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                val alturaMaxBarra = 100.dp
+
+                Column {
+                    Text(
+                        text = stringResource(R.string.ingresos),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textoColor,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        valoresMeses.forEachIndexed { index, valor ->
+                            val fraccion = if (maxValor > 0) (valor / maxValor).toFloat() else 0f
+                            val alturaReal = alturaMaxBarra * fraccion.coerceAtLeast(0.02f)
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Bottom,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Box(modifier = Modifier.height(alturaMaxBarra), contentAlignment = Alignment.BottomCenter) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth(0.6f)
+                                            .height(alturaReal)
+                                            .background(
+                                                Color(0xFF2980B9),
+                                                RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)
+                                            )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = nombresMeses[index],
+                                    fontSize = 7.sp,
+                                    color = textoColor,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Text(
+                text = stringResource(R.string.enero_diciembre, anio),
+                fontSize = 10.sp,
+                color = textoColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 8.dp, top = 4.dp),
+                textAlign = TextAlign.End
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // ── GRÁFICA INGRESOS VS GASTOS (DONUT) ──
+        if (totalIngresoVsGasto.first > 0 || totalIngresoVsGasto.second > 0) {
+            Text(
+                text = stringResource(R.string.ingresos_vs_gastos),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textoColor,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .border(1.dp, bordeColor, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                GraficaDonutPDF(
+                    ingresos = totalIngresoVsGasto.first,
+                    gastos = totalIngresoVsGasto.second
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // ── GRÁFICA DE TORTA — GASTOS POR CATEGORÍA ──
+        // ... igual que antes ...
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // ── COMPARACIÓN MENSUAL (BARRAS AGRUPADAS) ──
+        val hayComparacion = comparacionMensual.any { it.second > 0 || it.third > 0 }
+        if (hayComparacion) {
+            Text(
+                text = stringResource(R.string.comparacion_mensual),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textoColor,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .border(1.dp, bordeColor, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                GraficaBarrasAgrupadasPDF(comparacionMensual = comparacionMensual)
+            }
+
+            Text(
+                text = "(${mesFiltro.split("-").getOrElse(1) { "2026" }})",
+                fontSize = 10.sp,
+                color = textoColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 8.dp, top = 4.dp),
+                textAlign = TextAlign.End
+            )
+        }
+
+        // ── GRÁFICA DE TORTA — GASTOS POR CATEGORÍA ──
+        if (gastosPorCategoria.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.grafica_analisis_gastos),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textoColor,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .border(1.dp, bordeColor, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.gastos),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textoColor,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    GraficaTortaPDF(gastosPorCategoria = gastosPorCategoria)
+                }
+            }
+
+            Text(
+                text = "(${mesFiltro.replace("-", " - ")})",
+                fontSize = 10.sp,
+                color = textoColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 8.dp, top = 4.dp),
+                textAlign = TextAlign.End
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+        HorizontalDivider(color = Color.LightGray)
+
+        // ── FOOTER ──
+        Box(modifier = Modifier.fillMaxWidth()) {
+            EsquinaDecorativa(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .rotate(270f)
+            )
+            EsquinaDecorativa(
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .rotate(180f)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 12.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = stringResource(R.string.generado_por_clearcounts),
+                    fontSize = 10.sp,
+                    color = textoSecundario,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+                Text(
+                    text = stringResource(R.string.fecha_exportacion, fechaGeneracion),
+                    fontSize = 10.sp,
+                    color = textoSecundario,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EsquinaDecorativa(modifier: Modifier = Modifier) {
+    Canvas(
+        modifier = modifier.size(24.dp)
+    ) {
+        val stroke = Stroke(width = 2.dp.toPx())
+        val color = Color(0xFF3498DB)
+        drawLine(color, Offset(0f, 0f), Offset(size.width * 0.6f, 0f), stroke.width)
+        drawLine(color, Offset(0f, 0f), Offset(0f, size.height * 0.6f), stroke.width)
+    }
+}
+
+@Composable
+fun TarjetaResumenPDF(
+    titulo: String,
+    monto: String,
+    color: Color,
+    textoColor: Color = Color.Black,
+    bordeColor: Color = Color.LightGray,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .border(1.dp, color.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = titulo, fontSize = 9.sp, color = Color.Gray, textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = monto,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            color = color,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun GraficaTortaPDF(gastosPorCategoria: Map<String, Double>) {
+    val context = LocalContext.current
+    val colores = listOf(
+        Color(0xFF2980B9), Color(0xFF27AE60), Color(0xFFE74C3C),
+        Color(0xFFF39C12), Color(0xFF9B59B6), Color(0xFF1ABC9C),
+        Color(0xFFE67E22), Color(0xFF34495E)
+    )
+    val total = gastosPorCategoria.values.sum()
+    val entradas = gastosPorCategoria.entries.toList()
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Canvas(modifier = Modifier.size(140.dp)) {
+            var anguloInicio = -90f
+            entradas.forEachIndexed { index, (_, valor) ->
+                val angulo = (valor / total * 360f).toFloat()
+                drawArc(
+                    color = colores[index % colores.size],
+                    startAngle = anguloInicio,
+                    sweepAngle = angulo,
+                    useCenter = true
+                )
+                anguloInicio += angulo
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            entradas.forEachIndexed { index, (categoria, valor) ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .background(colores[index % colores.size], CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "${context.traducirCategoria(categoria)} (${((valor / total) * 100).toInt()}%)",
+                        fontSize = 9.sp,
+                        color = Color.Black
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun GraficaDonutPDF(ingresos: Double, gastos: Double) {
+    val total = ingresos + gastos
+    val colores = listOf(Color(0xFF2ECC71), Color(0xFFE74C3C))
+    val valores = listOf(ingresos, gastos)
+    val etiquetas = listOf(stringResource(R.string.ingresos), stringResource(R.string.gastos))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        // Donut
+        Canvas(modifier = Modifier.size(120.dp)) {
+            var anguloInicio = -90f
+            valores.forEachIndexed { index, valor ->
+                val angulo = if (total > 0) (valor / total * 360f).toFloat() else 180f
+                drawArc(
+                    color = colores[index],
+                    startAngle = anguloInicio,
+                    sweepAngle = angulo,
+                    useCenter = false,
+                    style = Stroke(width = 28.dp.toPx(), cap = StrokeCap.Butt)
+                )
+                anguloInicio += angulo
+            }
+        }
+
+        Spacer(modifier = Modifier.width(24.dp))
+
+        // Leyenda
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            valores.forEachIndexed { index, valor ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(colores[index], CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(
+                            text = etiquetas[index],
+                            fontSize = 11.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "${valor.toInt()}",
+                            fontSize = 10.sp,
+                            color = Color.Gray
+                        )
+                        Text(
+                            text = "${if (total > 0) ((valor / total) * 100).toInt() else 0}%",
+                            fontSize = 10.sp,
+                            color = colores[index],
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GraficaBarrasAgrupadasPDF(
+    comparacionMensual: List<Triple<String, Double, Double>>
+) {
+    val nombresMeses = listOf("Ene","Feb","Mar","Abr","May","Jun",
+        "Jul","Ago","Sep","Oct","Nov","Dic")
+    val alturaMaxBarra = 80.dp
+    val maxValor = comparacionMensual.flatMap { listOf(it.second, it.third) }
+        .maxOrNull()?.takeIf { it > 0 } ?: 1.0
+
+    Column {
+        Text(
+            text = stringResource(R.string.comparacion_mensual),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            comparacionMensual.forEachIndexed { index, (mes, ingreso, gasto) ->
+                val fraccionIngreso = (ingreso / maxValor).toFloat().coerceAtLeast(0.02f)
+                val fraccionGasto = (gasto / maxValor).toFloat().coerceAtLeast(0.02f)
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier.height(alturaMaxBarra),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(1.dp),
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            // Barra ingreso
+                            Box(
+                                modifier = Modifier
+                                    .width(4.dp)
+                                    .height(alturaMaxBarra * fraccionIngreso)
+                                    .background(
+                                        Color(0xFF2ECC71),
+                                        RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp)
+                                    )
+                            )
+                            // Barra gasto
+                            Box(
+                                modifier = Modifier
+                                    .width(4.dp)
+                                    .height(alturaMaxBarra * fraccionGasto)
+                                    .background(
+                                        Color(0xFFE74C3C),
+                                        RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp)
+                                    )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = nombresMeses.getOrElse(index) { mes },
+                        fontSize = 6.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Leyenda
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier
+                .size(8.dp)
+                .background(Color(0xFF2ECC71), CircleShape))
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = stringResource(R.string.ingresos), fontSize = 9.sp, color = Color.Black)
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(modifier = Modifier
+                .size(8.dp)
+                .background(Color(0xFFE74C3C), CircleShape))
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = stringResource(R.string.gastos), fontSize = 9.sp, color = Color.Black)
         }
     }
 }
