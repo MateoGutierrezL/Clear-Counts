@@ -10,6 +10,7 @@ import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
@@ -17,65 +18,40 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IngresosGastosViewModel @Inject constructor(
-
     private val incomeRepository: IncomeRepository,
     private val expenseRepository: ExpenseRepository,
     private val notificationRepository: NotificationRepository,
+    private val auth: FirebaseAuth,
     @ApplicationContext private val context: Context
-): ViewModel(){
+) : ViewModel() {
 
-    fun insertIncome(
-        incomeEntity: IncomeEntity,
-        onSuccess: () -> Unit
-    ){
+    private val userId get() = auth.currentUser?.uid ?: ""
+
+    fun insertIncome(incomeEntity: IncomeEntity, onSuccess: () -> Unit) {
         viewModelScope.launch {
-
             try {
-                incomeRepository.insertIncome(incomeEntity)
-                notificationRepository.insertNotification( // 👈
+                incomeRepository.insertIncome(incomeEntity.copy(userId = userId))
+                notificationRepository.insertNotification(
                     titulo = context.getString(R.string.ingreso_registrado),
-                    mensaje = context.getString(
-                        R.string.se_registr_un_ingreso_de_en,
-                        incomeEntity.cantidad.toString(),
-                        incomeEntity.categoria
-                    )
+                    mensaje = context.getString(R.string.se_registr_un_ingreso_de_en,
+                        incomeEntity.cantidad.toString(), incomeEntity.categoria)
                 )
                 onSuccess()
-
-
-                Log.e("ingreso", "Funciona")
-
-            }catch (e: Exception){
-
-                Log.e("gasto", "Fallo insertando el ingreso: ${e.message}")
-            }
+            } catch (e: Exception) { Log.e("ingreso", "Fallo: ${e.message}") }
         }
     }
 
-    fun insertExpense(
-        expenseEntity: ExpenseEntity,
-        onSuccess: () -> Unit
-    ){
+    fun insertExpense(expenseEntity: ExpenseEntity, onSuccess: () -> Unit) {
         viewModelScope.launch {
-
             try {
-                expenseRepository.insertExpense(expenseEntity)
-                notificationRepository.insertNotification( // 👈
+                expenseRepository.insertExpense(expenseEntity.copy(userId = userId))
+                notificationRepository.insertNotification(
                     titulo = context.getString(R.string.gasto_registrado),
-                    mensaje = context.getString(
-                        R.string.se_registr_un_gasto_de_en,
-                        expenseEntity.cantidad.toString(),
-                        expenseEntity.categoria
-                    )
+                    mensaje = context.getString(R.string.se_registr_un_gasto_de_en,
+                        expenseEntity.cantidad.toString(), expenseEntity.categoria)
                 )
                 onSuccess()
-
-                Log.e("gasto", "Funciona")
-
-            }catch (e: Exception){
-
-                Log.e("gasto", "Fallo insertando el gasto: ${e.message}")
-            }
+            } catch (e: Exception) { Log.e("gasto", "Fallo: ${e.message}") }
         }
     }
 }

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
         BudgetEntity::class,
         PaymentMethodEntity::class,
         RecurringEntity::class],
-    version = 15,
+    version = 16,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {

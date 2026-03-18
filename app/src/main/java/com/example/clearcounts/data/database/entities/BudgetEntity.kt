@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "budget")
 data class BudgetEntity (
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "user_id") val userId: String = "",
     @ColumnInfo(name = "nombre") val nombre: String,
     @ColumnInfo(name = "tipo") val tipo: String,
     @ColumnInfo(name = "cantidad_requerida") val cantidadRequerida: Double,

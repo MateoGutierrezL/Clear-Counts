@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.database.entities.BudgetEntity
 import com.example.clearcounts.data.repository.presupuesto.BudgetRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,104 +15,79 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MetasViewModel @Inject constructor(
-    private val repository: BudgetRepository
+    private val repository: BudgetRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
-    val allBudgets: StateFlow<List<BudgetEntity>> = repository.getAllBudgets()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    private val userId get() = auth.currentUser?.uid ?: ""
 
-    val metas: StateFlow<List<BudgetEntity>> = allBudgets
-        .map { list -> list.filter { it.tipo == "Meta" } }
+    val allBudgets: StateFlow<List<BudgetEntity>> = repository.getAllBudgets(userId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val deudas: StateFlow<List<BudgetEntity>> = allBudgets
-        .map { list -> list.filter { it.tipo == "Deuda" } }
+    val metas = allBudgets.map { list -> list.filter { it.tipo == "Meta" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val prestamos: StateFlow<List<BudgetEntity>> = allBudgets
-        .map { list -> list.filter { it.tipo == "Te deben" } }
+    val deudas = allBudgets.map { list -> list.filter { it.tipo == "Deuda" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val cantidadMetas: StateFlow<Int> = metas
-        .map { it.size }
+    val prestamos = allBudgets.map { list -> list.filter { it.tipo == "Te deben" } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val cantidadMetas = metas.map { it.size }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
-    val totalDeudas: StateFlow<Double> = deudas
-        .map { list -> list.sumOf { it.cantidadRequerida - it.cantidadAcumulada } }
+    val totalDeudas = deudas.map { list -> list.sumOf { it.cantidadRequerida - it.cantidadAcumulada } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
-    val totalTeDeben: StateFlow<Double> = prestamos
-        .map { list -> list.sumOf { it.cantidadRequerida - it.cantidadAcumulada } }
+    val totalTeDeben = prestamos.map { list -> list.sumOf { it.cantidadRequerida - it.cantidadAcumulada } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     fun eliminarBudget(budget: BudgetEntity) {
-        viewModelScope.launch {
-            repository.deleteBudget(budget)
-        }
+        viewModelScope.launch { repository.deleteBudget(budget) }
     }
 
     fun marcarComoHecho(budget: BudgetEntity) {
-        viewModelScope.launch {
-            repository.updateBudget(
-                budget.copy(cantidadAcumulada = budget.cantidadRequerida)
-            )
-        }
+        viewModelScope.launch { repository.updateBudget(budget.copy(cantidadAcumulada = budget.cantidadRequerida)) }
     }
 
     fun actualizarCantidadAcumulada(budget: BudgetEntity, cantidad: Double, sumar: Boolean) {
         viewModelScope.launch {
-            val nuevaCantidad = if (sumar) {
-                budget.cantidadAcumulada + cantidad
-            } else {
-                (budget.cantidadAcumulada - cantidad).coerceAtLeast(0.0)
-            }
+            val nuevaCantidad = if (sumar) budget.cantidadAcumulada + cantidad
+            else (budget.cantidadAcumulada - cantidad).coerceAtLeast(0.0)
             repository.updateBudget(budget.copy(cantidadAcumulada = nuevaCantidad))
         }
     }
 
     fun actualizarCantidadRequerida(budget: BudgetEntity, cantidad: Double, sumar: Boolean) {
         viewModelScope.launch {
-            val nuevaCantidad = if (sumar) {
-                budget.cantidadRequerida + cantidad
-            } else {
-                (budget.cantidadRequerida - cantidad).coerceAtLeast(0.0)
-            }
+            val nuevaCantidad = if (sumar) budget.cantidadRequerida + cantidad
+            else (budget.cantidadRequerida - cantidad).coerceAtLeast(0.0)
             repository.updateBudget(budget.copy(cantidadRequerida = nuevaCantidad))
         }
     }
 
     fun actualizarBudget(budget: BudgetEntity) {
-        viewModelScope.launch {
-            repository.updateBudget(budget)
-        }
+        viewModelScope.launch { repository.updateBudget(budget) }
     }
+
     fun guardarPrestamo(
-        nombre: String,
-        cantidadRequerida: String,
-        cantidadAcumulada: String,
-        prestador: String,
-        fechaInicio: String,
-        fechaLimite: String,
-        nota: String,
-        tipo: String // El "titulo" que recibes en el Composable
+        nombre: String, cantidadRequerida: String, cantidadAcumulada: String,
+        prestador: String, fechaInicio: String, fechaLimite: String, nota: String, tipo: String
     ) {
         viewModelScope.launch {
-            val budget = BudgetEntity(
-                // Ajusta estos campos según tu BudgetEntity real
-                nombre = nombre,
-                cantidadRequerida = cantidadRequerida.toDoubleOrNull() ?: 0.0,
-                cantidadAcumulada = cantidadAcumulada.toDoubleOrNull() ?: 0.0,
-                prestador = prestador,
-                fechaInicio = fechaInicio,
-                fechaLimite = fechaLimite,
-                nota = nota,
-                tipo = tipo // Aquí guardas si es "Prestamo", "Meta", etc.
+            repository.insertBudget(
+                BudgetEntity(
+                    userId = userId,
+                    nombre = nombre,
+                    cantidadRequerida = cantidadRequerida.toDoubleOrNull() ?: 0.0,
+                    cantidadAcumulada = cantidadAcumulada.toDoubleOrNull() ?: 0.0,
+                    prestador = prestador,
+                    fechaInicio = fechaInicio,
+                    fechaLimite = fechaLimite,
+                    nota = nota,
+                    tipo = tipo
+                )
             )
-            repository.insertBudget(budget)
         }
     }
 }

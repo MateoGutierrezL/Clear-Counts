@@ -5,13 +5,8 @@ import com.example.clearcounts.data.database.entities.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-
-    fun getAllCategories(): Flow<List<CategoryEntity>>
-
-    fun getCategoriesByType(tipo: String): Flow<List<CategoryEntity>>
-
-    suspend fun insertDefaultCategories()
-
+    fun getAllCategories(userId: String): Flow<List<CategoryEntity>>
+    fun getCategoriesByType(tipo: String, userId: String): Flow<List<CategoryEntity>>
+    suspend fun insertDefaultCategories(userId: String)
     suspend fun insertCategoria(categoria: CategoryEntity)
-
 }

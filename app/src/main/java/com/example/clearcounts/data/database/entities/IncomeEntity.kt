@@ -9,6 +9,7 @@ import com.example.clearcounts.ui.screens.Categorias.Categorias
 data class IncomeEntity (
 
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "user_id") val userId: String = "",
     @ColumnInfo(name = "categoria") val categoria: String,
     @ColumnInfo(name = "cantidad") val cantidad: Double,
     @ColumnInfo(name = "hora")val hora: String,

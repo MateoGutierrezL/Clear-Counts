@@ -4,8 +4,8 @@ import com.example.clearcounts.data.database.entities.PaymentMethodEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentMethodRepository {
-    fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>>
+    fun getAllPaymentMethods(userId: String): Flow<List<PaymentMethodEntity>>
     suspend fun insert(method: PaymentMethodEntity)
     suspend fun delete(method: PaymentMethodEntity)
-    suspend fun insertDefaultMethods()
+    suspend fun insertDefaultMethods(userId: String)
 }

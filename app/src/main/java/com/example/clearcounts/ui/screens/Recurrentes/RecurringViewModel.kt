@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.database.entities.RecurringEntity
 import com.example.clearcounts.data.repository.recurrente.RecurringRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,25 +15,26 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecurringViewModel @Inject constructor(
-    private val repository: RecurringRepository
+    private val repository: RecurringRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
 
-    val ingresos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring()
+    private val userId get() = auth.currentUser?.uid ?: ""
+
+    val ingresos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring(userId)
         .map { list -> list.filter { it.tipo == "ingreso" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val gastos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring()
+    val gastos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring(userId)
         .map { list -> list.filter { it.tipo == "gasto" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun guardar(entity: RecurringEntity) {
-        viewModelScope.launch { repository.insertRecurring(entity) }
+        viewModelScope.launch { repository.insertRecurring(entity.copy(userId = userId)) }
     }
 
     fun toggleActivo(entity: RecurringEntity) {
-        viewModelScope.launch {
-            repository.updateRecurring(entity.copy(activo = !entity.activo))
-        }
+        viewModelScope.launch { repository.updateRecurring(entity.copy(activo = !entity.activo)) }
     }
 
     fun eliminar(entity: RecurringEntity) {

@@ -6,17 +6,10 @@ import com.example.clearcounts.data.database.entities.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
 
 interface ExpenseRepository {
-
     suspend fun insertExpense(expenseEntity: ExpenseEntity)
-
-    fun getAllExpenses(): Flow<List<ExpenseEntity>>
-
+    fun getAllExpenses(userId: String): Flow<List<ExpenseEntity>>
     suspend fun deleteExpense(expenseEntity: ExpenseEntity)
-
-    fun totalExpense(): Flow<Double?>
-
-    fun getExpensesByCategory(): Flow<List<CategoryExpenseSummary>>
-
-    fun getMonthlyExpense(): Flow<List<MonthlySummary>>
-
+    fun totalExpense(userId: String): Flow<Double?>
+    fun getExpensesByCategory(userId: String): Flow<List<CategoryExpenseSummary>>
+    fun getMonthlyExpense(userId: String): Flow<List<MonthlySummary>>
 }

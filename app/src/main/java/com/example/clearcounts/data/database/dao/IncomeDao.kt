@@ -6,14 +6,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.clearcounts.data.database.entities.IncomeEntity
-import com.example.clearcounts.data.database.entities.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IncomeDao {
 
-    @Query("SELECT * FROM ingreso")
-    fun getAllIncomes(): Flow<List<IncomeEntity>>
+    @Query("SELECT * FROM ingreso WHERE user_id = :userId")
+    fun getAllIncomes(userId: String): Flow<List<IncomeEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(incomeEntity: IncomeEntity)
@@ -21,15 +20,15 @@ interface IncomeDao {
     @Delete
     suspend fun delete(incomeEntity: IncomeEntity)
 
-    @Query("SELECT SUM(cantidad) FROM ingreso")
-    fun getTotalIncome(): Flow<Double?>
+    @Query("SELECT SUM(cantidad) FROM ingreso WHERE user_id = :userId")
+    fun getTotalIncome(userId: String): Flow<Double?>
 
     @Query("""
-    SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
-    FROM ingreso
-    GROUP BY SUBSTR(fecha, 4, 7)
-    ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
-""")
-    fun getMonthlyIncomes(): Flow<List<MonthlySummary>>
-
+        SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
+        FROM ingreso
+        WHERE user_id = :userId
+        GROUP BY SUBSTR(fecha, 4, 7)
+        ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
+    """)
+    fun getMonthlyIncomes(userId: String): Flow<List<MonthlySummary>>
 }

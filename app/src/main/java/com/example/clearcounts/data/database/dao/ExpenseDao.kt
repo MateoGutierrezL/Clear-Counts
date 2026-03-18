@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ExpenseDao {
 
-    @Query("SELECT * FROM gasto")
-    fun getAllExpenses(): Flow<List<ExpenseEntity>>
+    @Query("SELECT * FROM gasto WHERE user_id = :userId")
+    fun getAllExpenses(userId: String): Flow<List<ExpenseEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(expenseEntity: ExpenseEntity)
@@ -21,24 +21,25 @@ interface ExpenseDao {
     @Delete
     suspend fun delete(expenseEntity: ExpenseEntity)
 
-    @Query("SELECT SUM(cantidad) FROM gasto")
-    fun getTotalExpense(): Flow<Double?>
+    @Query("SELECT SUM(cantidad) FROM gasto WHERE user_id = :userId")
+    fun getTotalExpense(userId: String): Flow<Double?>
 
     @Query("""
-    SELECT categoria, SUM(cantidad) as total
-    FROM gasto
-    GROUP BY categoria
-    HAVING SUM(cantidad) > 0
-""")
-    fun getExpensesByCategory(): Flow<List<CategoryExpenseSummary>>
+        SELECT categoria, SUM(cantidad) as total
+        FROM gasto
+        WHERE user_id = :userId
+        GROUP BY categoria
+        HAVING SUM(cantidad) > 0
+    """)
+    fun getExpensesByCategory(userId: String): Flow<List<CategoryExpenseSummary>>
 
     @Query("""
-    SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
-    FROM gasto
-    GROUP BY SUBSTR(fecha, 4, 7)
-    ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
-""")
-    fun getMonthlyExpenses(): Flow<List<MonthlySummary>>
-
+        SELECT SUBSTR(fecha, 4, 7) as mes, SUM(cantidad) as total
+        FROM gasto
+        WHERE user_id = :userId
+        GROUP BY SUBSTR(fecha, 4, 7)
+        ORDER BY SUBSTR(fecha, 7, 4) || SUBSTR(fecha, 4, 2)
+    """)
+    fun getMonthlyExpenses(userId: String): Flow<List<MonthlySummary>>
 }
 

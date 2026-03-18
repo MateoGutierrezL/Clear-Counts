@@ -5,15 +5,9 @@ import com.example.clearcounts.data.database.entities.IncomeEntity
 import kotlinx.coroutines.flow.Flow
 
 interface IncomeRepository {
-
     suspend fun insertIncome(incomeEntity: IncomeEntity)
-
-    fun getAllIncomes(): Flow<List<IncomeEntity>>
-
+    fun getAllIncomes(userId: String): Flow<List<IncomeEntity>>
     suspend fun deleteIncome(incomeEntity: IncomeEntity)
-
-    fun totalIncome(): Flow<Double?>
-
-    fun getMonthlyIncomes(): Flow<List<MonthlySummary>>
-
+    fun totalIncome(userId: String): Flow<Double?>
+    fun getMonthlyIncomes(userId: String): Flow<List<MonthlySummary>>
 }

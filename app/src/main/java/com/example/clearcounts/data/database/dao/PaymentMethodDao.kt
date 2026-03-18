@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PaymentMethodDao {
-    @Query("SELECT * FROM payment_method")
-    fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>>
+
+    @Query("SELECT * FROM payment_method WHERE user_id = :userId")
+    fun getAllPaymentMethods(userId: String): Flow<List<PaymentMethodEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(methods: List<PaymentMethodEntity>)
@@ -22,6 +23,6 @@ interface PaymentMethodDao {
     @Delete
     suspend fun delete(method: PaymentMethodEntity)
 
-    @Query("SELECT COUNT(*) FROM payment_method")
-    suspend fun getCount(): Int
+    @Query("SELECT COUNT(*) FROM payment_method WHERE user_id = :userId")
+    suspend fun getCountByUser(userId: String): Int
 }

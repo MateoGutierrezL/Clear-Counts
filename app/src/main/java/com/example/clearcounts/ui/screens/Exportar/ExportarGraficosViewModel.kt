@@ -8,6 +8,7 @@ import com.example.clearcounts.data.repository.ingreso.IncomeRepository
 import com.example.clearcounts.data.database.entities.ExpenseEntity
 import com.example.clearcounts.data.database.entities.IncomeEntity
 import com.example.clearcounts.data.repository.notificacion.NotificationRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,26 +25,24 @@ import kotlinx.coroutines.launch
 class ExportarGraficosViewModel @Inject constructor(
     private val incomeRepository: IncomeRepository,
     private val expenseRepository: ExpenseRepository,
-    private val notificationRepository: NotificationRepository
-): ViewModel(){
+    private val notificationRepository: NotificationRepository,
+    private val auth: FirebaseAuth
+) : ViewModel() {
+
+    private val userId get() = auth.currentUser?.uid ?: ""
 
     private val _mesSeleccionado = MutableStateFlow("02-2026")
     val mesSeleccionado = _mesSeleccionado.asStateFlow()
 
-    // LISTA UNIDA Y FILTRADA: Para la Vista Previa y el CSV
     val movimientosFiltrados: StateFlow<List<Any>> = combine(
-        incomeRepository.getAllIncomes(),
-        expenseRepository.getAllExpenses(),
+        incomeRepository.getAllIncomes(userId),
+        expenseRepository.getAllExpenses(userId),
         _mesSeleccionado
     ) { ingresos, gastos, filtro ->
         val unida = ingresos.filter { it.fecha.contains(filtro) } +
                 gastos.filter { it.fecha.contains(filtro) }
-        unida // Aquí podrías agregar un .sortedBy si lo deseas
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+        unida
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val totalIngresosMensuales: StateFlow<Double> = movimientosFiltrados.map { lista ->
         lista.filterIsInstance<IncomeEntity>().sumOf { it.cantidad }
@@ -53,9 +52,7 @@ class ExportarGraficosViewModel @Inject constructor(
         lista.filterIsInstance<ExpenseEntity>().sumOf { it.cantidad }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
-    fun setMesFiltro(nuevoMesAnio: String) {
-        _mesSeleccionado.value = nuevoMesAnio
-    }
+    fun setMesFiltro(nuevoMesAnio: String) { _mesSeleccionado.value = nuevoMesAnio }
 
     fun generarCsvString(movimientos: List<Any>): String {
         val csvHeader = "Tipo;Categoría;Cantidad;Fecha;Hora;Nota\n"
@@ -68,7 +65,8 @@ class ExportarGraficosViewModel @Inject constructor(
         }
         return csvHeader + csvBody
     }
-    fun notificarExportacion(tipo: String) { // 👈 Llama esto al exportar
+
+    fun notificarExportacion(tipo: String) {
         viewModelScope.launch {
             notificationRepository.insertNotification(
                 titulo = "Exportación completada",
@@ -76,5 +74,4 @@ class ExportarGraficosViewModel @Inject constructor(
             )
         }
     }
-
 }

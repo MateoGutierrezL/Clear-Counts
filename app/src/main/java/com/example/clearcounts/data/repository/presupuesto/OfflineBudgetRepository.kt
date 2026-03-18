@@ -7,11 +7,9 @@ import javax.inject.Inject
 
 class OfflineBudgetRepository @Inject constructor(
     private val budgetDao: BudgetDao
-): BudgetRepository{
-    override fun getAllBudgets() = budgetDao.getAllBudgets()
-
+) : BudgetRepository {
+    override fun getAllBudgets(userId: String) = budgetDao.getAllBudgets(userId)
     override suspend fun insertBudget(budgetEntity: BudgetEntity) = budgetDao.insert(budgetEntity)
-
     override suspend fun deleteBudget(budgetEntity: BudgetEntity) = budgetDao.delete(budgetEntity)
     override suspend fun updateBudget(budgetEntity: BudgetEntity) = budgetDao.update(budgetEntity)
 }
