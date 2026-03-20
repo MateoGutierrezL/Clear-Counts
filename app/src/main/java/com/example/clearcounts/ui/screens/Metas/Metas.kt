@@ -59,6 +59,12 @@ import com.example.clearcounts.R
 import com.example.clearcounts.data.local.database.entities.BudgetEntity
 
 
+object TipoBudget {
+    const val META = "Meta"
+    const val DEUDA = "Deuda"
+    const val TE_DEBEN = "Te deben"
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Metas(
@@ -107,9 +113,9 @@ fun Metas(
         floatingActionButton = {
             BotonCrear(onBotonCrear = {
                 val tipo = when (currentTabIndex) {
-                    0 -> "Metas"
-                    1 -> "Deuda"
-                    else -> "Te deben"
+                    0 -> TipoBudget.META
+                    1 -> TipoBudget.DEUDA
+                    else -> TipoBudget.TE_DEBEN
                 }
                 onBotonCrear(tipo)
             })
@@ -150,9 +156,9 @@ fun Metas(
                         mensaje = labelVacio,
                         onCrearClick = {
                             val tipo = when (currentTabIndex) {
-                                0 -> "Metas"
-                                1 -> "Deuda"
-                                else -> "Te deben"
+                                0 -> TipoBudget.META
+                                1 -> TipoBudget.DEUDA
+                                else -> TipoBudget.TE_DEBEN
                             }
                             onBotonCrear(tipo)
                         }

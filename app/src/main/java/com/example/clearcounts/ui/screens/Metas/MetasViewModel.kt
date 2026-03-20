@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -21,8 +23,9 @@ class MetasViewModel @Inject constructor(
 
     private val userId get() = auth.currentUser?.uid ?: ""
 
-    val allBudgets: StateFlow<List<BudgetEntity>> = repository.getAllBudgets(userId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val allBudgets: StateFlow<List<BudgetEntity>> = flow {
+        emitAll(repository.getAllBudgets(userId))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val metas = allBudgets.map { list -> list.filter { it.tipo == "Meta" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

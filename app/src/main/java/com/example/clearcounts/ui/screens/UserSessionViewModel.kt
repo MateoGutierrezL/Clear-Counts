@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.local.database.entities.UserEntity
+import com.example.clearcounts.data.local.datastore.SyncDataStore
 import com.example.clearcounts.data.local.repository.usuario.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UserSessionViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val syncDataStore: SyncDataStore
 ) : ViewModel() {
 
     val firebaseUser: FirebaseUser? = auth.currentUser
@@ -33,6 +35,7 @@ class UserSessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 userRepository.signOut()
+                syncDataStore.resetUltimaSync()
                 onComplete()
             } catch (e: Exception){
                 Log.e("Auth", "Error: ${e.message}")

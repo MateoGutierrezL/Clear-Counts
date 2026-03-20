@@ -63,6 +63,7 @@ fun Prestamo(
     botonVolver:() -> Unit,
     titulo: String,
     icono: ImageVector,
+    tipoOriginal: String = titulo,
     budgetAEditar: BudgetEntity? = null,
     viewModel: MetasViewModel = hiltViewModel()
 ){
@@ -294,7 +295,7 @@ fun Prestamo(
                                 fechaInicio = fechaInicioSeleccionadaState,
                                 fechaLimite = fechaLimiteSeleccionadaState,
                                 nota = nota,
-                                tipo = titulo
+                                tipo = tipoOriginal
                             )
                         }
                         botonVolver()

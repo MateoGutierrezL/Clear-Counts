@@ -8,6 +8,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.clearcounts.data.local.database.UserDatabase
+import com.example.clearcounts.data.local.datastore.SyncDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,4 +70,9 @@ object RoomModule {
     @Singleton
     fun provideRecurringDao(db: UserDatabase) = db.recurringDao()
 
+    @Provides
+    @Singleton
+    fun provideSyncDataStore(
+        @ApplicationContext context: Context
+    ): SyncDataStore = SyncDataStore(context)
 }

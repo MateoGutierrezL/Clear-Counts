@@ -1,4 +1,4 @@
-package com.example.clearcounts.ui.navigation
+    package com.example.clearcounts.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -56,6 +56,7 @@ import com.example.clearcounts.ui.screens.Metas.DetalleBudget
 import com.example.clearcounts.ui.screens.Metas.Metas
 import com.example.clearcounts.ui.screens.Metas.MetasViewModel
 import com.example.clearcounts.ui.screens.Metas.Prestamo
+import com.example.clearcounts.ui.screens.Metas.TipoBudget
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
@@ -108,7 +109,9 @@ fun AppNavigation(
                         }
 
                         DrawerItem.PERSONALIZACION -> {}
-                        DrawerItem.CONTACT -> {}
+                        DrawerItem.CONTACT -> {
+                            navigationController.navigate(Pantallas.Contactos.pantalla)
+                        }
                         DrawerItem.TUTORIAL -> {}
                         DrawerItem.LOG_OUT -> {
                             viewModel.logOut{
@@ -378,7 +381,7 @@ fun AppNavigation(
                         }
                     )
                 ) { backStackEntry ->
-                    val tipo = backStackEntry.arguments?.getString("tipo") ?: "Metas"
+                    val tipo = backStackEntry.arguments?.getString("tipo") ?: TipoBudget.META
                     val budgetId = backStackEntry.arguments?.getInt("budgetId") ?: -1
 
                     val viewModelMetas: MetasViewModel = hiltViewModel()
@@ -388,9 +391,9 @@ fun AppNavigation(
                     val context = LocalContext.current
 
                     val (tituloFinal, iconoFinal) = when(tipo) {
-                        "Deuda"    -> context.getString(R.string.tab_deudas) to Icons.Default.ErrorOutline
-                        "Te deben" -> context.getString(R.string.te_deben)   to Icons.Default.VerifiedUser
-                        else       -> context.getString(R.string.tab_metas)  to Icons.Default.TrackChanges
+                        TipoBudget.DEUDA -> context.getString(R.string.tab_deudas) to Icons.Default.ErrorOutline
+                        TipoBudget.TE_DEBEN -> context.getString(R.string.te_deben) to Icons.Default.VerifiedUser
+                        else -> context.getString(R.string.tab_metas) to Icons.Default.TrackChanges
                     }
 
                     DisposableEffect(Unit) {
@@ -401,11 +404,11 @@ fun AppNavigation(
 
                     Prestamo(
                         titulo = tituloFinal,
+                        tipoOriginal = tipo,
                         icono = iconoFinal,
-                        budgetAEditar = budgetAEditar,  // <- pasa el budget
+                        budgetAEditar = budgetAEditar,
                         botonVolver = { navigationController.popBackStack() }
                     )
-
                 }
 
                 composable(Pantallas.TodasTransacciones.pantalla) {
