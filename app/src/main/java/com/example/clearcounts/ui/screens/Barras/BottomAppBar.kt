@@ -378,8 +378,7 @@ fun CustomBottomAppBar(
                     }
                 }
                 val iconosDisponibles = listOf(
-                    "efectivo", "debito", "credito", "billetera",
-                    "banco", "nequi", "daviplata", "bolsillo"
+                    "dinero", "efectivo", "tarjetaazul", "tarjetaroja"
                 )
 
                 var iconoSeleccionado by rememberSaveable { mutableStateOf("efectivo") }
@@ -425,7 +424,7 @@ fun CustomBottomAppBar(
 
                                         Box(
                                             modifier = Modifier
-                                                .size(56.dp)
+                                                .size(64.dp)
                                                 .clip(RoundedCornerShape(12.dp))
                                                 .background(
                                                     if (isSelected) MaterialTheme.colorScheme.primaryContainer

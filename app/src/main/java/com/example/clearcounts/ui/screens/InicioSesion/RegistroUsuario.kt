@@ -248,11 +248,9 @@ fun PantallaRegistro(
                             nombre = nombreUsuario,
                             numero = numero,
                             correo = correoUsuario,
-                            contrasena = contrasenaHasheada //Hashear contraseña
+                            contrasena = contrasenaHasheada // Room guarda el hash
                         )
-
-                        // 2. Llamar al ViewModel
-                        viewModel.signUp(newUser)
+                        viewModel.signUp(newUser, contrasena)
 
                     }
                 },

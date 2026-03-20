@@ -20,12 +20,10 @@ class RegistroUsuarioViewModel @Inject constructor(
     private val _registerStatus = MutableStateFlow<RegistroUsuarioUiState>(RegistroUsuarioUiState.Loading)
     val registerStatus : StateFlow<RegistroUsuarioUiState> = _registerStatus
 
-    fun signUp(userEntity: UserEntity) {
+    fun signUp(userEntity: UserEntity, contrasenaOriginal: String) { // 👈 Agrega este parámetro
         viewModelScope.launch {
             _registerStatus.value = RegistroUsuarioUiState.Loading
-
-            val result = userRepository.signUp(userEntity.correo, userEntity.contrasena)
-
+            val result = userRepository.signUp(userEntity.correo, contrasenaOriginal) // 👈 Firebase recibe la original
             result.onSuccess {
                 _registerStatus.value = RegistroUsuarioUiState.Success
             }.onFailure {
@@ -35,14 +33,10 @@ class RegistroUsuarioViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                userRepository.insertUser(userEntity)
-
-                println("Usuario ingresado con exito")
-
-            }catch(e: Exception){
-
+                userRepository.insertUser(userEntity) // Room guarda el hash
+                userRepository.guardarSesion(userEntity.correo)
+            } catch(e: Exception) {
                 println("Error al ingresar el usuario")
-
             }
         }
     }
