@@ -66,12 +66,9 @@ fun crearCategoria(
 
     // Lista de iconos disponibles en tu proyecto
     val iconosDisponibles = listOf(
-        "comida", "trasnporte", "salud", "deporte", "educacion",
-        "ropa", "alquiler", "libros", "maquillaje", "plan_datos",
-        "salario", "comision", "inversiones", "regalo", "reembolso",
-        "gasolina", "camion", "corazon", "administracion", "alerta",
-        "calculadora"
-
+        "alcancia", "barras", "bus", "cajafuerte", "casa", "contrato", "dinero",
+        "hospital", "libros", "birrete", "corazon", "gotas",
+        "regalo", "balon", "bombillo", "cartera", "gasolina",
     )
 
     Box(
@@ -227,7 +224,7 @@ fun crearCategoria(
                     if (iconoId != 0) {
                         Box(
                             modifier = Modifier
-                                .size(55.dp)
+                                .size(64.dp)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(
                                     if (iconoSeleccionado == icono)
@@ -241,7 +238,7 @@ fun crearCategoria(
                                 painter = painterResource(iconoId),
                                 contentDescription = icono,
                                 modifier = Modifier
-                                    .size(38.dp)
+                                    .size(70.dp)
                                     .padding(4.dp)
                             )
                         }

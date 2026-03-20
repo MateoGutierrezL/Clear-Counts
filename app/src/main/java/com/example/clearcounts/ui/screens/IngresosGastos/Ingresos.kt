@@ -182,7 +182,7 @@ fun ingresos(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Image(
-                        painter = if (iconoId != 0) painterResource(iconoId) else painterResource(R.drawable.camion),
+                        painter = if (iconoId != 0) painterResource(iconoId) else painterResource(R.drawable.bus),
                         contentDescription = nombre,
                         modifier = Modifier
                             .size(70.dp)

@@ -55,26 +55,26 @@ abstract class UserDatabase: RoomDatabase() {
             val DEFAULT_CATEGORIES = listOf(
                 // GASTOS
                 CategoryEntity(nombre = "Comida", icono = "comida", tipo = "gasto"),
-                CategoryEntity(nombre = "Transporte", icono = "trasnporte", tipo = "gasto"),
-                CategoryEntity(nombre = "Salud", icono = "salud", tipo = "gasto"),
-                CategoryEntity(nombre = "Deporte", icono = "deporte", tipo = "gasto"),
-                CategoryEntity(nombre = "Educación", icono = "educacion", tipo = "gasto"),
+                CategoryEntity(nombre = "Transporte", icono = "bus", tipo = "gasto"),
+                CategoryEntity(nombre = "Salud", icono = "hospital", tipo = "gasto"),
+                CategoryEntity(nombre = "Deporte", icono = "balon", tipo = "gasto"),
+                CategoryEntity(nombre = "Educación", icono = "birrete", tipo = "gasto"),
                 CategoryEntity(nombre = "Ropa", icono = "ropa", tipo = "gasto"),
-                CategoryEntity(nombre = "Alquiler", icono = "alquiler", tipo = "gasto"),
+                CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto"),
                 CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto"),
                 CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto"),
                 CategoryEntity(nombre = "Plan datos", icono = "plan_datos", tipo = "gasto"),
                 // INGRESOS
-                CategoryEntity(nombre = "Salario", icono = "salario", tipo = "ingreso"),
-                CategoryEntity(nombre = "Comision", icono = "comision", tipo = "ingreso"),
-                CategoryEntity(nombre = "Inversiones", icono = "inversiones", tipo = "ingreso"),
+                CategoryEntity(nombre = "Salario", icono = "dinero", tipo = "ingreso"),
+                CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso"),
+                CategoryEntity(nombre = "Inversiones", icono = "alcancia", tipo = "ingreso"),
                 CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso"),
                 CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso"),
             )
             val DEFAULT_PAYMENT_METHODS = listOf(
                 PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),
-                PaymentMethodEntity(nombre = "Débito", icono = "debito", esDefault = true),
-                PaymentMethodEntity(nombre = "Crédito", icono = "credito", esDefault = true),
+                PaymentMethodEntity(nombre = "Débito", icono = "tarjetaazul", esDefault = true),
+                PaymentMethodEntity(nombre = "Crédito", icono = "tarjetaroja", esDefault = true),
             )
 
         }

@@ -15,6 +15,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
@@ -56,32 +57,31 @@ class OfflineUserRepository @Inject constructor(
     }
 
     override suspend fun signUp(email: String, password: String): Result<Boolean> {
-        return try{
-            val result = auth.createUserWithEmailAndPassword(email, password).await()
+        return try {
+            auth.createUserWithEmailAndPassword(email, password).await()
             Result.success(true)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun signIn(email: String, password: String): Result<Boolean>{
-
-        return try{
-
-            val result = auth.signInWithEmailAndPassword(email, password).await()
-
+    override suspend fun signIn(email: String, password: String): Result<Boolean> {
+        return try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            //  Guardar el ID en DataStore
+            guardarUsuarioEnSession(email)
             Result.success(true)
-        } catch (e: Exception){
-
+        } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
 
     override suspend fun signInFacebook(token: String): Result<AuthResult> {
         return try {
             val credential = FacebookAuthProvider.getCredential(token)
             val result = auth.signInWithCredential(credential).await()
+            // Guardar el ID en DataStore
+            result.user?.email?.let { guardarUsuarioEnSession(it) }
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -124,6 +124,15 @@ class OfflineUserRepository @Inject constructor(
         }catch (e: Exception){
             Result.failure(e)
         }
+    }
+    private suspend fun guardarUsuarioEnSession(email: String) {
+        userDao.getByEmail(email).firstOrNull()?.let { user ->
+            sessionDataStore.setLoggedInUserId(user.id)
+        }
+    }
+
+    override suspend fun guardarSesion(email: String) {
+        guardarUsuarioEnSession(email)
     }
 
 }
