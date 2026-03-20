@@ -50,9 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.ConfigurationCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.clearcounts.R
 import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import com.example.clearcounts.data.local.database.entities.IncomeEntity
+import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,7 +64,8 @@ import java.util.Locale
 
 @Composable
 fun PantallaExportarGrafico(
-    viewModel: ExportarGraficosViewModel = hiltViewModel()
+    viewModel: ExportarGraficosViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel
 ){
     val ingresosTotales by viewModel.totalIngresosMensuales.collectAsState()
     val gastosTotales by viewModel.totalGastosMensuales.collectAsState()
@@ -70,7 +73,7 @@ fun PantallaExportarGrafico(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     var pdf by rememberSaveable {
         mutableStateOf(true)
     }
@@ -147,7 +150,7 @@ fun PantallaExportarGrafico(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
                     .background(
-                        if (isDarkTheme) MaterialTheme.colorScheme.surfaceContainerLow
+                        if (isDarkMode) MaterialTheme.colorScheme.surfaceContainerLow
                         else Color.White
                     )
                     .padding(8.dp)
@@ -160,7 +163,7 @@ fun PantallaExportarGrafico(
                     gastosPorCategoria = gastosPorCategoria,
                     comparacionMensual = comparacionMensual,
                     totalIngresoVsGasto = totalIngresoVsGasto,
-                    isDarkTheme = isDarkTheme
+                    isDarkTheme = isDarkMode
                 )
             }
 

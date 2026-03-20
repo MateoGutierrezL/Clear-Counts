@@ -90,7 +90,7 @@ fun Perfil(
     }
     var showAvatarSelector by remember { mutableStateOf(false) }
 
-    val avatarActual = currentUser?.avatar ?: "perro"
+    val avatarActual = currentUser?.avatar ?: "cacatuaninfa"
     val avatarId = remember(avatarActual) {
         context.resources.getIdentifier(avatarActual, "drawable", context.packageName)
     }
@@ -104,7 +104,7 @@ fun Perfil(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primaryContainer,
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
                         )
                     )

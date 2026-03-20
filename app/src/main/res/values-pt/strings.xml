@@ -14,9 +14,7 @@
     <string name="titulo_alertas">Alerta de Segurança!</string>
     <string name="contenido_alertas">Foi detectado um login incomum na sua conta.</string>
 
-    <string name="facebook_app_id" translatable="false">1410849674119011</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb1410849674119011</string>
-    <string name="facebook_client_token" translatable="false">251e9f9be386dc47541ef42e4c475a88</string>
+
     <string name="default_web_client_id" translatable="false">855897287042-q5a75g7ku4bk9lg800t12rm24qoh5fb8.apps.googleusercontent.com</string>
     <string name="ultimos_7_dias">Últimos 7 dias</string>
     <string name="cerrar">Fechar</string>
@@ -271,4 +269,27 @@
     <string name="contrasena_actualizada">Senha atualizada com sucesso!</string>
     <string name="contrasena_actual_incorrecta">A senha atual está incorreta</string>
     <string name="actualizar_contrasena">Atualizar Senha</string>
+    <string name="estamos_aqui_para_ayudarte">Estamos aqui para te ajudar!</string>
+    <string name="elegir_contacto">Escolha o método de contato que você prefere. Nossa equipe está pronta para responder suas perguntas e ajudar com qualquer dúvida sobre ClearCounts.</string>
+    <string name="metodos_de_contacto">Métodos de contato</string>
+    <string name="correo_electronico">Correio eletrônico</string>
+    <string name="escribenos_a">Escreva-nos em</string>
+    <string name="chatea_con_nosotros">Converse conosco</string>
+    <string name="llamanos_al">Ligue para nós em</string>
+    <string name="redes_sociales">Redes sociais</string>
+    <string name="horario_de_atencion">Horário de atendimento</string>
+    <string name="lunes_a_viernes">Segunda a sexta-feira: 9:00 - 18:00</string>
+    <string name="fin_de_semana">Portugués: Fim de semana: 10:00 - 14:00</string>
+    <string name="tiempo_de_respuesta">Tempo de resposta</string>
+    <string name="normalmente_respondemos_en_24_48_horas">Normalmente respondemos em 24–48 horas</string>
+    <string name="informacion_util">Informações úteis</string>
+    <string name="politica_de_privacidad">Política de Privacidade</string>
+    <string name="clearcounts_v1_0_0">clearcounts v1.0.0</string>
+    <string name="_2026_clearcounts_todos_los_derechos_reservados">© 2026 clearcounts. Todos os direitos reservados.</string>
+    <string name="el_nombre_es_requerido">O nome é obrigatório</string>
+    <string name="el_numero_es_requerido">O número é obrigatório</string>
+    <string name="ingresa_un_numero_valido">Digite um número válido</string>
+    <string name="el_correo_es_requerido">O e-mail é obrigatório</string>
+    <string name="ingresa_un_correo_valido">Digite um e-mail válido</string>
+    <string name="sin_internet_mensaje">É necessária uma conexão com a Internet para entrar</string>
 </resources>

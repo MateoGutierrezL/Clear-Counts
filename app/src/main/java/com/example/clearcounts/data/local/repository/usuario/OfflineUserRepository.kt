@@ -126,8 +126,27 @@ class OfflineUserRepository @Inject constructor(
         }
     }
     private suspend fun guardarUsuarioEnSession(email: String) {
-        userDao.getByEmail(email).firstOrNull()?.let { user ->
-            sessionDataStore.setLoggedInUserId(user.id)
+        val usuarioLocal = userDao.getByEmail(email).firstOrNull()
+
+        if (usuarioLocal != null) {
+            // Usuario existe en Room, solo guardamos la sesión
+            sessionDataStore.setLoggedInUserId(usuarioLocal.id)
+        } else {
+            // Usuario no existe en Room, lo creamos con datos de Firebase Auth
+            val firebaseUser = auth.currentUser
+            val nuevoUsuario = UserEntity(
+                id = 0,
+                nombre = firebaseUser?.displayName ?: email.substringBefore("@"),
+                numero = "",
+                correo = email,
+                contrasena = "",
+                avatar = "perro"
+            )
+            userDao.insert(nuevoUsuario)
+            // Ahora sí buscamos el usuario recién insertado
+            userDao.getByEmail(email).firstOrNull()?.let { user ->
+                sessionDataStore.setLoggedInUserId(user.id)
+            }
         }
     }
 
