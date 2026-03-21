@@ -248,7 +248,6 @@ fun crearCategoria(
 
             Spacer(modifier = Modifier.height(100.dp))
         }
-
         // Botones inferiores
         Box(
             modifier = Modifier

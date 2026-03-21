@@ -108,7 +108,6 @@ fun AppNavigation(
                             navigationController.navigate(Pantallas.Exportar.pantalla)
                         }
 
-                        DrawerItem.PERSONALIZACION -> {}
                         DrawerItem.CONTACT -> {
                             navigationController.navigate(Pantallas.Contactos.pantalla)
                         }
@@ -300,7 +299,7 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    PantallaExportarGrafico()
+                    PantallaExportarGrafico(themeViewModel = themeViewModel)
                 }
 
                 composable(Pantallas.Notificaciones.pantalla) {

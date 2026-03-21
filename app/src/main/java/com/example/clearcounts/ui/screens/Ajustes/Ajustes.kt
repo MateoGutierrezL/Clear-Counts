@@ -38,11 +38,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.clearcounts.ui.screens.UserSessionViewModel
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import com.example.clearcounts.R
+import com.example.clearcounts.ui.screens.Perfil.PerfilViewModel
 
 private val LogoutRed  = Color(0xFFDC2626)
 val SubtitleGray = Color(0xFF6B7280)
@@ -312,32 +317,56 @@ fun Ajustes(
 }
 
 @Composable
-private fun ProfileCard(
+fun ProfileCard(
     nombre: String,
     correo: String,
+    viewModel: PerfilViewModel = hiltViewModel(),
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val currentUser by viewModel.currentUser.collectAsState()
+    val avatarActual = currentUser?.avatar ?: "cacatuaninfa"
+    val avatarId = remember(avatarActual) {
+        context.resources.getIdentifier(avatarActual, "drawable", context.packageName)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
+                    )
+                )
+            )
             .clickable { onClick() }           // ← navega a Perfil
             .padding(horizontal = 20.dp, vertical = 22.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(54.dp)
+                    .size(70.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.22f)),
+                    .background(Color.White.copy(alpha = 0.2f))
+                    .border(3.dp, Color.White, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(30.dp)
-                )
+                if (avatarId != 0) {
+                    Image(
+                        painter = painterResource(id = avatarId),
+                        contentDescription = null,
+                        modifier = Modifier.size(90.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp),
+                        tint = Color.White
+                    )
+                }
             }
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {
@@ -395,7 +424,7 @@ private fun SettingsCard(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun RowDivider() {
     HorizontalDivider(
-        modifier = Modifier.padding(start = 54.dp),
+        modifier = Modifier.padding(start = 30.dp, end = 30.dp),
         color = DividerGray,
         thickness = 0.3.dp
     )
@@ -418,7 +447,7 @@ private fun RowNavigable(
         Icon(
             imageVector        = icon,
             contentDescription = null,
-            tint               = MaterialTheme.colorScheme.primaryContainer,
+            tint               = Color(0xFF2196F3),
             modifier           = Modifier.size(22.dp)
         )
         Spacer(Modifier.width(14.dp))
@@ -460,7 +489,7 @@ private fun RowToggle(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primaryContainer,
+            tint = Color(0xFF2196F3),
             modifier = Modifier.size(22.dp)
         )
         Spacer(Modifier.width(14.dp))
@@ -480,7 +509,7 @@ private fun RowToggle(
             checked = checked,
             onCheckedChange = onChecked,
             colors = SwitchDefaults.colors(
-                checkedTrackColor   = MaterialTheme.colorScheme.primaryContainer,
+                checkedTrackColor   = Color(0xFF2196F3),
                 checkedThumbColor   = Color.White,
                 uncheckedTrackColor = Color(0xFFD1D5DB),
                 uncheckedThumbColor = Color.White

@@ -37,9 +37,17 @@ fun MetodoPagoItem(
     onDelete: (() -> Unit)? = null
 ) {
     val iconoId = remember(metodo.icono) {
-        context.resources.getIdentifier(metodo.icono, "drawable", context.packageName)
+        val iconoNormalizado = metodo.icono
+            .lowercase()
+            .replace("é", "e")
+            .replace("á", "a")
+            .replace("í", "i")
+            .replace("ó", "o")
+            .replace("ú", "u")
+            .replace("ñ", "n")
+            .replace(" ", "_")
+        context.resources.getIdentifier(iconoNormalizado, "drawable", context.packageName)
     }
-
     Button(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),

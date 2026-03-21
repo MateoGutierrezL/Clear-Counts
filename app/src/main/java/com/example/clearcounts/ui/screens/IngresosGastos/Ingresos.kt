@@ -557,14 +557,16 @@ fun BotonesInferiores(
     onCancelChange:() -> Unit,
     onCreateChange:() -> Unit
 ){
-
+    var botonHabilitado by remember { mutableStateOf(true) }
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp),
         onClick = {
             onCreateChange()
+            botonHabilitado = false
         },
+        enabled = botonHabilitado,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {

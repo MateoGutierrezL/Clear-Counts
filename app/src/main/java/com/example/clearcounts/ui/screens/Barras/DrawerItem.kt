@@ -13,7 +13,6 @@ enum class DrawerItem (
 
     AJUSTES(icon = R.drawable.ajustes, text = R.string.ajustes),
     EXPORT_PDF(icon = R.drawable.documento, text = R.string.exportar_pdf_csv),
-    PERSONALIZACION(icon = R.drawable.equalizer, text = R.string.personalizacion),
     CONTACT(icon = R.drawable.phone_call, text = R.string.contactanos),
     TUTORIAL(icon = R.drawable.question, text = R.string.tutorial),
     LOG_OUT(icon = R.drawable.log_out, text = R.string.cerrar_sesion)

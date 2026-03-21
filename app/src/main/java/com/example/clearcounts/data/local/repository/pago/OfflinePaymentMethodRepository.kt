@@ -42,8 +42,8 @@ class OfflinePaymentMethodRepository @Inject constructor(
     companion object {
         val DEFAULT_PAYMENT_METHODS = listOf(
             PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),
-            PaymentMethodEntity(nombre = "Débito", icono = "debito", esDefault = true),
-            PaymentMethodEntity(nombre = "Crédito", icono = "credito", esDefault = true),
+            PaymentMethodEntity(nombre = "Débito", icono = "tarjetaazul", esDefault = true),
+            PaymentMethodEntity(nombre = "Crédito", icono = "tarjetaroja", esDefault = true),
         )
     }
 }
