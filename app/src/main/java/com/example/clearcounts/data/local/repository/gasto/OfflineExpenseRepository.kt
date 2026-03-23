@@ -4,6 +4,9 @@ import com.example.clearcounts.data.local.database.dao.ExpenseDao
 import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class OfflineExpenseRepository @Inject constructor(
@@ -15,8 +18,17 @@ class OfflineExpenseRepository @Inject constructor(
     private val userId get() = auth.currentUser?.uid ?: ""
 
     override suspend fun insertExpense(expenseEntity: ExpenseEntity) {
+        // 1. Guarda localmente
         expenseDao.insert(expenseEntity)
-        firestoreSync.subirGasto(userId, expenseEntity)
+
+        // 2. Sincroniza en segundo plano
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                firestoreSync.subirGasto(userId, expenseEntity)
+            } catch (e: Exception) {
+                // Manejar error silenciosamente o con un Log
+            }
+        }
     }
 
     override suspend fun insertExpenseLocal(expenseEntity: ExpenseEntity) {

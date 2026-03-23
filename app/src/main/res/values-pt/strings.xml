@@ -292,4 +292,5 @@
     <string name="el_correo_es_requerido">O e-mail é obrigatório</string>
     <string name="ingresa_un_correo_valido">Digite um e-mail válido</string>
     <string name="sin_internet_mensaje">É necessária uma conexão com a Internet para entrar</string>
+    <string name="la_contrasena_es_requerida">A senha é obrigatória</string>
 </resources>

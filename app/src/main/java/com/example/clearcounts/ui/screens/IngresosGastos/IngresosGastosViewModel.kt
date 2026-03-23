@@ -36,8 +36,12 @@ class IngresosGastosViewModel @Inject constructor(
                     mensaje = context.getString(R.string.se_registr_un_ingreso_de_en,
                         incomeEntity.cantidad.toString(), incomeEntity.categoria)
                 )
-                onSuccess()
-            } catch (e: Exception) { Log.e("ingreso", "Fallo: ${e.message}") }
+            } catch (e: Exception) {
+                Log.e("ingreso", "Fallo subiendo a Firestore: ${e.message}")
+                // No importa si falla Firestore, el dato ya está en Room
+            } finally {
+                onSuccess() //  Siempre navega, con o sin internet
+            }
         }
     }
 
@@ -50,8 +54,11 @@ class IngresosGastosViewModel @Inject constructor(
                     mensaje = context.getString(R.string.se_registr_un_gasto_de_en,
                         expenseEntity.cantidad.toString(), expenseEntity.categoria)
                 )
-                onSuccess()
-            } catch (e: Exception) { Log.e("gasto", "Fallo: ${e.message}") }
+            } catch (e: Exception) {
+                Log.e("gasto", "Fallo subiendo a Firestore: ${e.message}")
+            } finally {
+                onSuccess() //  Siempre navega, con o sin internet
+            }
         }
     }
 }
