@@ -292,6 +292,7 @@
     <string name="el_correo_es_requerido">Email is required</string>
     <string name="ingresa_un_correo_valido">Enter a valid email</string>
     <string name="sin_internet_mensaje">Internet connection is required to sign in</string>
+    <string name="la_contrasena_es_requerida">The password is required</string>
     face
 
 </resources>

@@ -77,6 +77,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material3.Surface
 import com.example.clearcounts.utils.PaymentMethodTranslator.traducirMetodoPago
 
 
@@ -306,45 +307,51 @@ fun CustomBottomAppBar(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceAround
                                     ) {
-                                        Button(
-                                            onClick = { ingreso = true; gasto = false },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = if (ingreso) MaterialTheme.colorScheme.primaryContainer
-                                                else MaterialTheme.colorScheme.secondaryContainer
-                                            )
+                                        Surface(
+                                            modifier = Modifier
+                                                .padding(16.dp)
+                                                .fillMaxWidth(),
+                                            shape = CircleShape,
+                                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                                         ) {
-                                            Text(
-                                                text = stringResource(R.string.ingresos),
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        }
-                                        Button(
-                                            onClick = { gasto = true; ingreso = false },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = if (gasto) MaterialTheme.colorScheme.primaryContainer
-                                                else MaterialTheme.colorScheme.secondaryContainer
-                                            )
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.gastos),
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        }
-                                        Button(
-                                            modifier = Modifier.width(60.dp),
-                                            onClick = {
-                                                val tipo = if (ingreso) "ingreso" else "gasto"
-                                                navigationController.navigate("crearCategoria/$tipo")
-                                            },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.secondaryContainer
-                                            )
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Add,
-                                                contentDescription = "Añadir",
-                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                            )
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .padding(4.dp)
+                                                        .clip(CircleShape)
+                                                        .background(if (ingreso) MaterialTheme.colorScheme.primary else Color.Transparent)
+                                                        .clickable { ingreso = true; gasto = false }
+                                                        .padding(vertical = 8.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        stringResource(R.string.ingresos),
+                                                        color = if (ingreso) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                                Box(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .padding(4.dp)
+                                                        .clip(CircleShape)
+                                                        .background(if (gasto) MaterialTheme.colorScheme.error else Color.Transparent)
+                                                        .clickable { gasto = true; ingreso = false }
+                                                        .padding(vertical = 8.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        stringResource(R.string.gastos),
+                                                        color = if (gasto) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                                IconButton(onClick = {
+                                                    val tipo = if (ingreso) "ingreso" else "gasto"
+                                                    navigationController.navigate("crearCategoria/$tipo")
+                                                }) {
+                                                    Icon(Icons.Default.Add, contentDescription = null)
+                                                }
+                                            }
                                         }
                                     }
 

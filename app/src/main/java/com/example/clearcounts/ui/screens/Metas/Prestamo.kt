@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -367,20 +370,20 @@ fun Montos(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MontoInput(
                 label = stringResource(R.string.cantidad_requerida),
                 value = cantidadRequerida,
                 onValueChange = onCantidadRequeridaChange,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
             MontoInput(
                 label = stringResource(R.string.cantidad_acumulada),
                 value = cantidadAcumulada,
                 onValueChange = onCantidadAcumuladaChange,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
         }
     }
@@ -398,16 +401,23 @@ fun MontoInput(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp).weight(1f),
+            textAlign = TextAlign.Start
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(R.string.cantidad), color = MaterialTheme.colorScheme.onBackground)},
+            placeholder = {
+                Text(
+                    stringResource(R.string.cantidad),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    fontSize = 14.sp
+                )
+            },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
                 focusedBorderColor = Color(0xFF2196F3)
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

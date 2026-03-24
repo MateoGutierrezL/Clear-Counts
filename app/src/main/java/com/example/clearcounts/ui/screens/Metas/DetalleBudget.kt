@@ -6,9 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -166,12 +168,13 @@ fun DetalleBudget(
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .background(
                             MaterialTheme.colorScheme.surfaceContainerLow,
                             RoundedCornerShape(16.dp)
@@ -189,7 +192,8 @@ fun DetalleBudget(
                         Text(
                             text = stringResource(R.string.cantidad_acumulada),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            maxLines = 1
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -198,6 +202,7 @@ fun DetalleBudget(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -241,6 +246,7 @@ fun DetalleBudget(
                 Column(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight() // 2. Igual que la anterior
                         .background(
                             MaterialTheme.colorScheme.surfaceContainerLow,
                             RoundedCornerShape(16.dp)
@@ -267,6 +273,8 @@ fun DetalleBudget(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
+
+                    Spacer(modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

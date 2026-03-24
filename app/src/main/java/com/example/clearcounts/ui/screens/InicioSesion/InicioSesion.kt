@@ -3,6 +3,7 @@ package com.example.clearcounts.ui.screens.InicioSesion
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -143,7 +144,9 @@ fun PantallaInicioSesion(
     }
 
     when (loginStatus) {
-        is InicioSesionUiState.Error -> showLoginErrorDialog = true
+        is InicioSesionUiState.Error -> {
+            if (hayInternet) showLoginErrorDialog = true // 👈 Solo muestra si hay internet
+        }
         is InicioSesionUiState.Loading -> LoadingScreen()
         is InicioSesionUiState.Success -> navegarInicio()
         else -> {}
@@ -286,10 +289,15 @@ fun PantallaInicioSesion(
                         !correoUsuario.contains("@") -> context.getString(R.string.ingresa_un_correo_valido)
                         else -> ""
                     }
-                    errorContrasena = if (contrasena.isBlank()) context.getString(R.string.el_nombre_es_requerido) else ""
+                    errorContrasena = if (contrasena.isBlank()) context.getString(R.string.la_contrasena_es_requerida) else ""
 
                     if (errorCorreo.isEmpty() && errorContrasena.isEmpty()) {
-                        viewModel.validateUser(correoUsuario, contrasena)
+                        if (!hayInternet) {
+                            // En lugar de asignar el texto largo a errorContrasena:
+                            Toast.makeText(context, R.string.sin_internet_mensaje, Toast.LENGTH_SHORT).show()
+                        } else {
+                            viewModel.validateUser(correoUsuario, contrasena)
+                        }
                     }
                 },
                 modifier = Modifier

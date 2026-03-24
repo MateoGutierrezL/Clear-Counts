@@ -292,4 +292,5 @@
     <string name="el_correo_es_requerido">L’e-mail est requis</string>
     <string name="ingresa_un_correo_valido">Entrez un e-mail valide</string>
     <string name="sin_internet_mensaje">Une connexion Internet est requise pour se connecter</string>
+    <string name="la_contrasena_es_requerida">Le mot de passe est requis</string>
 </resources>
