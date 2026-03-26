@@ -38,7 +38,7 @@ class OfflineExpenseRepository @Inject constructor(
     override fun getAllExpenses(userId: String) = expenseDao.getAllExpenses(userId)
     override suspend fun deleteExpense(expenseEntity: ExpenseEntity) {
         expenseDao.delete(expenseEntity)
-        firestoreSync.eliminarGasto(userId, expenseEntity.id.toString())
+        firestoreSync.eliminarGasto(userId, expenseEntity.firestoreId)
     }
     override fun totalExpense(userId: String) = expenseDao.getTotalExpense(userId)
     override fun getExpensesByCategory(userId: String) = expenseDao.getExpensesByCategory(userId)

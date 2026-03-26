@@ -15,7 +15,7 @@ interface BudgetDao {
     @Query("SELECT * FROM budget WHERE user_id = :userId")
     fun getAllBudgets(userId: String): Flow<List<BudgetEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(budgetEntity: BudgetEntity)
 
     @Delete

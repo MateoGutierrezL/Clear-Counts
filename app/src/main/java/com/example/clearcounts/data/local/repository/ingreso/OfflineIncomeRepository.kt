@@ -38,7 +38,7 @@ class OfflineIncomeRepository @Inject constructor(
     override fun getAllIncomes(userId: String) = incomeDao.getAllIncomes(userId)
     override suspend fun deleteIncome(incomeEntity: IncomeEntity) {
         incomeDao.delete(incomeEntity)
-        firestoreSync.eliminarIngreso(userId, incomeEntity.id.toString())
+        firestoreSync.eliminarIngreso(userId, incomeEntity.firestoreId)
     }
     override fun totalIncome(userId: String) = incomeDao.getTotalIncome(userId)
     override fun getMonthlyIncomes(userId: String) = incomeDao.getMonthlyIncomes(userId)

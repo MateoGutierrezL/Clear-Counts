@@ -87,6 +87,7 @@ fun PantallaInicioSesion(
     navegarInicio: () -> Unit,
     viewModel: ViewModelInicioSesion = hiltViewModel()
 ) {
+
     val context = LocalContext.current
     var hayInternet by remember { mutableStateOf(isInternetAvailable(context)) }
 

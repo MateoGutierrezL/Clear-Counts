@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.local.database.entities.RecurringEntity
 import com.example.clearcounts.data.local.repository.recurrente.RecurringRepository
+import com.example.clearcounts.ui.screens.userIdFlow
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -19,14 +22,21 @@ class RecurringViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
+    private val userIdFlow = auth.userIdFlow()
     private val userId get() = auth.currentUser?.uid ?: ""
 
-    val ingresos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring(userId)
-        .map { list -> list.filter { it.tipo == "ingreso" } }
+    val ingresos: StateFlow<List<RecurringEntity>> = userIdFlow
+        .flatMapLatest { uid ->
+            if (uid.isEmpty()) flowOf(emptyList())
+            else repository.getAllRecurring(uid).map { list -> list.filter { it.tipo == "ingreso" } }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val gastos: StateFlow<List<RecurringEntity>> = repository.getAllRecurring(userId)
-        .map { list -> list.filter { it.tipo == "gasto" } }
+    val gastos: StateFlow<List<RecurringEntity>> = userIdFlow
+        .flatMapLatest { uid ->
+            if (uid.isEmpty()) flowOf(emptyList())
+            else repository.getAllRecurring(uid).map { list -> list.filter { it.tipo == "gasto" } }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun guardar(entity: RecurringEntity) {

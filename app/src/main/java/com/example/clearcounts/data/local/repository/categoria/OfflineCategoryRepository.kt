@@ -1,5 +1,6 @@
 package com.example.clearcounts.data.local.repository.categoria
 
+import android.util.Log
 import com.example.clearcounts.data.local.database.UserDatabase
 import com.example.clearcounts.data.local.database.dao.CategoryDao
 import com.example.clearcounts.data.local.database.entities.CategoryEntity
@@ -19,11 +20,19 @@ class OfflineCategoryRepository @Inject constructor(
     override fun getCategoriesByType(tipo: String, userId: String) =
         categoryDao.getCategoriesByType(tipo, userId)
 
+
     override suspend fun insertDefaultCategories(userId: String) {
-        if (categoryDao.getCountByUser(userId) == 0) {
-            val defaults = UserDatabase.DEFAULT_CATEGORIES.map { it.copy(userId = userId) }
-            categoryDao.insertAll(defaults)
-            defaults.forEach { firestoreSync.subirCategoria(userId, it) }
+        UserDatabase.DEFAULT_CATEGORIES.forEach { categoria ->
+            val existe = categoryDao.existsByNameAndType(categoria.nombre, categoria.tipo, userId)
+            if (!existe) {
+                val nueva = categoria.copy(userId = userId)
+                categoryDao.insertCategoria(nueva)
+                try {
+                    firestoreSync.subirCategoria(userId, nueva)
+                } catch (e: Exception) {
+                    Log.e("SYNC", "Error subiendo categoría: ${e.message}")
+                }
+            }
         }
     }
 

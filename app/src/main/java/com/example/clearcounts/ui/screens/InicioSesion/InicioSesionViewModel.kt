@@ -91,6 +91,7 @@ class ViewModelInicioSesion @Inject constructor(
         }
     }
 
+    // En handleSignInResult, extrae el email antes de llamar Firebase
     private suspend fun handleSignInResult(result: GetCredentialResponse) {
         when (val credential = result.credential) {
             is CustomCredential -> {
@@ -98,22 +99,29 @@ class ViewModelInicioSesion @Inject constructor(
                     try {
                         val googleIdTokenCredential = GoogleIdTokenCredential
                             .createFrom(credential.data)
-                        authenticateWithFirebase(googleIdTokenCredential.idToken)
+
+                        // ✅ El email está disponible aquí, antes de llamar Firebase
+                        val email = googleIdTokenCredential.id  // este es el email en Google
+
+                        authenticateWithFirebase(googleIdTokenCredential.idToken, email)
                     } catch (e: GoogleIdTokenParsingException) {
-                        _loginStatus.value = InicioSesionUiState.ErrorEspecifico("Error al procesar credencial de Google")
+                        _loginStatus.value = InicioSesionUiState.ErrorEspecifico(
+                            "Error al procesar credencial de Google"
+                        )
                     }
-                } else {
-                    _loginStatus.value = InicioSesionUiState.ErrorEspecifico("Tipo de credencial no válido")
                 }
             }
             else -> {
-                _loginStatus.value = InicioSesionUiState.ErrorEspecifico("Credencial no soportada")
+                _loginStatus.value = InicioSesionUiState.ErrorEspecifico(
+                    "Credencial no soportada"
+                )
             }
         }
     }
 
-    private suspend fun authenticateWithFirebase(token: String) {
-        val result = userRepository.signInGoogle(token)
+    // Cambia la firma para recibir el email
+    private suspend fun authenticateWithFirebase(token: String, email: String?) {
+        val result = userRepository.signInGoogle(token, email)  // ✅ pasamos email
         result.onSuccess {
             _loginStatus.value = InicioSesionUiState.Success
         }.onFailure { exception ->

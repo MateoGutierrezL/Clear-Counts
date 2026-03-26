@@ -62,7 +62,7 @@ interface UserRepository {
     /**
      * Inicio sesion de usuario con Google
      */
-    suspend fun signInGoogle(token: String): Result<AuthResult>
+    suspend fun signInGoogle(token: String, email: String? = null): Result<AuthResult>
 
     /**
      * cerrar sesion

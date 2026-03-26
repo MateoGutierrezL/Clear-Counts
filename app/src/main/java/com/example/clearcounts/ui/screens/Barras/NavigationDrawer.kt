@@ -90,7 +90,7 @@ fun NavigationDrawer(
             Row {
                 Box(
                     modifier = Modifier
-                        .padding(top = 10.dp)
+                        .padding(top = 20.dp)
                         .size(60.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.2f))

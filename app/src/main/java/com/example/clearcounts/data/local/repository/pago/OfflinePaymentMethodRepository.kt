@@ -1,5 +1,7 @@
 package com.example.clearcounts.data.local.repository.pago
 
+import android.util.Log
+import com.example.clearcounts.data.local.database.UserDatabase
 import com.example.clearcounts.data.local.database.dao.PaymentMethodDao
 import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
@@ -28,14 +30,21 @@ class OfflinePaymentMethodRepository @Inject constructor(
 
     override suspend fun delete(method: PaymentMethodEntity) {
         paymentMethodDao.delete(method)
-        firestoreSync.eliminarMetodoPago(userId, method.id.toString())
+        firestoreSync.eliminarMetodoPago(userId, method.firestoreId)
     }
 
     override suspend fun insertDefaultMethods(userId: String) {
-        if (paymentMethodDao.getCountByUser(userId) == 0) {
-            val defaults = DEFAULT_PAYMENT_METHODS.map { it.copy(userId = userId) }
-            paymentMethodDao.insertAll(defaults)
-            defaults.forEach { firestoreSync.subirMetodoPago(userId, it) }
+        UserDatabase.DEFAULT_PAYMENT_METHODS.forEach { metodo ->
+            val existe = paymentMethodDao.existsByName(metodo.nombre, userId)
+            if (!existe) {
+                val nuevo = metodo.copy(userId = userId)
+                paymentMethodDao.insert(nuevo)
+                try {
+                    firestoreSync.subirMetodoPago(userId, nuevo)
+                } catch (e: Exception) {
+                    Log.e("SYNC", "Error subiendo método: ${e.message}")
+                }
+            }
         }
     }
 

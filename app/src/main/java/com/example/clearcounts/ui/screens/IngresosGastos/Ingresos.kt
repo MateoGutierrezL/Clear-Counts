@@ -289,24 +289,22 @@ fun ingresos(
 
                             if (ruta == "ingreso") {
                                 val newIncome = IncomeEntity(
-                                    id = 0,
                                     categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
                                     nota = nota,
-                                    metodoPago = metodoPago // 👈
+                                    metodoPago = metodoPago
                                 )
                                 viewModel.insertIncome(newIncome, onSuccess)
                             } else {
                                 val newExpense = ExpenseEntity(
-                                    id = 0,
                                     categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
                                     nota = nota,
-                                    metodoPago = metodoPago // 👈
+                                    metodoPago = metodoPago
                                 )
                                 viewModel.insertExpense(newExpense, onSuccess)
                             }

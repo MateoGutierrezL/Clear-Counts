@@ -19,9 +19,14 @@ interface CategoryDao {
     @Query("SELECT * FROM categories WHERE tipo = :tipo AND user_id = :userId")
     fun getCategoriesByType(tipo: String, userId: String): Flow<List<CategoryEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(categories: List<CategoryEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategoria(categoria: CategoryEntity)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM categories WHERE nombre = :nombre AND tipo = :tipo AND user_id = :userId)")
+    suspend fun existsByNameAndType(nombre: String, tipo: String, userId: String): Boolean
+
+
 }

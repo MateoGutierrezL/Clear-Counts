@@ -14,7 +14,7 @@ interface IncomeDao {
     @Query("SELECT * FROM ingreso WHERE user_id = :userId")
     fun getAllIncomes(userId: String): Flow<List<IncomeEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(incomeEntity: IncomeEntity)
 
     @Delete

@@ -14,7 +14,7 @@ interface ExpenseDao {
     @Query("SELECT * FROM gasto WHERE user_id = :userId")
     fun getAllExpenses(userId: String): Flow<List<ExpenseEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(expenseEntity: ExpenseEntity)
 
     @Delete

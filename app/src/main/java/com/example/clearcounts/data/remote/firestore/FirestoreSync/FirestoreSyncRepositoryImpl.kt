@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
 
+
 class FirestoreSyncRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : FirestoreSyncRepository {
@@ -25,27 +26,27 @@ class FirestoreSyncRepositoryImpl @Inject constructor(
         firestore.collection("usuarios").document(userId).collection(nombre)
 
     override suspend fun subirIngreso(userId: String, ingreso: IncomeEntity) {
-        col(userId, "ingresos").document(ingreso.id.toString()).set(ingreso.toMap()).await()
+        col(userId, "ingresos").document(ingreso.firestoreId).set(ingreso.toMap()).await()
     }
 
     override suspend fun subirGasto(userId: String, gasto: ExpenseEntity) {
-        col(userId, "gastos").document(gasto.id.toString()).set(gasto.toMap()).await()
+        col(userId, "gastos").document(gasto.firestoreId).set(gasto.toMap()).await()
     }
 
     override suspend fun subirPresupuesto(userId: String, budget: BudgetEntity) {
-        col(userId, "presupuesto").document(budget.id.toString()).set(budget.toMap()).await()
+        col(userId, "presupuesto").document(budget.firestoreId).set(budget.toMap()).await()
     }
 
     override suspend fun subirRecurrente(userId: String, recurrente: RecurringEntity) {
-        col(userId, "recurrentes").document(recurrente.id.toString()).set(recurrente.toMap()).await()
+        col(userId, "recurrentes").document(recurrente.firestoreId).set(recurrente.toMap()).await()
     }
 
     override suspend fun subirMetodoPago(userId: String, metodo: PaymentMethodEntity) {
-        col(userId, "metodos_pago").document(metodo.id.toString()).set(metodo.toMap()).await()
+        col(userId, "metodos_pago").document(metodo.firestoreId).set(metodo.toMap()).await()
     }
 
     override suspend fun subirCategoria(userId: String, categoria: CategoryEntity) {
-        col(userId, "categorias").document(categoria.id.toString()).set(categoria.toMap()).await()
+        col(userId, "categorias").document(categoria.firestoreId).set(categoria.toMap()).await()
     }
 
     override suspend fun eliminarIngreso(userId: String, id: String) {

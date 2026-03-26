@@ -12,9 +12,11 @@ import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,21 +36,31 @@ class InicioViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
-    private val userId get() = auth.currentUser?.uid ?: ""
+    //  userId como Flow reactivo
+    private val userIdFlow: StateFlow<String> = MutableStateFlow(
+        auth.currentUser?.uid ?: ""
+    ).also { flow ->
+        auth.addAuthStateListener { firebaseAuth ->
+            (flow as MutableStateFlow).value = firebaseAuth.currentUser?.uid ?: ""
+        }
+    }
 
-    val movimientosState: StateFlow<List<Any>> = combine(
-        incomeRepository.getAllIncomes(userId),
-        expenseRepository.getAllExpenses(userId)
-    ) { ingresos, gastos ->
-        val listaUnida = ingresos + gastos
-        listaUnida.sortedByDescending { movimiento ->
-            when (movimiento) {
-                is IncomeEntity -> combinarFechaHora(movimiento.fecha, movimiento.hora)
-                is ExpenseEntity -> combinarFechaHora(movimiento.fecha, movimiento.hora)
-                else -> LocalDateTime.MIN
+    val movimientosState: StateFlow<List<Any>> = userIdFlow
+        .flatMapLatest { uid ->
+            combine(
+                incomeRepository.getAllIncomes(uid),
+                expenseRepository.getAllExpenses(uid)
+            ) { ingresos, gastos ->
+                (ingresos + gastos).sortedByDescending { movimiento ->
+                    when (movimiento) {
+                        is IncomeEntity -> combinarFechaHora(movimiento.fecha, movimiento.hora)
+                        is ExpenseEntity -> combinarFechaHora(movimiento.fecha, movimiento.hora)
+                        else -> LocalDateTime.MIN
+                    }
+                }
             }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun combinarFechaHora(fecha: String, hora: String): LocalDateTime {
         return try {
@@ -72,12 +84,12 @@ class InicioViewModel @Inject constructor(
         }
     }
 
-    val totalIngresoSum: StateFlow<Double> = incomeRepository.totalIncome(userId)
-        .map { it ?: 0.0 }
+    val totalIngresoSum: StateFlow<Double> = userIdFlow
+        .flatMapLatest { uid -> incomeRepository.totalIncome(uid).map { it ?: 0.0 } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
-    val totalGastoSum: StateFlow<Double> = expenseRepository.totalExpense(userId)
-        .map { it ?: 0.0 }
+    val totalGastoSum: StateFlow<Double> = userIdFlow
+        .flatMapLatest { uid -> expenseRepository.totalExpense(uid).map { it ?: 0.0 } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     private val dbFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
@@ -144,50 +156,60 @@ class InicioViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val mesActual = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-yyyy"))
+    val mesActual = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-yyyy"))
 
-    val totalIngresoMensual: StateFlow<Double> = incomeRepository.getAllIncomes(userId)
-        .map { ingresos ->
-            ingresos.filter { ingreso ->
-                val partes = ingreso.fecha.split("-")
-                "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual
-            }.sumOf { it.cantidad }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
-    val totalGastoMensual: StateFlow<Double> = expenseRepository.getAllExpenses(userId)
-        .map { gastos ->
-            gastos.filter { gasto ->
-                val partes = gasto.fecha.split("-")
-                "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual
-            }.sumOf { it.cantidad }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+    val totalIngresoMensual: StateFlow<Double> = userIdFlow
+        .flatMapLatest { uid ->
+            incomeRepository.getAllIncomes(uid).map { ingresos ->
+                ingresos.filter { ingreso ->
+                    val partes = ingreso.fecha.split("-")
+                    "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual
+                }.sumOf { it.cantidad }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+    val totalGastoMensual: StateFlow<Double> = userIdFlow
+        .flatMapLatest { uid ->
+            expenseRepository.getAllExpenses(uid).map { gastos ->
+                gastos.filter { gasto ->
+                    val partes = gasto.fecha.split("-")
+                    "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual
+                }.sumOf { it.cantidad }
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     val balanceMensual: StateFlow<Double> = combine(totalIngresoMensual, totalGastoMensual) { i, g ->
         i - g
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
-    val balancePorMetodoPago: StateFlow<Map<String, Pair<String, Double>>> = combine(
-        incomeRepository.getAllIncomes(userId),
-        expenseRepository.getAllExpenses(userId),
-        paymentMethodRepository.getAllPaymentMethods(userId)
-    ) { ingresos, gastos, metodos ->
-        val mesActual = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-yyyy"))
-        metodos.associate { metodo ->
-            val ingresoMetodo = ingresos.filter { ingreso ->
-                val partes = ingreso.fecha.split("-")
-                "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual &&
-                        ingreso.metodoPago == metodo.nombre
-            }.sumOf { it.cantidad }
-            val gastoMetodo = gastos.filter { gasto ->
-                val partes = gasto.fecha.split("-")
-                "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual &&
-                        gasto.metodoPago == metodo.nombre
-            }.sumOf { it.cantidad }
-            metodo.nombre to Pair(metodo.icono, ingresoMetodo - gastoMetodo)
+    val balancePorMetodoPago: StateFlow<Map<String, Pair<String, Double>>> = userIdFlow
+        .flatMapLatest { uid ->
+            combine(
+                incomeRepository.getAllIncomes(uid),
+                expenseRepository.getAllExpenses(uid),
+                paymentMethodRepository.getAllPaymentMethods(uid)
+            ) { ingresos, gastos, metodos ->
+                metodos.associate { metodo ->
+                    val ingresoMetodo = ingresos.filter { ingreso ->
+                        val partes = ingreso.fecha.split("-")
+                        "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual &&
+                                ingreso.metodoPago == metodo.nombre
+                    }.sumOf { it.cantidad }
+                    val gastoMetodo = gastos.filter { gasto ->
+                        val partes = gasto.fecha.split("-")
+                        "${partes.getOrElse(1) { "" }}-${partes.getOrElse(2) { "" }}" == mesActual &&
+                                gasto.metodoPago == metodo.nombre
+                    }.sumOf { it.cantidad }
+                    metodo.nombre to Pair(metodo.icono, ingresoMetodo - gastoMetodo)
+                }
+            }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
-    val metodosPago: StateFlow<List<PaymentMethodEntity>> = paymentMethodRepository
-        .getAllPaymentMethods(userId)
+    val metodosPago: StateFlow<List<PaymentMethodEntity>> = userIdFlow
+        .flatMapLatest { uid -> paymentMethodRepository.getAllPaymentMethods(uid) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }

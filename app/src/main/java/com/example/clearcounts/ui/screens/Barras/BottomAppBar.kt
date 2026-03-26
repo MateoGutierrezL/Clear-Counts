@@ -385,7 +385,8 @@ fun CustomBottomAppBar(
                     }
                 }
                 val iconosDisponibles = listOf(
-                    "dinero", "efectivo", "tarjetaazul", "tarjetaroja"
+                    "dinero", "efectivo", "tarjetaazul", "tarjetaroja", "tarjetaverde",
+                    "tarjetaamarilla", "tarjetamorada","tarjetagris"
                 )
 
                 var iconoSeleccionado by rememberSaveable { mutableStateOf("efectivo") }

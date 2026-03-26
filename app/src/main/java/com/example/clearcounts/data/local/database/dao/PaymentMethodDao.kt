@@ -14,10 +14,10 @@ interface PaymentMethodDao {
     @Query("SELECT * FROM payment_method WHERE user_id = :userId")
     fun getAllPaymentMethods(userId: String): Flow<List<PaymentMethodEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(methods: List<PaymentMethodEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(method: PaymentMethodEntity)
 
     @Delete
@@ -25,4 +25,7 @@ interface PaymentMethodDao {
 
     @Query("SELECT COUNT(*) FROM payment_method WHERE user_id = :userId")
     suspend fun getCountByUser(userId: String): Int
+
+    @Query("SELECT EXISTS(SELECT 1 FROM payment_method WHERE nombre = :nombre AND user_id = :userId)")
+    suspend fun existsByName(nombre: String, userId: String): Boolean
 }

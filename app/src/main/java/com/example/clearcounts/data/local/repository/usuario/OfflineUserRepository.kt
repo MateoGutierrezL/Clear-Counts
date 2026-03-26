@@ -6,6 +6,7 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import com.example.clearcounts.data.local.database.dao.UserDao
 import com.example.clearcounts.data.local.database.entities.UserEntity
+import com.example.clearcounts.data.local.datastore.SyncManager
 import com.example.clearcounts.data.local.datastore.UserSessionDataStore
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.AuthResult
@@ -25,6 +26,7 @@ class OfflineUserRepository @Inject constructor(
     private val userDao: UserDao,
     private val sessionDataStore: UserSessionDataStore,
     private val auth: FirebaseAuth,
+    private val syncManager: SyncManager,
     @ApplicationContext private val context: Context
 ): UserRepository {
 
@@ -70,6 +72,7 @@ class OfflineUserRepository @Inject constructor(
             auth.signInWithEmailAndPassword(email, password).await()
             //  Guardar el ID en DataStore
             guardarUsuarioEnSession(email)
+            syncManager.sincronizarDesdeFirestore()
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)
@@ -80,20 +83,60 @@ class OfflineUserRepository @Inject constructor(
         return try {
             val credential = FacebookAuthProvider.getCredential(token)
             val result = auth.signInWithCredential(credential).await()
-            // Guardar el ID en DataStore
-            result.user?.email?.let { guardarUsuarioEnSession(it) }
+            val email = result.user?.email
+            if (email != null) {
+                guardarUsuarioEnSession(email)
+            } else {
+                // Facebook sin email — usamos el uid como identificador
+                val uid = result.user?.uid ?: ""
+                val displayName = result.user?.displayName ?: "Usuario"
+                val usuarioLocal = userDao.getAllUsers().firstOrNull()
+                    ?.find { it.nombre == displayName }
+                if (usuarioLocal == null) {
+                    val nuevoUsuario = UserEntity(
+                        id = 0,
+                        nombre = displayName,
+                        numero = "",
+                        correo = uid, // 👈 Usamos uid como correo temporal
+                        contrasena = "",
+                        avatar = "perro"
+                    )
+                    userDao.insert(nuevoUsuario)
+                    userDao.getByEmail(uid).firstOrNull()?.let { user ->
+                        sessionDataStore.setLoggedInUserId(user.id)
+                    }
+                } else {
+                    sessionDataStore.setLoggedInUserId(usuarioLocal.id)
+                }
+            }
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun signInGoogle(token: String): Result<AuthResult>{
+    override suspend fun signInGoogle(token: String, email: String?): Result<AuthResult> {
         return try {
             val credential = GoogleAuthProvider.getCredential(token, null)
             val res = auth.signInWithCredential(credential).await()
+
+            // Prioridad: email del ViewModel > auth.currentUser > res.user
+            val emailFinal = email
+                ?: auth.currentUser?.email
+                ?: res.user?.email
+
+            Log.d("DEBUG_SESSION", "signInGoogle - email: $emailFinal")
+
+            if (emailFinal != null) {
+                guardarUsuarioEnSession(emailFinal)
+                syncManager.sincronizarDesdeFirestore()
+            } else {
+                Log.e("DEBUG_SESSION", "No se pudo obtener email en signInGoogle")
+            }
+
             Result.success(res)
-        } catch (e: Exception){
+        } catch (e: Exception) {
+            Log.e("DEBUG_SESSION", "Error en signInGoogle: ${e.message}")
             Result.failure(e)
         }
     }
@@ -109,7 +152,7 @@ class OfflineUserRepository @Inject constructor(
         try {
             val credentialManager = CredentialManager.Companion.create(context)
             credentialManager.clearCredentialState(ClearCredentialStateRequest())
-            Log.e("AUth", "Funciona")
+            Log.e("Auth", "Funciona")
         } catch (e: Exception) {
             // Loguear error o ignorar si falla la limpieza de estado
             Log.e("Auth", "Error al limpiar estado de credenciales: ${e.message}")
@@ -125,27 +168,43 @@ class OfflineUserRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    private suspend fun guardarUsuarioEnSession(email: String) {
-        val usuarioLocal = userDao.getByEmail(email).firstOrNull()
 
+    private suspend fun guardarUsuarioEnSession(email: String) {
+        // ✅ Query directa suspend, sin Flow
+        val usuarioLocal = userDao.getByEmailOnce(email)
+        Log.d("Auth", "Usuario en Room: $usuarioLocal")
         if (usuarioLocal != null) {
-            // Usuario existe en Room, solo guardamos la sesión
+            Log.d("Auth", "Guardando ID: ${usuarioLocal.id}")
+            // Usuario ya existe, actualizamos nombre por si cambió en Google
+            val firebaseUser = auth.currentUser
+            val nombreActualizado = firebaseUser?.displayName
+            if (!nombreActualizado.isNullOrBlank() &&
+                nombreActualizado != usuarioLocal.nombre) {
+                userDao.update(usuarioLocal.copy(nombre = nombreActualizado))
+            }
             sessionDataStore.setLoggedInUserId(usuarioLocal.id)
         } else {
-            // Usuario no existe en Room, lo creamos con datos de Firebase Auth
+            Log.d("Auth", "Usuario no existe, creando nuevo...")
+            // Usuario nuevo — lo creamos con datos de Firebase
             val firebaseUser = auth.currentUser
             val nuevoUsuario = UserEntity(
                 id = 0,
-                nombre = firebaseUser?.displayName ?: email.substringBefore("@"),
+                nombre = firebaseUser?.displayName
+                    ?: email.substringBefore("@"),
                 numero = "",
                 correo = email,
                 contrasena = "",
-                avatar = "perro"
+                avatar = "cacatuaninfa"
             )
-            userDao.insert(nuevoUsuario)
-            // Ahora sí buscamos el usuario recién insertado
-            userDao.getByEmail(email).firstOrNull()?.let { user ->
-                sessionDataStore.setLoggedInUserId(user.id)
+            // ✅ Obtenemos el ID generado por Room directamente
+            val newId = userDao.insertAndGetId(nuevoUsuario)
+            if (newId != -1L) {
+                sessionDataStore.setLoggedInUserId(newId.toInt())
+            } else {
+                // Por si IGNORE lo bloqueó en race condition, buscamos de nuevo
+                userDao.getByEmailOnce(email)?.let { user ->
+                    sessionDataStore.setLoggedInUserId(user.id)
+                }
             }
         }
     }

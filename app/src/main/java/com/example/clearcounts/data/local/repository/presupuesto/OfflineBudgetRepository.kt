@@ -27,7 +27,7 @@ class OfflineBudgetRepository @Inject constructor(
 
     override suspend fun deleteBudget(budgetEntity: BudgetEntity) {
         budgetDao.delete(budgetEntity)
-        firestoreSync.eliminarPresupuesto(userId, budgetEntity.id.toString())
+        firestoreSync.eliminarPresupuesto(userId, budgetEntity.firestoreId)
     }
 
     override suspend fun updateBudget(budgetEntity: BudgetEntity) {
