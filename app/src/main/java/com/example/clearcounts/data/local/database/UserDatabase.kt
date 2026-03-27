@@ -29,7 +29,7 @@ import com.example.clearcounts.data.local.database.entities.UserEntity
         BudgetEntity::class,
         PaymentMethodEntity::class,
         RecurringEntity::class],
-    version = 17,
+    version = 18,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -63,7 +63,7 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto"),
                 CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto"),
                 CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto"),
-                CategoryEntity(nombre = "Plan datos", icono = "plan_datos", tipo = "gasto"),
+                CategoryEntity(nombre = "Plan datos", icono = "celular", tipo = "gasto"),
                 // INGRESOS
                 CategoryEntity(nombre = "Salario", icono = "dinero", tipo = "ingreso"),
                 CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso"),

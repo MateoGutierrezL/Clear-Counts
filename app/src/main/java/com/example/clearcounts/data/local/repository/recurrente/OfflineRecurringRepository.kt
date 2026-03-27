@@ -32,6 +32,6 @@ class OfflineRecurringRepository @Inject constructor(
 
     override suspend fun deleteRecurring(entity: RecurringEntity) {
         recurringDao.delete(entity)
-        firestoreSync.eliminarRecurrente(userId, entity.id.toString())
+        firestoreSync.eliminarRecurrente(userId, entity.firestoreId)
     }
 }

@@ -1,16 +1,32 @@
-    package com.example.clearcounts.ui.navigation
+package com.example.clearcounts.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,9 +36,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -75,6 +94,7 @@ fun AppNavigation(
     themeViewModel: ThemeViewModel
 
 ) {
+    val isLoggingOut by viewModel.isLoggingOut.collectAsStateWithLifecycle()
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -86,9 +106,9 @@ fun AppNavigation(
 
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet (
+            ModalDrawerSheet(
                 modifier = Modifier.width(290.dp) //Tamaño de la barra leteral desplegable
-            ){
+            ) {
                 NavigationDrawer(
                     profilePicture = painterResource(id = R.drawable.user),
                     name = currentUser?.nombre ?: "Usuario invitado",
@@ -111,11 +131,12 @@ fun AppNavigation(
                         DrawerItem.CONTACT -> {
                             navigationController.navigate(Pantallas.Contactos.pantalla)
                         }
+
                         DrawerItem.TUTORIAL -> {}
                         DrawerItem.LOG_OUT -> {
-                            viewModel.logOut{
-                                rootNavController.navigate("InicioSesion"){
-                                    popUpTo("Inicio"){
+                            viewModel.logOut {
+                                rootNavController.navigate("InicioSesion") {
+                                    popUpTo("Inicio") {
                                         inclusive = true
                                     }
                                 }
@@ -178,11 +199,16 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    HomeScreen(navegarTodasTransacciones = {
-                        navigationController.navigate(Pantallas.TodasTransacciones.pantalla)
-                    },
+                    HomeScreen(
+                        navegarTodasTransacciones = {
+                            navigationController.navigate(Pantallas.TodasTransacciones.pantalla)
+                        },
                         navegarTransaccionesPorMetodo = { metodo ->
-                            navigationController.navigate(Pantallas.TransaccionesPorMetodo.createRoute(metodo))
+                            navigationController.navigate(
+                                Pantallas.TransaccionesPorMetodo.createRoute(
+                                    metodo
+                                )
+                            )
                         })
                 }
                 composable(Pantallas.Graficas.pantalla) {
@@ -221,10 +247,14 @@ fun AppNavigation(
 
                     Metas(
                         onBotonCrear = { tipoSeleccionado ->
-                            navigationController.navigate(Pantallas.Detalle.createRoute(tipoSeleccionado))
+                            navigationController.navigate(
+                                Pantallas.Detalle.createRoute(
+                                    tipoSeleccionado
+                                )
+                            )
                         },
                         onVerDetalle = { budget ->
-                            navigationController.navigate(Pantallas.DetalleBudget.createRoute(budget.id))
+                            navigationController.navigate(Pantallas.DetalleBudget.createRoute(budget.firestoreId))
                         }
                     )
                 }
@@ -237,10 +267,11 @@ fun AppNavigation(
                         onDispose {}
                     }
 
-                    val budgetId = backStackEntry.arguments?.getString("budgetId")?.toIntOrNull()
+
                     val viewModelMetas: MetasViewModel = hiltViewModel()
                     val allBudgets by viewModelMetas.allBudgets.collectAsState()
-                    val budget = allBudgets.find { it.id == budgetId }
+                    val budgetId = backStackEntry.arguments?.getString("budgetId")
+                    val budget = allBudgets.find { it.firestoreId == budgetId }
 
                     if (budget != null) {
                         DetalleBudget(
@@ -252,7 +283,10 @@ fun AppNavigation(
                             },
                             onEditar = { budgetAEditar ->
                                 navigationController.navigate(
-                                    Pantallas.Detalle.createRoute(budgetAEditar.tipo, budgetAEditar.id)
+                                    Pantallas.Detalle.createRoute(
+                                        budgetAEditar.tipo,
+                                        budgetAEditar.firestoreId
+                                    )
                                 )
                             }
                         )
@@ -327,7 +361,8 @@ fun AppNavigation(
                     val ruta = backStackEntry.arguments?.getString("ruta") ?: "ingreso"
                     val icono = backStackEntry.arguments?.getString("icono") ?: ""
                     val nombre = backStackEntry.arguments?.getString("nombre").orEmpty()
-                    val metodoPago = backStackEntry.arguments?.getString("metodoPago") ?: "Efectivo" // 👈
+                    val metodoPago =
+                        backStackEntry.arguments?.getString("metodoPago") ?: "Efectivo" // 👈
 
                     DisposableEffect(Unit) {
                         bottomBarVisible.value = false
@@ -375,21 +410,21 @@ fun AppNavigation(
                     arguments = listOf(
                         navArgument("tipo") { type = NavType.StringType },
                         navArgument("budgetId") {
-                            type = NavType.IntType
-                            defaultValue = -1
+                            type = NavType.StringType
+                            defaultValue = ""
                         }
                     )
                 ) { backStackEntry ->
                     val tipo = backStackEntry.arguments?.getString("tipo") ?: TipoBudget.META
-                    val budgetId = backStackEntry.arguments?.getInt("budgetId") ?: -1
+                    val budgetId = backStackEntry.arguments?.getString("budgetId") ?: ""
 
                     val viewModelMetas: MetasViewModel = hiltViewModel()
                     val allBudgets by viewModelMetas.allBudgets.collectAsState()
-                    val budgetAEditar = allBudgets.find { it.id == budgetId }
+                    val budgetAEditar = allBudgets.find { it.firestoreId == budgetId }
 
                     val context = LocalContext.current
 
-                    val (tituloFinal, iconoFinal) = when(tipo) {
+                    val (tituloFinal, iconoFinal) = when (tipo) {
                         TipoBudget.DEUDA -> context.getString(R.string.tab_deudas) to Icons.Default.ErrorOutline
                         TipoBudget.TE_DEBEN -> context.getString(R.string.te_deben) to Icons.Default.VerifiedUser
                         else -> context.getString(R.string.tab_metas) to Icons.Default.TrackChanges
@@ -541,6 +576,48 @@ fun AppNavigation(
                                 navigationController.popBackStack()
                             }
                         }
+                    )
+                }
+            }
+
+
+        }
+    }
+
+    AnimatedVisibility(
+        visible = isLoggingOut,
+        modifier = Modifier.fillMaxSize(),
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+                .clickable(enabled = false) {}, // bloquea interacción
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                    Text(
+                        text = "Cerrando sesión...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }

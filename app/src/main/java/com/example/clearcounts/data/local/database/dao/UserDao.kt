@@ -18,6 +18,14 @@ interface UserDao{
     @Query("SELECT * FROM usuario WHERE correo = :correo")
     fun getByEmail(correo: String): Flow<UserEntity>
 
+    //  NUEVO — query directa sin Flow para uso en suspend functions
+    @Query("SELECT * FROM usuario WHERE correo = :correo LIMIT 1")
+    suspend fun getByEmailOnce(correo: String): UserEntity?
+
+    //  NUEVO — para obtener el ID del último insertado
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAndGetId(userEntity: UserEntity): Long
+
     @Query("SELECT * FROM usuario where id = :id")
     fun getUserById(id: Int): Flow<UserEntity?>
 

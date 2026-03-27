@@ -10,13 +10,19 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 // IncomeEntity
 fun IncomeEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "categoria" to categoria,
-    "cantidad" to cantidad, "hora" to hora, "fecha" to fecha,
-    "nota" to nota, "metodoPago" to metodoPago
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "categoria" to categoria,
+    "cantidad" to cantidad,
+    "hora" to hora,
+    "fecha" to fecha,
+    "nota" to nota,
+    "metodoPago" to metodoPago
 )
+
 fun DocumentSnapshot.toIncomeEntity() = try {
     IncomeEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,  // ✅ getLong, no getString
         userId = getString("userId") ?: "",
         categoria = getString("categoria") ?: "",
         cantidad = getDouble("cantidad") ?: 0.0,
@@ -28,14 +34,9 @@ fun DocumentSnapshot.toIncomeEntity() = try {
 } catch (e: Exception) { null }
 
 // ExpenseEntity
-fun ExpenseEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "categoria" to categoria,
-    "cantidad" to cantidad, "hora" to hora, "fecha" to fecha,
-    "nota" to nota, "metodoPago" to metodoPago
-)
 fun DocumentSnapshot.toExpenseEntity() = try {
     ExpenseEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,
         userId = getString("userId") ?: "",
         categoria = getString("categoria") ?: "",
         cantidad = getDouble("cantidad") ?: 0.0,
@@ -47,15 +48,9 @@ fun DocumentSnapshot.toExpenseEntity() = try {
 } catch (e: Exception) { null }
 
 // BudgetEntity
-fun BudgetEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "nombre" to nombre,
-    "tipo" to tipo, "cantidadRequerida" to cantidadRequerida,
-    "cantidadAcumulada" to cantidadAcumulada, "prestador" to prestador,
-    "fechaInicio" to fechaInicio, "fechaLimite" to fechaLimite, "nota" to nota
-)
 fun DocumentSnapshot.toBudgetEntity() = try {
     BudgetEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,
         userId = getString("userId") ?: "",
         nombre = getString("nombre") ?: "",
         tipo = getString("tipo") ?: "",
@@ -69,21 +64,15 @@ fun DocumentSnapshot.toBudgetEntity() = try {
 } catch (e: Exception) { null }
 
 // RecurringEntity
-fun RecurringEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "nombre" to nombre,
-    "categoria" to categoria, "cantidad" to cantidad, "tipo" to tipo,
-    "diaDelMes" to diaDelMes, "activo" to activo,
-    "metodoPago" to metodoPago, "ultimaEjecucion" to ultimaEjecucion
-)
 fun DocumentSnapshot.toRecurringEntity() = try {
     RecurringEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,
         userId = getString("userId") ?: "",
         nombre = getString("nombre") ?: "",
         categoria = getString("categoria") ?: "",
         cantidad = getDouble("cantidad") ?: 0.0,
         tipo = getString("tipo") ?: "",
-        diaDelMes = getLong("diaDelMes")?.toInt() ?: 1,
+        diaDelMes = getLong("diaDelMes")?.toInt() ?: 1,  // este ya estaba bien
         activo = getBoolean("activo") ?: true,
         metodoPago = getString("metodoPago") ?: "Efectivo",
         ultimaEjecucion = getString("ultimaEjecucion")
@@ -91,13 +80,9 @@ fun DocumentSnapshot.toRecurringEntity() = try {
 } catch (e: Exception) { null }
 
 // PaymentMethodEntity
-fun PaymentMethodEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "nombre" to nombre,
-    "icono" to icono, "esDefault" to esDefault
-)
 fun DocumentSnapshot.toPaymentMethodEntity() = try {
     PaymentMethodEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,
         userId = getString("userId") ?: "",
         nombre = getString("nombre") ?: "",
         icono = getString("icono") ?: "",
@@ -106,16 +91,70 @@ fun DocumentSnapshot.toPaymentMethodEntity() = try {
 } catch (e: Exception) { null }
 
 // CategoryEntity
-fun CategoryEntity.toMap() = mapOf(
-    "id" to id, "userId" to userId, "nombre" to nombre,
-    "icono" to icono, "tipo" to tipo
-)
 fun DocumentSnapshot.toCategoryEntity() = try {
     CategoryEntity(
-        id = getString("id")?.toIntOrNull() ?: 0,
+        firestoreId = getString("firestoreId") ?: id,
         userId = getString("userId") ?: "",
         nombre = getString("nombre") ?: "",
         icono = getString("icono") ?: "",
         tipo = getString("tipo") ?: ""
     )
 } catch (e: Exception) { null }
+
+// ExpenseEntity
+fun ExpenseEntity.toMap() = mapOf(
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "categoria" to categoria,
+    "cantidad" to cantidad,
+    "hora" to hora,
+    "fecha" to fecha,
+    "nota" to nota,
+    "metodoPago" to metodoPago
+)
+
+// BudgetEntity
+fun BudgetEntity.toMap() = mapOf(
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "nombre" to nombre,
+    "tipo" to tipo,
+    "cantidadRequerida" to cantidadRequerida,
+    "cantidadAcumulada" to cantidadAcumulada,
+    "prestador" to prestador,
+    "fechaInicio" to fechaInicio,
+    "fechaLimite" to fechaLimite,
+    "nota" to nota
+)
+
+// RecurringEntity
+fun RecurringEntity.toMap() = mapOf(
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "nombre" to nombre,
+    "categoria" to categoria,
+    "cantidad" to cantidad,
+    "tipo" to tipo,
+    "diaDelMes" to diaDelMes,
+    "activo" to activo,
+    "metodoPago" to metodoPago,
+    "ultimaEjecucion" to ultimaEjecucion
+)
+
+// PaymentMethodEntity
+fun PaymentMethodEntity.toMap() = mapOf(
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "nombre" to nombre,
+    "icono" to icono,
+    "esDefault" to esDefault
+)
+
+// CategoryEntity
+fun CategoryEntity.toMap() = mapOf(
+    "firestoreId" to firestoreId,
+    "userId" to userId,
+    "nombre" to nombre,
+    "icono" to icono,
+    "tipo" to tipo
+)

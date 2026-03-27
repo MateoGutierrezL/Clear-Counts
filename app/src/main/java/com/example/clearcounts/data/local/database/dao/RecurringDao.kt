@@ -15,7 +15,7 @@ interface RecurringDao {
     @Query("SELECT * FROM recurrente WHERE user_id = :userId ORDER BY dia_del_mes ASC")
     fun getAllRecurring(userId: String): Flow<List<RecurringEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recurringEntity: RecurringEntity)
 
     @Update

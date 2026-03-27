@@ -463,11 +463,11 @@ fun SelectorAvatarDialog(
 ) {
     val context = LocalContext.current
     val avatares = listOf(
-        "cacatua","cacatuaninfa", "guacamaya", "dragonrojo","osopanda",
-        "perropastoraleman",  "capibara", "cocodrilo",
-         "leon", "osopardo", "perrohusky", "tigre",
-        "condor", "delfinrosado",  "leona", "osopolar",
-        "perrolabrador", "gatobicolor"
+        "cacatua","cacatuaninfa", "guacamaya", "loroverde","dragonrojo","bulldog",
+        "perropastoraleman",  "capibara", "gallina", "gallo", "cocodrilo","caballo", "poni",
+         "leon","leona", "osopardo", "perrohusky", "tigre","jaguar", "cerdo", "conejo",
+        "condor", "delfinrosado",  "serpienteverde", "osopolar", "tortuga" ,"vacaholstein",
+        "perrolabrador", "gatobicolor","osopanda",
     )
 
     AlertDialog(

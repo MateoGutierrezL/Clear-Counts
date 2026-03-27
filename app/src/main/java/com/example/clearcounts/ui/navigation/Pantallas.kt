@@ -26,13 +26,13 @@ sealed class Pantallas (val pantalla: String){
 
     object Metas : Pantallas("metas")
     object Detalle : Pantallas("detalle/{tipo}?budgetId={budgetId}") {
-        fun createRoute(tipo: String, budgetId: Int? = null) =
+        fun createRoute(tipo: String, budgetId: String? = null) =
             if (budgetId != null) "detalle/$tipo?budgetId=$budgetId"
             else "detalle/$tipo"
     }
 
     object DetalleBudget : Pantallas("detalleBudget/{budgetId}") {
-        fun createRoute(budgetId: Int) = "detalleBudget/$budgetId"
+        fun createRoute(budgetId: String) = "detalleBudget/$budgetId"
     }
 
     data object TodasTransacciones: Pantallas("todasTransacciones")

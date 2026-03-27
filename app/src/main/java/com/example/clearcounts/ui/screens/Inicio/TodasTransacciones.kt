@@ -73,8 +73,8 @@ fun TodasTransacciones(
                     when (item) {
                         is InicioViewModel.MovimientoItem.Header -> "header_${item.fecha}"
                         is InicioViewModel.MovimientoItem.Transaccion -> when (val mov = item.movimiento) {
-                            is IncomeEntity -> "inc_${mov.id}"
-                            is ExpenseEntity -> "exp_${mov.id}"
+                            is IncomeEntity -> "inc_${mov.firestoreId}"
+                            is ExpenseEntity -> "exp_${mov.firestoreId}"
                             else -> item.hashCode()
                         }
                     }

@@ -41,6 +41,7 @@ fun CategoriasItem(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+
     // Convierte el String del icono al resource ID del drawable
     val iconoId = remember(categorias.icono) {
         context.resources.getIdentifier(categorias.icono, "drawable", context.packageName)

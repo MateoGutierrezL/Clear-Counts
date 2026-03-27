@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.clearcounts.ui.screens.Categorias.Categorias
+import java.util.UUID
 
 @Entity(tableName = "ingreso")
 data class IncomeEntity (
 
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val firestoreId: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "user_id") val userId: String = "",
     @ColumnInfo(name = "categoria") val categoria: String,
     @ColumnInfo(name = "cantidad") val cantidad: Double,
