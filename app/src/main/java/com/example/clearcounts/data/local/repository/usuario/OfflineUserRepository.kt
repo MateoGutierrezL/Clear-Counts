@@ -8,6 +8,7 @@ import com.example.clearcounts.data.local.database.dao.UserDao
 import com.example.clearcounts.data.local.database.entities.UserEntity
 import com.example.clearcounts.data.local.datastore.SyncManager
 import com.example.clearcounts.data.local.datastore.UserSessionDataStore
+import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
 import com.facebook.login.LoginManager
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
@@ -26,6 +27,7 @@ class OfflineUserRepository @Inject constructor(
     private val userDao: UserDao,
     private val sessionDataStore: UserSessionDataStore,
     private val auth: FirebaseAuth,
+    private val firestoreSync: FirestoreSyncRepository,
     private val syncManager: SyncManager,
     @ApplicationContext private val context: Context
 ): UserRepository {
@@ -40,7 +42,15 @@ class OfflineUserRepository @Inject constructor(
 
     override suspend fun deleteUser(userEntity: UserEntity) = userDao.delete(userEntity)
 
-    override suspend fun updateUser(userEntity: UserEntity) = userDao.update(userEntity)
+    override suspend fun updateUser(userEntity: UserEntity) {
+        userDao.update(userEntity)
+        try {
+            val uid = auth.currentUser?.uid ?: return
+            firestoreSync.subirUsuario(uid, userEntity)
+        } catch (e: Exception) {
+            Log.e("SYNC", "Error actualizando usuario en Firestore: ${e.message}")
+        }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getCurrentLoggedInUser(): Flow<UserEntity?> {
@@ -72,7 +82,7 @@ class OfflineUserRepository @Inject constructor(
             auth.signInWithEmailAndPassword(email, password).await()
             //  Guardar el ID en DataStore
             guardarUsuarioEnSession(email)
-            syncManager.sincronizarDesdeFirestore()
+            syncManager.sincronizarDesdeFirestore(emailUsuario = email)
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)
@@ -85,9 +95,8 @@ class OfflineUserRepository @Inject constructor(
             val result = auth.signInWithCredential(credential).await()
             val email = result.user?.email
             if (email != null) {
-                guardarUsuarioEnSession(email)
+                guardarUsuarioEnSession(email, proveedor = "facebook")
             } else {
-                // Facebook sin email — usamos el uid como identificador
                 val uid = result.user?.uid ?: ""
                 val displayName = result.user?.displayName ?: "Usuario"
                 val usuarioLocal = userDao.getAllUsers().firstOrNull()
@@ -97,7 +106,7 @@ class OfflineUserRepository @Inject constructor(
                         id = 0,
                         nombre = displayName,
                         numero = "",
-                        correo = uid, // 👈 Usamos uid como correo temporal
+                        correo = uid,
                         contrasena = "",
                         avatar = "perro"
                     )
@@ -109,6 +118,7 @@ class OfflineUserRepository @Inject constructor(
                     sessionDataStore.setLoggedInUserId(usuarioLocal.id)
                 }
             }
+            syncManager.sincronizarDesdeFirestore(emailUsuario = email)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)
@@ -128,8 +138,8 @@ class OfflineUserRepository @Inject constructor(
             Log.d("DEBUG_SESSION", "signInGoogle - email: $emailFinal")
 
             if (emailFinal != null) {
-                guardarUsuarioEnSession(emailFinal)
-                syncManager.sincronizarDesdeFirestore()
+                guardarUsuarioEnSession(emailFinal, proveedor = "google")
+                syncManager.sincronizarDesdeFirestore(emailUsuario = emailFinal)
             } else {
                 Log.e("DEBUG_SESSION", "No se pudo obtener email en signInGoogle")
             }
@@ -169,13 +179,11 @@ class OfflineUserRepository @Inject constructor(
         }
     }
 
-    private suspend fun guardarUsuarioEnSession(email: String) {
-        // ✅ Query directa suspend, sin Flow
+    private suspend fun guardarUsuarioEnSession(email: String, proveedor: String = "email") {
         val usuarioLocal = userDao.getByEmailOnce(email)
         Log.d("Auth", "Usuario en Room: $usuarioLocal")
         if (usuarioLocal != null) {
             Log.d("Auth", "Guardando ID: ${usuarioLocal.id}")
-            // Usuario ya existe, actualizamos nombre por si cambió en Google
             val firebaseUser = auth.currentUser
             val nombreActualizado = firebaseUser?.displayName
             if (!nombreActualizado.isNullOrBlank() &&
@@ -185,7 +193,6 @@ class OfflineUserRepository @Inject constructor(
             sessionDataStore.setLoggedInUserId(usuarioLocal.id)
         } else {
             Log.d("Auth", "Usuario no existe, creando nuevo...")
-            // Usuario nuevo — lo creamos con datos de Firebase
             val firebaseUser = auth.currentUser
             val nuevoUsuario = UserEntity(
                 id = 0,
@@ -194,14 +201,14 @@ class OfflineUserRepository @Inject constructor(
                 numero = "",
                 correo = email,
                 contrasena = "",
-                avatar = "cacatuaninfa"
+                avatar = "cacatuaninfa",
+                proveedor = proveedor
             )
-            // ✅ Obtenemos el ID generado por Room directamente
+
             val newId = userDao.insertAndGetId(nuevoUsuario)
             if (newId != -1L) {
                 sessionDataStore.setLoggedInUserId(newId.toInt())
             } else {
-                // Por si IGNORE lo bloqueó en race condition, buscamos de nuevo
                 userDao.getByEmailOnce(email)?.let { user ->
                     sessionDataStore.setLoggedInUserId(user.id)
                 }
@@ -211,6 +218,10 @@ class OfflineUserRepository @Inject constructor(
 
     override suspend fun guardarSesion(email: String) {
         guardarUsuarioEnSession(email)
+    }
+
+    override suspend fun getUserByEmail(correo: String): UserEntity? {
+        return userDao.getByEmailOnce(correo)
     }
 
 }

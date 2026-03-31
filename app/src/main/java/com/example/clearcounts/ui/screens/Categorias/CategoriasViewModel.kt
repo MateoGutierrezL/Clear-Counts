@@ -1,13 +1,16 @@
 package com.example.clearcounts.ui.screens.Categorias
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.clearcounts.R
 import com.example.clearcounts.data.local.database.entities.CategoryEntity
 import com.example.clearcounts.data.local.repository.categoria.CategoryRepository
 import com.example.clearcounts.data.local.repository.notificacion.NotificationRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 class CategoriasViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val notificationRepository: NotificationRepository,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val userId get() = auth.currentUser?.uid ?: ""
@@ -43,9 +47,20 @@ class CategoriasViewModel @Inject constructor(
                 CategoryEntity(nombre = nombre, icono = icono, tipo = tipo, userId = userId)
             )
             notificationRepository.insertNotification(
-                titulo = "Nueva categoría creada",
-                mensaje = "La categoría \"$nombre\" fue agregada a tus ${if (tipo == "gasto") "gastos" else "ingresos"}."
+                titulo = context.getString(R.string.nueva_categor_a_creada),
+                mensaje = context.getString(
+                    R.string.la_categor_a_fue_agregada_a_tus,
+                    nombre,
+                    if (tipo == "gasto") context.getString(R.string.gasto) else context.getString(R.string.ingreso)
+                )
             )
+        }
+    }
+
+
+    fun deleteCategoria(category: CategoryEntity) {
+        viewModelScope.launch {
+            categoryRepository.deleteCategoria(category)
         }
     }
 }

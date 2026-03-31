@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Categorias
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -59,7 +61,8 @@ fun crearCategoria(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-
+    var nombreError by remember { mutableStateOf(false) }
+    var iconoError by remember { mutableStateOf(false) }
     var nombre by remember { mutableStateOf("") }
     var iconoSeleccionado by remember { mutableStateOf("") }
     var tipoSeleccionado by remember { mutableStateOf(tipo) }
@@ -156,10 +159,34 @@ fun crearCategoria(
             OutlinedTextField(
                 value = nombre,
                 singleLine = true,
-                onValueChange = { if (it.length <= 20) nombre = it },
+                onValueChange = {
+                    if (it.length <= 20) {
+                        nombre = it
+                        nombreError = false
+                    }
+                },
                 label = { Text(stringResource(R.string.nombre)) },
                 placeholder = { Text(stringResource(R.string.ej_mascota)) },
                 shape = RoundedCornerShape(20.dp),
+                isError = nombreError,
+                supportingText = {
+                    AnimatedVisibility(visible = nombreError) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = stringResource(R.string.nombre_requerido),
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
@@ -207,8 +234,28 @@ fun crearCategoria(
             Text(
                 text = stringResource(R.string.selecciona_un_icono),
                 modifier = Modifier.padding(start = 14.dp),
-                color = MaterialTheme.colorScheme.onBackground
+                color = if (iconoError) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.onBackground
             )
+            AnimatedVisibility(visible = iconoError) {
+                Row(
+                    modifier = Modifier.padding(start = 14.dp, top = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(R.string.icono_requerido),
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 12.sp
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(5),
@@ -231,7 +278,10 @@ fun crearCategoria(
                                         MaterialTheme.colorScheme.primaryContainer
                                     else MaterialTheme.colorScheme.secondaryContainer
                                 )
-                                .clickable { iconoSeleccionado = icono },
+                                .clickable {
+                                    iconoSeleccionado = icono
+                                    iconoError = false
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
@@ -260,9 +310,15 @@ fun crearCategoria(
                 BotonesInferiores(
                     onCancelChange = botonVolver,
                     onCreateChange = {
-                        if (nombre.isNotBlank() && iconoSeleccionado.isNotEmpty()) {
+                        nombreError = nombre.isBlank()
+                        iconoError = iconoSeleccionado.isEmpty()
+
+                        if (!nombreError && !iconoError) {
                             viewModel.insertCategoria(nombre, iconoSeleccionado, tipoSeleccionado)
                             botonVolver()
+                            true
+                        } else {
+                            false
                         }
                     }
                 )

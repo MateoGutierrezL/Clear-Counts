@@ -50,4 +50,8 @@ class RecurringViewModel @Inject constructor(
     fun eliminar(entity: RecurringEntity) {
         viewModelScope.launch { repository.deleteRecurring(entity) }
     }
+
+    fun actualizar(entity: RecurringEntity) {
+        viewModelScope.launch { repository.updateRecurring(entity) }
+    }
 }

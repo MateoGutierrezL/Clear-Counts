@@ -1,10 +1,12 @@
 package com.example.clearcounts.data.local.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.clearcounts.data.local.database.entities.CategoryEntity
+import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,8 +27,12 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategoria(categoria: CategoryEntity)
 
+    @Delete
+    suspend fun delete(category: CategoryEntity)
+
     @Query("SELECT EXISTS(SELECT 1 FROM categories WHERE nombre = :nombre AND tipo = :tipo AND user_id = :userId)")
     suspend fun existsByNameAndType(nombre: String, tipo: String, userId: String): Boolean
+
 
 
 }

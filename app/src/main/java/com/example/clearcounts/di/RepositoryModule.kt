@@ -6,6 +6,7 @@ import com.example.clearcounts.data.local.database.dao.ExpenseDao
 import com.example.clearcounts.data.local.database.dao.IncomeDao
 import com.example.clearcounts.data.local.database.dao.PaymentMethodDao
 import com.example.clearcounts.data.local.database.dao.RecurringDao
+import com.example.clearcounts.data.local.database.dao.UserDao
 import com.example.clearcounts.data.local.datastore.SyncDataStore
 import com.example.clearcounts.data.local.datastore.SyncManager
 import com.example.clearcounts.data.local.repository.categoria.CategoryRepository
@@ -105,12 +106,13 @@ object SyncModule {
         expenseDao: ExpenseDao,
         budgetDao: BudgetDao,
         recurringDao: RecurringDao,
+        userDao: UserDao,
         paymentMethodDao: PaymentMethodDao,
         categoryDao: CategoryDao,
         syncDataStore: SyncDataStore,
         auth: FirebaseAuth
     ): SyncManager = SyncManager(
         firestoreSync, incomeDao, expenseDao, budgetDao,
-        recurringDao, paymentMethodDao, categoryDao, syncDataStore, auth
+        recurringDao,userDao, paymentMethodDao, categoryDao, syncDataStore, auth
     )
 }

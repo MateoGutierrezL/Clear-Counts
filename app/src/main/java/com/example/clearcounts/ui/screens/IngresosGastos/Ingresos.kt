@@ -1,6 +1,7 @@
 package com.example.clearcounts.ui.screens.IngresosGastos
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -112,7 +114,7 @@ fun ingresos(
     var showDatePicker by remember { mutableStateOf(false) }
 
     var nota by remember {mutableStateOf("")}
-
+    var cantidadError by remember { mutableStateOf(false) }
     var cantidad by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
@@ -218,9 +220,12 @@ fun ingresos(
                 CampoCantidad(
                     cantidad = cantidad,
                     onCantidadChange = { nuevoValor ->
-                        if (nuevoValor.length <= MAX_LENGHT_OF_AMOUNT){
+                        if (nuevoValor.length <= MAX_LENGHT_OF_AMOUNT) {
                             cantidad = nuevoValor
-                        }},
+                            cantidadError = false
+                        }
+                    },
+                    isError = cantidadError,
                     modifier = Modifier.weight(1.3f)
                 )
 
@@ -284,30 +289,31 @@ fun ingresos(
                 BotonesInferiores(
                     onCancelChange = botonVolver,
                     onCreateChange = {
-                        if (cantidad.isNotBlank() && cantidad.toDoubleOrNull() != null) {
-                            val onSuccess = { botonCrearNavegacion() }
-
+                        if (cantidad.isBlank() || cantidad.toDoubleOrNull() == null) {
+                            cantidadError = true
+                            false
+                        } else {
+                            cantidadError = false
                             if (ruta == "ingreso") {
-                                val newIncome = IncomeEntity(
+                                viewModel.insertIncome(IncomeEntity(
                                     categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
                                     nota = nota,
                                     metodoPago = metodoPago
-                                )
-                                viewModel.insertIncome(newIncome, onSuccess)
+                                ), { botonCrearNavegacion() })
                             } else {
-                                val newExpense = ExpenseEntity(
+                                viewModel.insertExpense(ExpenseEntity(
                                     categoria = nombre,
                                     cantidad = cantidad.toDouble(),
                                     hora = horaSeleccionadaState,
                                     fecha = fechaSeleccionadaState,
                                     nota = nota,
                                     metodoPago = metodoPago
-                                )
-                                viewModel.insertExpense(newExpense, onSuccess)
+                                ), { botonCrearNavegacion() })
                             }
+                            true
                         }
                     }
                 )
@@ -424,21 +430,54 @@ fun CampoNota(
 @Composable
 fun CampoCantidad(
     cantidad: String,
-    onCantidadChange:(String) -> Unit,
-    modifier: Modifier = Modifier
-){
-    OutlinedTextField(
-        value = cantidad,
-        singleLine = true,
-        onValueChange = onCantidadChange,
-        shape = RoundedCornerShape(20.dp),
-        label = { Text(stringResource(R.string.cantidad)) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier,
-        trailingIcon = {
-            Icon(Icons.Default.Calculate, contentDescription = stringResource(R.string.escribir_cantidad))
-        }
-    )
+    onCantidadChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    isError: Boolean = false
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = cantidad,
+            singleLine = true,
+            onValueChange = onCantidadChange,
+            shape = RoundedCornerShape(20.dp),
+            label = { Text(stringResource(R.string.cantidad)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth(),
+            isError = isError,
+            supportingText = {
+                AnimatedVisibility(visible = isError) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.cantidad_requerida),
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            },
+            trailingIcon = {
+                if (isError) {
+                    Icon(
+                        Icons.Default.Warning,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.Calculate,
+                        contentDescription = stringResource(R.string.escribir_cantidad)
+                    )
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -552,21 +591,23 @@ fun CampoDiasDesplegable(
 
 @Composable
 fun BotonesInferiores(
-    onCancelChange:() -> Unit,
-    onCreateChange:() -> Unit
-){
+    onCancelChange: () -> Unit,
+    onCreateChange: () -> Boolean
+) {
     var botonHabilitado by remember { mutableStateOf(true) }
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp),
         onClick = {
-            onCreateChange()
-            botonHabilitado = false
-        },
-        enabled = botonHabilitado,
+            if (botonHabilitado) {
+                val exito = onCreateChange()
+                if (exito) botonHabilitado = false
+            } },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer)
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+
     ) {
         Text(
             stringResource(R.string.crear),
@@ -580,13 +621,13 @@ fun BotonesInferiores(
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp),
         onClick = onCancelChange
-    ){
-        Text(stringResource(R.string.cancelar),
+    ) {
+        Text(
+            stringResource(R.string.cancelar),
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 15.sp
         )
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

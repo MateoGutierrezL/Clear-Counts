@@ -293,4 +293,49 @@
     <string name="ingresa_un_correo_valido">Digite um e-mail válido</string>
     <string name="sin_internet_mensaje">É necessária uma conexão com a Internet para entrar</string>
     <string name="la_contrasena_es_requerida">A senha é obrigatória</string>
+    <string name="cuenta_vinculada_google">Conta vinculada ao Google</string>
+    <string name="cuenta_vinculada_facebook">Conta vinculada ao Facebook</string>
+    <string name="busca_tu_correo">Procure seu endereço de e-mail</string>
+    <string name="introduce_tu_direccion_de_correo_electronico_de_recuperacion">Insira seu endereço de e-mail de recuperação</string>
+    <string name="esta_cuenta_usa_google_para_iniciar_sesi_n_usa_el_bot_n_de_google_en_la_pantalla_de_inicio">Esta conta usa o Google para iniciar sessão. Use o botão do Google na tela inicial.</string>
+    <string name="esta_cuenta_usa_facebook_para_iniciar_sesi_n_usa_el_bot_n_de_facebook_en_la_pantalla_de_inicio">Esta conta usa o Facebook para iniciar sessão. Use o botão do Facebook na tela inicial.</string>
+    <string name="siguiente">Próximo</string>
+    <string name="nombre_requerido">O nome é obrigatório</string>
+    <string name="icono_requerido">Selecione um ícone</string>
+    <string name="categoria_requerida">Selecione uma categoria</string>
+    <string name="la_categor_a_fue_agregada_a_tus">A categoria \"%1$s\" foi adicionada aos seus %2$s.</string>
+    <string name="nueva_categor_a_creada">Nova categoria criada</string>
+    <string name="correo_enviado">E-mail enviado!</string>
+    <string name="enviamos_un_enlace_a">Enviamos um link de recuperação para</string>
+    <string name="instrucciones">O que vem a seguir?</string>
+    <string name="instrucciones_correo">Abra o e-mail que enviamos e clique no link para redefinir sua senha.</string>
+    <string name="revisar_spam">Verifique sua pasta de spam se não encontrar</string>
+    <string name="volver_al_inicio">Voltar ao login</string>
+    <string name="recuperar_contrasena">Recuperar senha</string>
+    <string name="sincronizando_datos">Sincronizando dados...</string>
+    <string name="cerrando_sesion">Encerrando sessão...</string>
+    <string name="frecuencia">Frequência</string>
+    <string name="frecuencia_diario">Diário</string>
+    <string name="frecuencia_semanal">Semanal</string>
+    <string name="frecuencia_quincenal">Quinzenal</string>
+    <string name="frecuencia_mensual">Mensal</string>
+    <string name="editar_recurrente">Editar recorrente</string>
+    <string name="eliminar_recurrente">Excluir recorrente</string>
+    <string name="confirmar_eliminar_recurrente">Deseja excluir "%s"?</string>
+    <string name="dia_inicio_quincenal">Dia de início (quinzenal)</string>
+    <string name="quincenal_info">Será executado nos dias %1$d e %2$d de cada mês</string>
+    <string name="dia_de_la_semana">Dia da semana</string>
+    <string name="dia_numero">Dia %1$d</string>
+    <string name="lunes">Segunda-feira</string>
+    <string name="martes">Terça-feira</string>
+    <string name="miercoles">Quarta-feira</string>
+    <string name="jueves">Quinta-feira</string>
+    <string name="viernes">Sexta-feira</string>
+    <string name="sabado">Sábado</string>
+    <string name="domingo">Domingo</string>
+    <string name="dia_ajustado_mes_corto">Ajustado ao último dia nos meses curtos</string>
+
+
+
+
 </resources>

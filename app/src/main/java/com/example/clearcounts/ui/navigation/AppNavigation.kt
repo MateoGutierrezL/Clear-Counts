@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +82,8 @@ import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
 import com.example.clearcounts.ui.screens.Perfil.CambiarContrasena
 import com.example.clearcounts.ui.screens.Perfil.Perfil
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCorreoEnviado
 import com.example.clearcounts.ui.screens.Recurrentes.CrearRecurrente
 import com.example.clearcounts.ui.screens.Recurrentes.Recurrentes
 import kotlinx.coroutines.launch
@@ -578,6 +581,8 @@ fun AppNavigation(
                         }
                     )
                 }
+
+
             }
 
 
@@ -594,7 +599,7 @@ fun AppNavigation(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.6f))
-                .clickable(enabled = false) {}, // bloquea interacción
+                .clickable(enabled = false) {},
             contentAlignment = Alignment.Center
         ) {
             Card(
@@ -615,7 +620,7 @@ fun AppNavigation(
                         strokeWidth = 4.dp
                     )
                     Text(
-                        text = "Cerrando sesión...",
+                        text = stringResource(R.string.cerrando_sesion),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium
                     )

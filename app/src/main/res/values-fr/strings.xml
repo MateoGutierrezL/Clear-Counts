@@ -293,4 +293,49 @@
     <string name="ingresa_un_correo_valido">Entrez un e-mail valide</string>
     <string name="sin_internet_mensaje">Une connexion Internet est requise pour se connecter</string>
     <string name="la_contrasena_es_requerida">Le mot de passe est requis</string>
+    <string name="cuenta_vinculada_google">Compte lié à Google</string>
+    <string name="cuenta_vinculada_facebook">Compte lié à Facebook</string>
+    <string name="busca_tu_correo">Recherchez votre adresse e-mail</string>
+    <string name="introduce_tu_direccion_de_correo_electronico_de_recuperacion">Saisissez votre adresse e-mail de récupération</string>
+    <string name="esta_cuenta_usa_google_para_iniciar_sesi_n_usa_el_bot_n_de_google_en_la_pantalla_de_inicio">Ce compte utilise Google pour se connecter. Utilisez le bouton Google sur l’écran d’accueil.</string>
+    <string name="esta_cuenta_usa_facebook_para_iniciar_sesi_n_usa_el_bot_n_de_facebook_en_la_pantalla_de_inicio">Ce compte utilise Facebook pour se connecter. Utilisez le bouton Facebook sur l’écran d’accueil.</string>
+    <string name="siguiente">Suivant</string>
+    <string name="nombre_requerido">Le nom est requis</string>
+    <string name="icono_requerido">Sélectionnez une icône</string>
+    <string name="categoria_requerida">Sélectionnez une catégorie</string>
+    <string name="la_categor_a_fue_agregada_a_tus">La catégorie « %1$s » a été ajoutée à vos %2$s.</string>
+    <string name="nueva_categor_a_creada">Nouvelle catégorie créée</string>
+    <string name="correo_enviado">Courriel envoyé !</string>
+    <string name="enviamos_un_enlace_a">Nous avons envoyé un lien de récupération à</string>
+    <string name="instrucciones">Quelle est la suite ?</string>
+    <string name="instrucciones_correo">Ouvre le courriel que nous tavons envoyé et clique sur le lien pour réinitialiser ton mot de passe.</string>
+    <string name="revisar_spam">Vérifie ton dossier spam si tu ne le trouves pas</string>
+    <string name="volver_al_inicio">Retour à la connexion</string>
+    <string name="recuperar_contrasena">Récupérer le mot de passe</string>
+    <string name="sincronizando_datos">Synchronisation des données...</string>
+    <string name="cerrando_sesion">Fermeture de session...</string>
+    <string name="frecuencia">Fréquence</string>
+    <string name="frecuencia_diario">Quotidien</string>
+    <string name="frecuencia_semanal">Hebdomadaire</string>
+    <string name="frecuencia_quincenal">Bimensuel</string>
+    <string name="frecuencia_mensual">Mensuel</string>
+    <string name="editar_recurrente">Modifier récurrent</string>
+    <string name="eliminar_recurrente">Supprimer récurrent</string>
+    <string name="confirmar_eliminar_recurrente">Souhaites-tu supprimer "%s" ?</string>
+    <string name="dia_inicio_quincenal">Jour de début (bimensuel)</string>
+    <string name="quincenal_info">Il sexécutera les jours %1$d et %2$d de chaque mois</string>
+    <string name="dia_de_la_semana">Jour de la semaine</string>
+    <string name="dia_numero">Jour %1$d</string>
+    <string name="lunes">Lundi</string>
+    <string name="martes">Mardi</string>
+    <string name="miercoles">Mercredi</string>
+    <string name="jueves">Jeudi</string>
+    <string name="viernes">Vendredi</string>
+    <string name="sabado">Samedi</string>
+    <string name="domingo">Dimanche</string>
+    <string name="dia_ajustado_mes_corto">Ajusté au dernier jour des mois courts</string>
+
+
+
+
 </resources>

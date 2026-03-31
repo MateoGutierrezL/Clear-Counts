@@ -29,7 +29,7 @@ import com.example.clearcounts.data.local.database.entities.UserEntity
         BudgetEntity::class,
         PaymentMethodEntity::class,
         RecurringEntity::class],
-    version = 18,
+    version = 22,
     exportSchema = true
 )
 abstract class UserDatabase: RoomDatabase() {
@@ -54,22 +54,22 @@ abstract class UserDatabase: RoomDatabase() {
             // Categorías por defecto
             val DEFAULT_CATEGORIES = listOf(
                 // GASTOS
-                CategoryEntity(nombre = "Comida", icono = "comida", tipo = "gasto"),
-                CategoryEntity(nombre = "Transporte", icono = "bus", tipo = "gasto"),
-                CategoryEntity(nombre = "Salud", icono = "hospital", tipo = "gasto"),
-                CategoryEntity(nombre = "Deporte", icono = "balon", tipo = "gasto"),
-                CategoryEntity(nombre = "Educación", icono = "birrete", tipo = "gasto"),
-                CategoryEntity(nombre = "Ropa", icono = "ropa", tipo = "gasto"),
-                CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto"),
-                CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto"),
-                CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto"),
-                CategoryEntity(nombre = "Plan datos", icono = "celular", tipo = "gasto"),
+                CategoryEntity(nombre = "Comida", icono = "comida", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Transporte", icono = "bus", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Salud", icono = "hospital", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Deporte", icono = "balon", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Educación", icono = "birrete", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Ropa", icono = "ropa", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Plan datos", icono = "celular", tipo = "gasto", esDefault = true),
                 // INGRESOS
-                CategoryEntity(nombre = "Salario", icono = "dinero", tipo = "ingreso"),
-                CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso"),
-                CategoryEntity(nombre = "Inversiones", icono = "alcancia", tipo = "ingreso"),
-                CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso"),
-                CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso"),
+                CategoryEntity(nombre = "Salario", icono = "dinero", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Inversiones", icono = "alcancia", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso", esDefault = true),
             )
             val DEFAULT_PAYMENT_METHODS = listOf(
                 PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),

@@ -37,13 +37,7 @@ class OfflinePaymentMethodRepository @Inject constructor(
         UserDatabase.DEFAULT_PAYMENT_METHODS.forEach { metodo ->
             val existe = paymentMethodDao.existsByName(metodo.nombre, userId)
             if (!existe) {
-                val nuevo = metodo.copy(userId = userId)
-                paymentMethodDao.insert(nuevo)
-                try {
-                    firestoreSync.subirMetodoPago(userId, nuevo)
-                } catch (e: Exception) {
-                    Log.e("SYNC", "Error subiendo método: ${e.message}")
-                }
+                paymentMethodDao.insert(metodo.copy(userId = userId))
             }
         }
     }

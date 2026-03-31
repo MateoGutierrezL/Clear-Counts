@@ -72,7 +72,8 @@ fun DocumentSnapshot.toRecurringEntity() = try {
         categoria = getString("categoria") ?: "",
         cantidad = getDouble("cantidad") ?: 0.0,
         tipo = getString("tipo") ?: "",
-        diaDelMes = getLong("diaDelMes")?.toInt() ?: 1,  // este ya estaba bien
+        frecuencia = getString("frecuencia") ?: "mensual",
+        diaReferencia = getLong("diaReferencia")?.toInt() ?: 1,
         activo = getBoolean("activo") ?: true,
         metodoPago = getString("metodoPago") ?: "Efectivo",
         ultimaEjecucion = getString("ultimaEjecucion")
@@ -135,7 +136,8 @@ fun RecurringEntity.toMap() = mapOf(
     "categoria" to categoria,
     "cantidad" to cantidad,
     "tipo" to tipo,
-    "diaDelMes" to diaDelMes,
+    "frecuencia" to frecuencia,
+    "diaReferencia" to diaReferencia,
     "activo" to activo,
     "metodoPago" to metodoPago,
     "ultimaEjecucion" to ultimaEjecucion
