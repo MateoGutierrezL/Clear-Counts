@@ -293,6 +293,46 @@
     <string name="ingresa_un_correo_valido">Enter a valid email</string>
     <string name="sin_internet_mensaje">Internet connection is required to sign in</string>
     <string name="la_contrasena_es_requerida">The password is required</string>
-    face
+    <string name="cuenta_vinculada_google">Linked account with Google</string>
+    <string name="cuenta_vinculada_facebook">Linked account with Facebook</string>
+    <string name="busca_tu_correo">Search for your email address</string>
+    <string name="introduce_tu_direccion_de_correo_electronico_de_recuperacion">Enter your recovery email address</string>
+    <string name="esta_cuenta_usa_google_para_iniciar_sesi_n_usa_el_bot_n_de_google_en_la_pantalla_de_inicio">This account uses Google to sign in. Use the Google button on the home screen.</string>
+    <string name="esta_cuenta_usa_facebook_para_iniciar_sesi_n_usa_el_bot_n_de_facebook_en_la_pantalla_de_inicio">This account uses Facebook to sign in. Use the Facebook button on the home screen.</string>
+    <string name="siguiente">Next</string>
+    <string name="nombre_requerido">The name is required</string>
+    <string name="icono_requerido">Select an icon</string>
+    <string name="categoria_requerida">Select a category</string>
+    <string name="la_categor_a_fue_agregada_a_tus">The category \"%1$s\" was added to your %2$s.</string>
+    <string name="nueva_categor_a_creada">New category created</string>
+    <string name="correo_enviado">Mail sent!</string>
+    <string name="enviamos_un_enlace_a">We sent a recovery link to</string>
+    <string name="instrucciones">Whats next?</string>
+    <string name="instrucciones_correo">Open the email we sent you and click the link to reset your password.</string>
+    <string name="revisar_spam">Check your spam folder if you dont find it</string>
+    <string name="volver_al_inicio">Back to login</string>
+    <string name="recuperar_contrasena">Recover password</string>
+    <string name="frecuencia">Frequency</string>
+    <string name="frecuencia_diario">Daily</string>
+    <string name="frecuencia_semanal">Weekly</string>
+    <string name="frecuencia_quincenal">Biweekly</string>
+    <string name="frecuencia_mensual">Monthly</string>
+    <string name="editar_recurrente">Edit recurring</string>
+    <string name="eliminar_recurrente">Delete recurring</string>
+    <string name="confirmar_eliminar_recurrente">Do you want to delete "%s"?</string>
+    <string name="dia_inicio_quincenal">Start day (biweekly)</string>
+    <string name="quincenal_info">It will run on days %1$d and %2$d of each month</string>
+    <string name="dia_de_la_semana">Day of the week</string>
+    <string name="dia_numero">Day %1$d</string>
+    <string name="lunes">Monday</string>
+    <string name="martes">Tuesday</string>
+    <string name="miercoles">Wednesday</string>
+    <string name="jueves">Thursday</string>
+    <string name="viernes">Friday</string>
+    <string name="sabado">Saturday</string>
+    <string name="domingo">Sunday</string>
+    <string name="dia_ajustado_mes_corto">Adjusted to the last day in short months</string>
+
+
 
 </resources>

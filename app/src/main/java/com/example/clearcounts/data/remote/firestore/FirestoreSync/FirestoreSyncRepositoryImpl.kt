@@ -6,6 +6,7 @@ import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.example.clearcounts.data.local.database.entities.RecurringEntity
+import com.example.clearcounts.data.local.database.entities.UserEntity
 import com.example.clearcounts.data.remote.firestore.toBudgetEntity
 import com.example.clearcounts.data.remote.firestore.toCategoryEntity
 import com.example.clearcounts.data.remote.firestore.toExpenseEntity
@@ -14,6 +15,7 @@ import com.example.clearcounts.data.remote.firestore.toMap
 import com.example.clearcounts.data.remote.firestore.toPaymentMethodEntity
 import com.example.clearcounts.data.remote.firestore.toRecurringEntity
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import jakarta.inject.Inject
 import kotlinx.coroutines.tasks.await
 
@@ -69,6 +71,10 @@ class FirestoreSyncRepositoryImpl @Inject constructor(
         col(userId, "metodos_pago").document(id).delete().await()
     }
 
+    override suspend fun eliminarCategoria(userId: String, id: String) {
+        col(userId, "categorias").document(id).delete().await()
+    }
+
     override suspend fun descargarIngresos(userId: String) =
         col(userId, "ingresos").get().await().documents.mapNotNull { it.toIncomeEntity() }
 
@@ -86,4 +92,24 @@ class FirestoreSyncRepositoryImpl @Inject constructor(
 
     override suspend fun descargarCategorias(userId: String) =
         col(userId, "categorias").get().await().documents.mapNotNull { it.toCategoryEntity() }
+
+    override suspend fun subirUsuario(userId: String, user: UserEntity) {
+        firestore.collection("usuarios")
+            .document(userId)
+            .set(mapOf(
+                "nombre" to user.nombre,
+                "numero" to user.numero,
+                "correo" to user.correo,
+                "avatar" to user.avatar
+            ), SetOptions.merge())
+            .await()
+    }
+
+    override suspend fun descargarUsuario(userId: String): Map<String, Any?>? {
+        return firestore.collection("usuarios")
+            .document(userId)
+            .get()
+            .await()
+            .data
+    }
 }

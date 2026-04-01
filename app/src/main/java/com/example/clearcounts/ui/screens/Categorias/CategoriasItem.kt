@@ -7,16 +7,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -36,7 +40,8 @@ fun CategoriasItem(
     categorias: CategoryEntity,
     sheetState: SheetState,
     ruta: String,
-    metodoPago: String = "Efectivo"
+    metodoPago: String = "Efectivo",
+    onDelete: (() -> Unit)? = null
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -75,11 +80,21 @@ fun CategoriasItem(
                 )
             }
             Text(
-                modifier = Modifier.padding(start = 8.dp, top = 11.dp, bottom = 11.dp),
+                modifier = Modifier.padding(start = 8.dp, top = 11.dp, bottom = 11.dp).weight(1f),
                 text = categorias.getNombreTraducido(),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp
             )
+
+            if (onDelete != null) {
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar",
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
+                }
+            }
         }
     }
     Spacer(modifier = Modifier.size(10.dp))

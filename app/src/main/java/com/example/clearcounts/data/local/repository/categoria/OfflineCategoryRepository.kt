@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.clearcounts.data.local.database.UserDatabase
 import com.example.clearcounts.data.local.database.dao.CategoryDao
 import com.example.clearcounts.data.local.database.entities.CategoryEntity
+import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.example.clearcounts.data.remote.firestore.FirestoreSync.FirestoreSyncRepository
 import com.google.firebase.auth.FirebaseAuth
 import jakarta.inject.Inject
@@ -25,13 +26,7 @@ class OfflineCategoryRepository @Inject constructor(
         UserDatabase.DEFAULT_CATEGORIES.forEach { categoria ->
             val existe = categoryDao.existsByNameAndType(categoria.nombre, categoria.tipo, userId)
             if (!existe) {
-                val nueva = categoria.copy(userId = userId)
-                categoryDao.insertCategoria(nueva)
-                try {
-                    firestoreSync.subirCategoria(userId, nueva)
-                } catch (e: Exception) {
-                    Log.e("SYNC", "Error subiendo categoría: ${e.message}")
-                }
+                categoryDao.insertCategoria(categoria.copy(userId = userId))
             }
         }
     }
@@ -43,5 +38,10 @@ class OfflineCategoryRepository @Inject constructor(
 
     override suspend fun insertCategoriaLocal(categoria: CategoryEntity) {
         categoryDao.insertCategoria(categoria)
+    }
+
+    override suspend fun deleteCategoria(categoria: CategoryEntity) {
+        categoryDao.delete(categoria)
+        firestoreSync.eliminarCategoria(userId, categoria.firestoreId)
     }
 }

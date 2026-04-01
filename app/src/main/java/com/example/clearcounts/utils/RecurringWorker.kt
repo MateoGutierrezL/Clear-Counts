@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @HiltWorker
 class RecurringWorker @AssistedInject constructor(
@@ -37,24 +38,54 @@ class RecurringWorker @AssistedInject constructor(
             val horaFormateada = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
             val mesAnioHoy = hoy.format(DateTimeFormatter.ofPattern("MM-yyyy"))
 
-            recurringRepository.getAllRecurring(userId)  // <- pasa userId
+            recurringRepository.getAllRecurring(userId)
                 .first()
                 .filter { recurrente ->
                     if (!recurrente.activo) return@filter false
 
                     val ultimaEjecucion = recurrente.ultimaEjecucion
-                    if (ultimaEjecucion != null) {
-                        val mesAnioUltima = ultimaEjecucion.substring(3)
-                        if (mesAnioUltima == mesAnioHoy) return@filter false
-                    }
 
-                    hoy.dayOfMonth >= recurrente.diaDelMes
+                    when (recurrente.frecuencia) {
+                        "diario" -> {
+                            ultimaEjecucion != fechaFormateada
+                        }
+                        "semanal" -> {
+
+                            if (hoy.dayOfWeek.value != recurrente.diaReferencia) return@filter false
+                            ultimaEjecucion != fechaFormateada
+                        }
+                        "quincenal" -> {
+                            val ultimoDia = hoy.lengthOfMonth()
+                            val primerDia = minOf(recurrente.diaReferencia, ultimoDia)
+                            val segundoDiaRaw = recurrente.diaReferencia + 15
+                            val segundoDia = if (segundoDiaRaw <= 31)
+                                minOf(segundoDiaRaw, ultimoDia)
+                            else
+                                minOf(segundoDiaRaw - 31, ultimoDia)
+
+                            val esHoyDiaValido = hoy.dayOfMonth == primerDia ||
+                                    hoy.dayOfMonth == segundoDia
+                            if (!esHoyDiaValido) return@filter false
+                            ultimaEjecucion != fechaFormateada
+                        }
+                        "mensual" -> {
+                            val ultimoDia = hoy.lengthOfMonth()
+                            val diaEfectivo = minOf(recurrente.diaReferencia, ultimoDia)
+                            if (hoy.dayOfMonth != diaEfectivo) return@filter false
+                            if (ultimaEjecucion != null) {
+                                val mesAnioUltima = ultimaEjecucion.substring(3)
+                                if (mesAnioUltima == mesAnioHoy) return@filter false
+                            }
+                            true
+                        }
+                        else -> false
+                    }
                 }
                 .forEach { recurrente ->
                     if (recurrente.tipo == "ingreso") {
                         incomeRepository.insertIncome(
                             IncomeEntity(
-                                userId = userId,  // <- agrega userId
+                                userId = userId,
                                 categoria = recurrente.categoria,
                                 cantidad = recurrente.cantidad,
                                 hora = horaFormateada,
@@ -66,7 +97,7 @@ class RecurringWorker @AssistedInject constructor(
                     } else {
                         expenseRepository.insertExpense(
                             ExpenseEntity(
-                                userId = userId,  // <- agrega userId
+                                userId = userId,
                                 categoria = recurrente.categoria,
                                 cantidad = recurrente.cantidad,
                                 hora = horaFormateada,
@@ -87,5 +118,10 @@ class RecurringWorker @AssistedInject constructor(
             Log.e("RecurringWorker", "Error: ${e.message}")
             Result.failure()
         }
+    }
+
+    private fun diaEfectivo(diaReferencia: Int, mes: LocalDate): Int {
+        val ultimoDiaDelMes = mes.lengthOfMonth()
+        return minOf(diaReferencia, ultimoDiaDelMes)
     }
 }

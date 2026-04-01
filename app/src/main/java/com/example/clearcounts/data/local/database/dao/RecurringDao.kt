@@ -12,7 +12,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RecurringDao {
 
-    @Query("SELECT * FROM recurrente WHERE user_id = :userId ORDER BY dia_del_mes ASC")
+    @Query("""
+    SELECT * FROM recurrente WHERE user_id = :userId 
+    ORDER BY CASE frecuencia 
+        WHEN 'diario' THEN 1 
+        WHEN 'semanal' THEN 2 
+        WHEN 'quincenal' THEN 3 
+        WHEN 'mensual' THEN 4 
+        ELSE 5 
+    END ASC
+""")
     fun getAllRecurring(userId: String): Flow<List<RecurringEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

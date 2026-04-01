@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Metas
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -76,7 +78,8 @@ fun Prestamo(
     var cantidadAcumulada by remember { mutableStateOf(budgetAEditar?.cantidadAcumulada?.toString() ?: "") }
     var prestador by remember { mutableStateOf(budgetAEditar?.prestador ?: "") }
     var nota by remember { mutableStateOf(budgetAEditar?.nota ?: "") }
-
+    var nombreError by remember { mutableStateOf(false) }
+    var cantidadRequeridaError by remember { mutableStateOf(false) }
     val formatoFecha: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
     var fechaInicioSeleccionadaState by remember { mutableStateOf(budgetAEditar?.fechaInicio ?: LocalDate.now().format(formatoFecha)) }
@@ -142,12 +145,13 @@ fun Prestamo(
             CardEncabezadoSimple(
                 nombre = nombreMovimiento,
                 onNombreChange = { nuevoTexto ->
-
-                    if (nuevoTexto.length <= MAX_NOMBRE_LENGTH){
+                    if (nuevoTexto.length <= MAX_NOMBRE_LENGTH) {
                         nombreMovimiento = nuevoTexto
+                        nombreError = false
                     }
                 },
-                icono = icono
+                icono = icono,
+                isError = nombreError
             )
         }
 
@@ -155,18 +159,18 @@ fun Prestamo(
             Montos(
                 cantidadRequerida = cantidadRequerida,
                 cantidadAcumulada = cantidadAcumulada,
+                onCantidadRequeridaChange = { nuevoTexto ->
+                    if (nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT) {
+                        cantidadRequerida = nuevoTexto
+                        cantidadRequeridaError = false
+                    }
+                },
                 onCantidadAcumuladaChange = { nuevoTexto ->
-
-                    if(nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT){
+                    if (nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT) {
                         cantidadAcumulada = nuevoTexto
                     }
                 },
-                onCantidadRequeridaChange = { nuevoTexto ->
-
-                    if(nuevoTexto.length <= MAX_LENGHT_OF_AMOUNT){
-                        cantidadRequerida = nuevoTexto
-                    }
-                }
+                cantidadRequeridaError = cantidadRequeridaError
             )
         }
 
@@ -270,26 +274,24 @@ fun Prestamo(
             Spacer(modifier = Modifier.height(40.dp))
 
             BotonesInferiores(
-                onCancelChange = {
-                    botonVolver()
-                },
+                onCancelChange = { botonVolver() },
                 onCreateChange = {
-                    if (nombreMovimiento.isNotBlank() && cantidadRequerida.isNotBlank()) {
+                    nombreError = nombreMovimiento.isBlank()
+                    cantidadRequeridaError = cantidadRequerida.isBlank() ||
+                            cantidadRequerida.toDoubleOrNull() == null
+
+                    if (!nombreError && !cantidadRequeridaError) {
                         if (budgetAEditar != null) {
-                            // Actualizar
-                            viewModel.actualizarBudget(
-                                budgetAEditar.copy(
-                                    nombre = nombreMovimiento,
-                                    cantidadRequerida = cantidadRequerida.toDoubleOrNull() ?: 0.0,
-                                    cantidadAcumulada = cantidadAcumulada.toDoubleOrNull() ?: 0.0,
-                                    prestador = prestador,
-                                    fechaInicio = fechaInicioSeleccionadaState,
-                                    fechaLimite = fechaLimiteSeleccionadaState,
-                                    nota = nota
-                                )
-                            )
+                            viewModel.actualizarBudget(budgetAEditar.copy(
+                                nombre = nombreMovimiento,
+                                cantidadRequerida = cantidadRequerida.toDoubleOrNull() ?: 0.0,
+                                cantidadAcumulada = cantidadAcumulada.toDoubleOrNull() ?: 0.0,
+                                prestador = prestador,
+                                fechaInicio = fechaInicioSeleccionadaState,
+                                fechaLimite = fechaLimiteSeleccionadaState,
+                                nota = nota
+                            ))
                         } else {
-                            // Crear nuevo
                             viewModel.guardarPrestamo(
                                 nombre = nombreMovimiento,
                                 cantidadRequerida = cantidadRequerida,
@@ -302,6 +304,9 @@ fun Prestamo(
                             )
                         }
                         botonVolver()
+                        true
+                    } else {
+                        false
                     }
                 }
             )
@@ -344,7 +349,8 @@ fun Montos(
     cantidadRequerida: String,
     cantidadAcumulada: String,
     onCantidadRequeridaChange: (String) -> Unit,
-    onCantidadAcumuladaChange: (String) -> Unit
+    onCantidadAcumuladaChange: (String) -> Unit,
+    cantidadRequeridaError: Boolean = false
 ) {
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -377,7 +383,8 @@ fun Montos(
                 label = stringResource(R.string.cantidad_requerida),
                 value = cantidadRequerida,
                 onValueChange = onCantidadRequeridaChange,
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                isError = cantidadRequeridaError
             )
             MontoInput(
                 label = stringResource(R.string.cantidad_acumulada),
@@ -394,20 +401,40 @@ fun MontoInput(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isError: Boolean = false
 ) {
     Column(modifier = modifier) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(bottom = 8.dp).weight(1f),
-            textAlign = TextAlign.Start
+            color = if (isError) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(bottom = 8.dp).weight(1f)
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
+            isError = isError,
+            supportingText = {
+                AnimatedVisibility(visible = isError) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = stringResource(R.string.cantidad_requerida),
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            },
             placeholder = {
                 Text(
                     stringResource(R.string.cantidad),
@@ -416,10 +443,6 @@ fun MontoInput(
                 )
             },
             shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
-                focusedBorderColor = Color(0xFF2196F3)
-            ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true
         )
@@ -430,7 +453,8 @@ fun MontoInput(
 fun CardEncabezadoSimple(
     nombre: String,
     onNombreChange: (String) -> Unit,
-    icono: ImageVector
+    icono: ImageVector,
+    isError: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -468,19 +492,46 @@ fun CardEncabezadoSimple(
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // Campo de texto con el icono de edición como decoración
                 OutlinedTextField(
                     value = nombre,
                     onValueChange = onNombreChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(stringResource(R.string.ej_pr_stamo_personal), color = MaterialTheme.colorScheme.onBackground) },
+                    placeholder = { Text(stringResource(R.string.ej_pr_stamo_personal)) },
+                    isError = isError, // ✅
                     trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null, // Solo decoración
-                            tint = Color(0xFF2196F3),
-                            modifier = Modifier.size(20.dp)
-                        )
+                        if (isError) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        } else {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = Color(0xFF2196F3),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    },
+                    supportingText = {
+                        AnimatedVisibility(visible = isError) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.Warning,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = stringResource(R.string.nombre_requerido),
+                                    color = MaterialTheme.colorScheme.error,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
                     },
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
@@ -488,7 +539,6 @@ fun CardEncabezadoSimple(
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
-
                 Text(
                     text = stringResource(R.string.toca_para_editar_el_nombre),
                     style = MaterialTheme.typography.bodySmall,

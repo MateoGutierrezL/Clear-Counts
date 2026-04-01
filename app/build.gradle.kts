@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.foundation)
     ksp(libs.hilt.compiler)
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 

@@ -6,6 +6,7 @@ import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import com.example.clearcounts.data.local.database.entities.RecurringEntity
+import com.example.clearcounts.data.local.database.entities.UserEntity
 
 interface FirestoreSyncRepository {
     // Subir individual
@@ -16,12 +17,15 @@ interface FirestoreSyncRepository {
     suspend fun subirMetodoPago(userId: String, metodo: PaymentMethodEntity)
     suspend fun subirCategoria(userId: String, categoria: CategoryEntity)
 
+    suspend fun subirUsuario(userId: String, user: UserEntity)
+
     // Eliminar
     suspend fun eliminarIngreso(userId: String, id: String)
     suspend fun eliminarGasto(userId: String, id: String)
     suspend fun eliminarPresupuesto(userId: String, id: String)
     suspend fun eliminarRecurrente(userId: String, id: String)
     suspend fun eliminarMetodoPago(userId: String, id: String)
+    suspend fun eliminarCategoria(userId: String, id: String)
 
     // Descargar todos (para cuando inicia sesión)
     suspend fun descargarIngresos(userId: String): List<IncomeEntity>
@@ -30,4 +34,5 @@ interface FirestoreSyncRepository {
     suspend fun descargarRecurrentes(userId: String): List<RecurringEntity>
     suspend fun descargarMetodosPago(userId: String): List<PaymentMethodEntity>
     suspend fun descargarCategorias(userId: String): List<CategoryEntity>
+    suspend fun descargarUsuario(userId: String): Map<String, Any?>?
 }

@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CameraAlt
@@ -59,6 +60,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,7 +82,7 @@ fun Perfil(
     val totalCategorias by viewModel.totalCategorias.collectAsState()
     val context = LocalContext.current
     var modoEdicion by remember { mutableStateOf(false) }
-
+    val esUsuarioSocial by viewModel.esUsuarioSocial.collectAsState()
     var nombreEdit by remember { mutableStateOf("") }
     var telefonoEdit by remember { mutableStateOf("") }
 
@@ -153,7 +155,7 @@ fun Perfil(
                             Image(
                                 painter = painterResource(id = avatarId),
                                 contentDescription = null,
-                                modifier = Modifier.size(70.dp)
+                                modifier = Modifier.size(320.dp)
                             )
                         } else {
                             Icon(
@@ -279,7 +281,12 @@ fun Perfil(
                         etiqueta = stringResource(R.string.numero_de_celular),
                         valor = telefonoEdit,
                         editable = modoEdicion,
-                        onValorChange = { telefonoEdit = it }
+                        onValorChange = { nuevoValor ->
+                            if (nuevoValor.all { it.isDigit() || it == '+' || it == ' ' || it == '-' }) {
+                                telefonoEdit = nuevoValor
+                            }
+                        },
+                        keyboardType = KeyboardType.Phone
                     )
                 }
             }
@@ -298,13 +305,54 @@ fun Perfil(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
-                    AccionItem(
-                        icono = Icons.Default.Lock,
-                        colorIcono = Color(0xFFE67E22),
-                        titulo = stringResource(R.string.cambiar_contrasena),
-                        subtitulo = stringResource(R.string.actualiza_tu_contrasena),
-                        onClick = navegarCambiarContrasena
-                    )
+                    if (esUsuarioSocial) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE67E22).copy(alpha = 0.15f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.Gray
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.cambiar_contrasena),
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                )
+                                Text(
+                                    text = if (currentUser?.proveedor == "google")
+                                        stringResource(R.string.cuenta_vinculada_google)
+                                    else
+                                        stringResource(R.string.cuenta_vinculada_facebook),
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                )
+                            }
+                        }
+                    } else {
+                        AccionItem(
+                            icono = Icons.Default.Lock,
+                            colorIcono = Color(0xFFE67E22),
+                            titulo = stringResource(R.string.cambiar_contrasena),
+                            subtitulo = stringResource(R.string.actualiza_tu_contrasena),
+                            onClick = navegarCambiarContrasena
+                        )
+                    }
                 }
             }
 
@@ -350,7 +398,9 @@ fun InfoItem(
     etiqueta: String,
     valor: String,
     editable: Boolean = false,
-    onValorChange: (String) -> Unit = {}
+    onValorChange: (String) -> Unit = {},
+    keyboardType: KeyboardType = KeyboardType.Text
+
 ) {
     Row(
         modifier = Modifier
@@ -389,7 +439,8 @@ fun InfoItem(
                     textStyle = LocalTextStyle.current.copy(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold
-                    )
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
                 )
             } else {
                 Text(
@@ -467,7 +518,7 @@ fun SelectorAvatarDialog(
         "perropastoraleman",  "capibara", "gallina", "gallo", "cocodrilo","caballo", "poni",
          "leon","leona", "osopardo", "perrohusky", "tigre","jaguar", "cerdo", "conejo",
         "condor", "delfinrosado",  "serpienteverde", "osopolar", "tortuga" ,"vacaholstein",
-        "perrolabrador", "gatobicolor","osopanda",
+        "perrolabrador", "gatobicolor","osopanda", "lagartijaverde", "tiburonblanco"
     )
 
     AlertDialog(

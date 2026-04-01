@@ -78,6 +78,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material3.Surface
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.clearcounts.utils.PaymentMethodTranslator.traducirMetodoPago
 
 
@@ -111,7 +112,9 @@ fun CustomBottomAppBar(
             label = {
                 Text(
                     text = stringResource(R.string.inicio),
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = if (selectedIcon.value == "home") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
@@ -144,7 +147,9 @@ fun CustomBottomAppBar(
             label = {
                 Text(
                     text = stringResource(R.string.graficas),
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = if (selectedIcon.value == "charts") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
@@ -365,7 +370,10 @@ fun CustomBottomAppBar(
                                                 categorias = categoria,
                                                 sheetState = sheetState,
                                                 ruta = "ingreso",
-                                                metodoPago = metodoPagoSeleccionado // 👈
+                                                metodoPago = metodoPagoSeleccionado,
+                                                onDelete = if (!categoria.esDefault) {
+                                                    { categoriasViewModel.deleteCategoria(categoria) }
+                                                } else null
                                             )
                                         }
                                     } else {
@@ -375,7 +383,10 @@ fun CustomBottomAppBar(
                                                 categorias = categoria,
                                                 sheetState = sheetState,
                                                 ruta = "gasto",
-                                                metodoPago = metodoPagoSeleccionado // 👈
+                                                metodoPago = metodoPagoSeleccionado,
+                                                onDelete = if (!categoria.esDefault) {
+                                                    { categoriasViewModel.deleteCategoria(categoria) }
+                                                } else null
                                             )
                                         }
                                     }
@@ -451,7 +462,7 @@ fun CustomBottomAppBar(
                                                 Icon(
                                                     painter = painterResource(id = iconoId),
                                                     contentDescription = icono,
-                                                    modifier = Modifier.size(32.dp),
+                                                    modifier = Modifier.size(52.dp),
                                                     tint = Color.Unspecified
                                                 )
                                             } else {
@@ -515,7 +526,9 @@ fun CustomBottomAppBar(
             label = {
                 Text(
                     text = stringResource(R.string.metas),
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = if (selectedIcon.value == "budget") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
@@ -548,7 +561,10 @@ fun CustomBottomAppBar(
             label = {
                 Text(
                     text = stringResource(R.string.recurrentes),
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false, // 👈 No rompe la línea
                     color = if (selectedIcon.value == "recurrentes") Color.White else MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },

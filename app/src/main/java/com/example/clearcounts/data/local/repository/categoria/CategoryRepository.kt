@@ -1,6 +1,7 @@
 package com.example.clearcounts.data.local.repository.categoria
 
 import com.example.clearcounts.data.local.database.entities.CategoryEntity
+import com.example.clearcounts.data.local.database.entities.PaymentMethodEntity
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
@@ -10,4 +11,5 @@ interface CategoryRepository {
 
     suspend fun insertCategoriaLocal(categoria: CategoryEntity)
     suspend fun insertCategoria(categoria: CategoryEntity)
+    suspend fun deleteCategoria(categoria: CategoryEntity)
 }

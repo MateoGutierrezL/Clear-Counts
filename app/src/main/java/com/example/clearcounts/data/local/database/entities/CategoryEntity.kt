@@ -11,5 +11,6 @@ data class CategoryEntity(
     @ColumnInfo(name = "user_id") val userId: String = "",
     @ColumnInfo(name = "nombre") val nombre: String,
     @ColumnInfo(name = "icono") val icono: String,
-    @ColumnInfo(name = "tipo") val tipo: String
+    @ColumnInfo(name = "tipo") val tipo: String,
+    @ColumnInfo(name = "es_default") val esDefault: Boolean = false
 )

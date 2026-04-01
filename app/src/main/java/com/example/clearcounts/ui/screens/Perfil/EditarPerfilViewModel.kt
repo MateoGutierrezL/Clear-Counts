@@ -83,4 +83,8 @@ class PerfilViewModel @Inject constructor(
             }
         }
     }
+
+    val esUsuarioSocial: StateFlow<Boolean> = currentUser
+        .map { user -> user?.proveedor == "google" || user?.proveedor == "facebook" }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 }

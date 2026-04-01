@@ -13,7 +13,8 @@ data class RecurringEntity(
     @ColumnInfo(name = "categoria") val categoria: String,
     @ColumnInfo(name = "cantidad") val cantidad: Double,
     @ColumnInfo(name = "tipo") val tipo: String,
-    @ColumnInfo(name = "dia_del_mes") val diaDelMes: Int,
+    @ColumnInfo(name = "frecuencia") val frecuencia: String = "mensual",
+    @ColumnInfo(name = "dia_referencia") val diaReferencia: Int = 1,
     @ColumnInfo(name = "activo") val activo: Boolean = true,
     @ColumnInfo(name = "metodo_pago") val metodoPago: String = "Efectivo",
     @ColumnInfo(name = "ultima_ejecucion") val ultimaEjecucion: String? = null

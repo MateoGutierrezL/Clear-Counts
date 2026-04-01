@@ -75,4 +75,6 @@ interface UserRepository {
     suspend fun SendResetPassword(email: String): Result<Unit>
 
     suspend fun guardarSesion(email: String)
+
+    suspend fun getUserByEmail(correo: String): UserEntity?
 }

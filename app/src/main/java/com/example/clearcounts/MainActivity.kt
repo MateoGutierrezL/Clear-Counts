@@ -28,15 +28,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -52,9 +55,8 @@ import com.example.clearcounts.ui.screens.InicioSesion.PantallaInicioSesion
 import com.example.clearcounts.ui.screens.InicioSesion.PantallaRegistro
 import com.example.clearcounts.ui.screens.InicioSesion.SyncState
 import com.example.clearcounts.ui.screens.InicioSesion.SyncViewModel
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCodigo
 import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarVerificacionCorreo
+import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCorreoEnviado
 import com.example.clearcounts.ui.theme.ClearCountTheme
 import com.example.clearcounts.utils.DailyReminderWorker
 import com.example.clearcounts.utils.NotificationHelper
@@ -237,45 +239,32 @@ fun InicioUsuario(
             )
         }
 
-        composable("RecuperarVerificacionCorreo") {
-
-            RecuperarVerificacionCorreo(
-                botonVolver = {
-                    if (rootNavController.previousBackStackEntry != null){
-                        rootNavController.popBackStack()
-                    }
-                },
-                onBotonSiguienteVerificacion = {
-                    //TODO falta implementar la logica para realizar con la recuperaccion de contraseña
-                }
-            )
-        }
-
-        composable("RecuperarCodigo"){
-
-            RecuperarCodigo(
-                botonVolver = {
-                    if (rootNavController.previousBackStackEntry != null){
-                        rootNavController.popBackStack()
-                    }
-                },
-                onBotonSiguienteCodigo = {
-                    rootNavController.navigate("RecuperarVerificacionCorreo")
-                }
-            )
-        }
-
-        composable("RecuperarContrasena"){
-
+        composable("RecuperarContrasena") {
             RecuperarContrasena(
-
                 botonVolver = {
-                    if (rootNavController.previousBackStackEntry != null){
+                    if (rootNavController.previousBackStackEntry != null) {
                         rootNavController.popBackStack()
                     }
                 },
-                onBotonSiguiente = {
-                    rootNavController.navigate("RecuperarCodigo")
+                onBotonSiguiente = { correo ->
+                    rootNavController.navigate(
+                        Pantallas.RecuperarCorreoEnviado.createRoute(correo)
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Pantallas.RecuperarCorreoEnviado.pantalla,
+            arguments = listOf(navArgument("correo") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val correo = backStackEntry.arguments?.getString("correo") ?: ""
+            RecuperarCorreoEnviado(
+                correo = correo,
+                botonVolver = {
+                    rootNavController.navigate("InicioSesion") {
+                        popUpTo("InicioSesion") { inclusive = true }
+                    }
                 }
             )
         }
@@ -298,7 +287,7 @@ fun InicioUsuario(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("Sincronizando datos...")
+                            Text(stringResource(R.string.sincronizando_datos))
                         }
                     }
                 }

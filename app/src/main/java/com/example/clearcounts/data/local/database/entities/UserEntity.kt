@@ -14,6 +14,6 @@ data class UserEntity (
     @ColumnInfo(name = "numero")val numero: String,
     @ColumnInfo(name = "correo") val correo: String,
     @ColumnInfo(name = "contrasena")val contrasena: String,
-    @ColumnInfo(name = "avatar") val avatar: String = "perro"
-
+    @ColumnInfo(name = "avatar") val avatar: String = "perro",
+    @ColumnInfo(name = "proveedor") val proveedor: String = "email"
 )
