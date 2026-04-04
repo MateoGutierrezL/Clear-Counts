@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.clearcounts.R
 import com.example.clearcounts.data.local.repository.usuario.UserRepository
+import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
 class ViewModelInicioSesion @Inject constructor(
@@ -29,11 +30,20 @@ class ViewModelInicioSesion @Inject constructor(
 
     private val _loginStatus = MutableStateFlow<InicioSesionUiState>(InicioSesionUiState.Idle)
     val loginStatus : StateFlow<InicioSesionUiState> = _loginStatus
+    private val _isLoadingGoogle = MutableStateFlow(false)
+    val isLoadingGoogle: StateFlow<Boolean> = _isLoadingGoogle.asStateFlow()
 
+    private val _isLoadingFacebook = MutableStateFlow(false)
+    val isLoadingFacebook: StateFlow<Boolean> = _isLoadingFacebook.asStateFlow()
+
+    private val _isLoadingEmail = MutableStateFlow(false)
+    val isLoadingEmail: StateFlow<Boolean> = _isLoadingEmail.asStateFlow()
     fun validateUser(email: String, password: String) {
         viewModelScope.launch {
+            _isLoadingEmail.value = true
             _loginStatus.value = InicioSesionUiState.Loading
             val result = userRepository.signIn(email, password)
+            _isLoadingEmail.value = false
             result.onSuccess {
                 _loginStatus.value = InicioSesionUiState.Success
             }.onFailure {
@@ -44,8 +54,10 @@ class ViewModelInicioSesion @Inject constructor(
 
     fun onFacebookLoginSucces(token: String) {
         viewModelScope.launch {
+            _isLoadingFacebook.value = true
             _loginStatus.value = InicioSesionUiState.Loading
             val result = userRepository.signInFacebook(token)
+            _isLoadingFacebook.value = false
             result.onSuccess {
                 _loginStatus.value = InicioSesionUiState.Success
             }.onFailure {
@@ -57,6 +69,7 @@ class ViewModelInicioSesion @Inject constructor(
     fun signInWithGoogle(activityContext: Context) {
         val credentialManager = CredentialManager.create(activityContext)
         viewModelScope.launch {
+            _isLoadingGoogle.value = true
             _loginStatus.value = InicioSesionUiState.Loading
             try {
                 val googleIdOption = GetGoogleIdOption.Builder()
@@ -65,20 +78,16 @@ class ViewModelInicioSesion @Inject constructor(
                     .setAutoSelectEnabled(false)
                     .build()
 
-                val passwordOption = GetPasswordOption()
-
                 val request = GetCredentialRequest.Builder()
                     .addCredentialOption(googleIdOption)
-                    .addCredentialOption(passwordOption)
+                    .addCredentialOption(GetPasswordOption())
                     .build()
 
                 val result = credentialManager.getCredential(
                     request = request,
                     context = activityContext
                 )
-
                 handleSignInResult(result)
-
             } catch (e: GetCredentialCancellationException) {
                 _loginStatus.value = InicioSesionUiState.Idle
             } catch (e: NoCredentialException) {
@@ -87,6 +96,8 @@ class ViewModelInicioSesion @Inject constructor(
                 _loginStatus.value = InicioSesionUiState.ErrorEspecifico(e.message ?: "Error al obtener credenciales")
             } catch (e: Exception) {
                 _loginStatus.value = InicioSesionUiState.ErrorEspecifico(e.message ?: "Error inesperado")
+            } finally {
+                _isLoadingGoogle.value = false
             }
         }
     }

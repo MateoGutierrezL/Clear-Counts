@@ -63,7 +63,7 @@ fun RecuperarCorreoEnviado(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
                 title = {
                     Box(
@@ -73,7 +73,7 @@ fun RecuperarCorreoEnviado(
                         Text(
                             modifier = Modifier.padding(top = 8.dp, end = 14.dp),
                             text = "ClearCounts",
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 30.sp
                         )
                     }
@@ -205,12 +205,12 @@ fun RecuperarCorreoEnviado(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
                 Text(
                     text = stringResource(R.string.volver_al_inicio),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }

@@ -61,11 +61,13 @@ fun Ajustes(
     onLogOut: () -> Unit = {},
     navegarContacto: () -> Unit = {},
     viewModel: UserSessionViewModel = hiltViewModel(),
-    themeViewModel: ThemeViewModel
+    themeViewModel: ThemeViewModel,
+    navegarTerminosCondiciones: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+    val esCorreoReal = currentUser?.correo?.contains("@") == true
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle()
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
     val idiomaActual = remember {
@@ -187,7 +189,8 @@ fun Ajustes(
 
         ProfileCard(
             nombre = currentUser?.nombre ?: "Usuario",
-            correo = currentUser?.correo ?: "",
+            correo = if (esCorreoReal) currentUser?.correo ?: "-"
+            else "",
             onClick = navegarPerfil
         )
 
@@ -272,7 +275,8 @@ fun Ajustes(
             RowDivider()
             RowNavigable(
                 icon  = Icons.Default.Shield,
-                title = stringResource(R.string.terminos_y_condiciones)
+                title = stringResource(R.string.terminos_y_condiciones),
+                onClick = navegarTerminosCondiciones
             )
         }
 

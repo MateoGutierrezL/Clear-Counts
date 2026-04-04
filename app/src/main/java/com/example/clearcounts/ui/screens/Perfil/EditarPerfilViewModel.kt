@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Perfil
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clearcounts.data.local.database.entities.UserEntity
@@ -85,6 +86,11 @@ class PerfilViewModel @Inject constructor(
     }
 
     val esUsuarioSocial: StateFlow<Boolean> = currentUser
-        .map { user -> user?.proveedor == "google" || user?.proveedor == "facebook" }
+        .map { user ->
+            Log.d("PERFIL", "proveedor: ${user?.proveedor}, correo: ${user?.correo}")
+            user?.proveedor == "google" ||
+                    user?.proveedor == "facebook" ||
+                    user?.correo?.contains("@") == false
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 }

@@ -212,7 +212,7 @@ fun ItemRecurrente(
                         )
                     }
 
-                    // ✅ Advertencia día en meses cortos
+
                     if (item.frecuencia == "mensual" && item.diaReferencia > 28) {
                         Spacer(modifier = Modifier.height(3.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -294,25 +294,14 @@ fun ItemRecurrente(
 @Composable
 fun Recurrentes(
     onBotonCrear: () -> Unit,
+    onEditar: (RecurringEntity) -> Unit,
     viewModel: RecurringViewModel = hiltViewModel()
 ) {
     val ingresos by viewModel.ingresos.collectAsState()
     val gastos by viewModel.gastos.collectAsState()
 
 
-    var itemAEditar by remember { mutableStateOf<RecurringEntity?>(null) }
 
-    if (itemAEditar != null) {
-        EditarRecurrente(
-            item = itemAEditar!!,
-            onGuardar = { actualizado ->
-                viewModel.actualizar(actualizado)
-                itemAEditar = null
-            },
-            onVolver = { itemAEditar = null }
-        )
-        return
-    }
 
     Scaffold(
         floatingActionButton = {
@@ -363,7 +352,7 @@ fun Recurrentes(
                     ItemRecurrente(
                         item = item,
                         onToggle = { viewModel.toggleActivo(it) },
-                        onEditar = { itemAEditar = it },
+                        onEditar = { onEditar(it) },
                         onEliminar = { viewModel.eliminar(it) }
                     )
                 }
@@ -399,8 +388,8 @@ fun Recurrentes(
                     ItemRecurrente(
                         item = item,
                         onToggle = { viewModel.toggleActivo(it) },
-                        onEditar = { itemAEditar = it },       // ✅
-                        onEliminar = { viewModel.eliminar(it) } // ✅
+                        onEditar = { onEditar(it) },
+                        onEliminar = { viewModel.eliminar(it) }
                     )
                 }
             }

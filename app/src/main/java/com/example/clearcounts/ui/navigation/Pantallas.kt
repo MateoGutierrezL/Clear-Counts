@@ -50,4 +50,11 @@ sealed class Pantallas (val pantalla: String){
     data object RecuperarCorreoEnviado : Pantallas("recuperarCorreoEnviado/{correo}") {
         fun createRoute(correo: String) = "recuperarCorreoEnviado/$correo"
     }
+
+    object EditarRecurrente : Pantallas("editarRecurrente/{firestoreId}") {
+        fun createRoute(firestoreId: String) = "editarRecurrente/$firestoreId"
+    }
+
+    object TerminosCondiciones : Pantallas("terminosCondiciones")
+    object PoliticasPrivacidad : Pantallas("politicasPrivacidad")
 }

@@ -160,7 +160,7 @@ fun CrearRecurrente(
                     nombre = it
                     nombreError = false
                 },
-                placeholder = { Text(stringResource(R.string.ej_netflix)) },
+                placeholder = { Text(if (tipo == "gasto")stringResource(R.string.ej_netflix) else stringResource(R.string.ej_salario)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 singleLine = true,
