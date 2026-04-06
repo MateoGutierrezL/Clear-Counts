@@ -1,5 +1,6 @@
 package com.example.clearcounts.ui.screens.Perfil
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -85,13 +86,17 @@ fun Perfil(
     val esUsuarioSocial by viewModel.esUsuarioSocial.collectAsState()
     var nombreEdit by remember { mutableStateOf("") }
     var telefonoEdit by remember { mutableStateOf("") }
-
+    val esCorreoReal = currentUser?.correo?.contains("@") == true
     LaunchedEffect(currentUser) {
         nombreEdit = currentUser?.nombre ?: ""
         telefonoEdit = currentUser?.numero ?: ""
     }
     var showAvatarSelector by remember { mutableStateOf(false) }
 
+    LaunchedEffect(currentUser) {
+        Log.d("PERFIL_UI", "currentUser: ${currentUser?.nombre}, proveedor: ${currentUser?.proveedor}")
+        Log.d("PERFIL_UI", "esUsuarioSocial: $esUsuarioSocial")
+    }
     val avatarActual = currentUser?.avatar ?: "cacatuaninfa"
     val avatarId = remember(avatarActual) {
         context.resources.getIdentifier(avatarActual, "drawable", context.packageName)
@@ -194,7 +199,8 @@ fun Perfil(
                     color = Color.White
                 )
                 Text(
-                    text = currentUser?.correo ?: "",
+                    text = if (esCorreoReal) currentUser?.correo ?: "-"
+                    else "",
                     fontSize = 13.sp,
                     color = Color.White.copy(alpha = 0.8f)
                 )
@@ -271,8 +277,11 @@ fun Perfil(
                         icono = Icons.Default.Email,
                         colorIcono = Color(0xFF9B59B6),
                         etiqueta = stringResource(R.string.correo),
-                        valor = currentUser?.correo ?: "-",
-                        editable = false
+                        valor = if (esCorreoReal) currentUser?.correo ?: "-"
+                        else stringResource(R.string.sin_correo_facebook),
+                        editable = false,
+                        colorValor = if (esCorreoReal) MaterialTheme.colorScheme.onSurface
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     InfoItem(
@@ -399,6 +408,7 @@ fun InfoItem(
     valor: String,
     editable: Boolean = false,
     onValorChange: (String) -> Unit = {},
+    colorValor: Color = MaterialTheme.colorScheme.onSurface,
     keyboardType: KeyboardType = KeyboardType.Text
 
 ) {
@@ -447,7 +457,7 @@ fun InfoItem(
                     text = valor,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = colorValor
                 )
             }
         }

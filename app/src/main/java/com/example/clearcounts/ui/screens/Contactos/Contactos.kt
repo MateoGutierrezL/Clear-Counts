@@ -32,6 +32,8 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +61,7 @@ import com.example.clearcounts.R
 @Composable
 fun Contactos(
     botonVolver: () -> Unit,
+    navegarPoliticasPrivacidad: () -> Unit,
 ) {
     val context = LocalContext.current
     Scaffold(
@@ -80,8 +83,9 @@ fun Contactos(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+
                 )
             )
         }
@@ -109,13 +113,13 @@ fun Contactos(
                             text = stringResource(R.string.estamos_aqui_para_ayudarte),
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = stringResource(R.string.elegir_contacto),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.9f)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f)
                         )
                     }
                 }
@@ -189,28 +193,38 @@ fun Contactos(
                         icono = Icons.Default.Share,
                         iconoColor = Color(0xFF1DA1F2),
                         fondoColor = Color(0xFF1DA1F2).copy(alpha = 0.1f),
-                        nombre = "Twitter",
-                        handle = "@clearcounts",
+                        nombre = "X",
+                        handle = "@CCounts53713",
                         modifier = Modifier.weight(1f),
-                        onClick = { abrirUrl(context, "https://twitter.com/clearcounts") }
+                        onClick = { abrirUrl(context, "https://x.com/CCounts53713") }
                     )
                     ItemRedSocial(
                         icono = Icons.Default.CameraAlt,
                         iconoColor = Color(0xFFE1306C),
                         fondoColor = Color(0xFFE1306C).copy(alpha = 0.1f),
                         nombre = "Instagram",
-                        handle = "@clearcounts",
+                        handle = "@clearcountsofficial",
                         modifier = Modifier.weight(1f),
-                        onClick = { abrirUrl(context, "https://instagram.com/clearcounts") }
+                        onClick = {
+                            abrirUrl(
+                                context,
+                                "https://www.instagram.com/clearcountsofficial/"
+                            )
+                        }
                     )
                     ItemRedSocial(
                         icono = Icons.Default.Facebook,
                         iconoColor = Color(0xFF1877F2),
                         fondoColor = Color(0xFF1877F2).copy(alpha = 0.1f),
                         nombre = "Facebook",
-                        handle = "/clearcounts",
+                        handle = "/clearcountsofficial",
                         modifier = Modifier.weight(1f),
-                        onClick = { abrirUrl(context, "https://facebook.com/clearcounts") }
+                        onClick = {
+                            abrirUrl(
+                                context,
+                                "https://www.facebook.com/profile.php?id=61576534677793"
+                            )
+                        }
                     )
                 }
             }
@@ -315,19 +329,20 @@ fun Contactos(
             }
 
             item {
-                Card(
+                Button(
+                    onClick = navegarPoliticasPrivacidad,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                    )
+                    shape = RoundedCornerShape(16.dp)
+
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {}
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -343,7 +358,8 @@ fun Contactos(
                             Text(
                                 text = stringResource(R.string.politica_de_privacidad),
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Icon(
@@ -354,6 +370,8 @@ fun Contactos(
                         )
                     }
                 }
+
+
             }
 
             // Footer
@@ -393,7 +411,9 @@ fun ItemContacto(
     onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow

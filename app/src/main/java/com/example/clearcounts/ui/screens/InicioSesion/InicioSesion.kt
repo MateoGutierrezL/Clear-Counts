@@ -72,6 +72,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.clearcounts.ui.theme.gris
+import com.example.clearcounts.utils.LoadingOverlay
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -87,19 +88,21 @@ fun PantallaInicioSesion(
     navegarInicio: () -> Unit,
     viewModel: ViewModelInicioSesion = hiltViewModel()
 ) {
-
     val context = LocalContext.current
-    var hayInternet by remember { mutableStateOf(isInternetAvailable(context)) }
+    var hayInternet by remember { mutableStateOf(false) }
 
-// Verifica cada vez que la pantalla es visible
     LaunchedEffect(Unit) {
+        hayInternet = isInternetAvailable(context)
         while (true) {
+            delay(3000)
             hayInternet = isInternetAvailable(context)
-            delay(3000) // Verifica cada 3 segundos
         }
     }
 
-
+    val isLoadingGoogle by viewModel.isLoadingGoogle.collectAsState()
+    val isLoadingFacebook by viewModel.isLoadingFacebook.collectAsState()
+    val isLoadingEmail by viewModel.isLoadingEmail.collectAsState()
+    val isLoadingAny = isLoadingGoogle || isLoadingFacebook || isLoadingEmail
 
     var contrasena by remember { mutableStateOf("") }
     var correoUsuario by remember { mutableStateOf("") }
@@ -113,19 +116,18 @@ fun PantallaInicioSesion(
     val coloresOutlined = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-        errorBorderColor = rojoPersonalizado,        //  Borde en error
-        errorCursorColor = rojoPersonalizado,        //  Cursor en error
+        errorBorderColor = rojoPersonalizado,
+        errorCursorColor = rojoPersonalizado,
         errorTextColor = MaterialTheme.colorScheme.onSurface,
-        errorLabelColor = rojoPersonalizado,         //  Label en error
-        errorSupportingTextColor = rojoPersonalizado, //  Texto de soporte en error
+        errorLabelColor = rojoPersonalizado,
+        errorSupportingTextColor = rojoPersonalizado,
         cursorColor = MaterialTheme.colorScheme.primary,
         focusedTextColor = MaterialTheme.colorScheme.onSurface,
         unfocusedTextColor = MaterialTheme.colorScheme.onSurface
     )
+
     val loginStatus by viewModel.loginStatus.collectAsState()
-
     val callbackManager = remember { CallbackManager.Factory.create() }
-
     val loginLauncher = rememberLauncherForActivityResult(
         LoginManager.getInstance().createLogInActivityResultContract(callbackManager)
     ) {}
@@ -146,241 +148,307 @@ fun PantallaInicioSesion(
 
     when (loginStatus) {
         is InicioSesionUiState.Error -> {
-            if (hayInternet) showLoginErrorDialog = true // 👈 Solo muestra si hay internet
+            if (hayInternet) showLoginErrorDialog = true
         }
-        is InicioSesionUiState.Loading -> LoadingScreen()
         is InicioSesionUiState.Success -> navegarInicio()
         else -> {}
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = { focusManager.clearFocus() })
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        // Banner sin internet
-        AnimatedVisibility(
-            visible = !hayInternet,
-            modifier = Modifier.align(Alignment.TopCenter),
-            enter = slideInVertically() + fadeIn(),
-            exit = slideOutVertically() + fadeOut()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFE53935))
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.WifiOff,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(R.string.sin_internet_mensaje),
-                    color = Color.White,
-                    fontSize = 13.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_clear_counts),
-                contentDescription = "Logo de Clear Counts"
-            )
+    // ✅ Box principal que contiene todo incluyendo el overlay
+    Box(modifier = Modifier.fillMaxSize()) {
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(R.string.ingrese_a_su_cuenta),
-                fontSize = 25.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            // Campo Correo
-            Column {
-                Text(
-                    text = stringResource(R.string.correo),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 6.dp).align(Alignment.Start)
-                )
-                OutlinedTextField(
-                    value = correoUsuario,
-                    onValueChange = {
-                        correoUsuario = it
-                        if (it.isNotBlank()) errorCorreo = ""
-                    },
-                    placeholder = { Text(stringResource(R.string.ingrese_su_correo_electr_nico)) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined,
-                    isError = errorCorreo.isNotEmpty()
-                )
-                if (errorCorreo.isNotEmpty()) {
-                    Text(
-                        text = errorCorreo,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                    )
-                }
-            }
-
-            // Campo Contraseña
-            Column {
-                Text(
-                    text = stringResource(R.string.contrasena),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 2.dp).align(Alignment.Start)
-                )
-                OutlinedTextField(
-                    value = contrasena,
-                    onValueChange = {
-                        contrasena = it
-                        if (it.isNotBlank()) errorContrasena = ""
-                    },
-                    placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a)) },
-                    visualTransformation = if (mostrarContrasena) VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp),
-                    colors = coloresOutlined,
-                    isError = errorContrasena.isNotEmpty(),
-                    trailingIcon = {
-                        IconButton(onClick = { mostrarContrasena = !mostrarContrasena }) {
-                            Icon(
-                                imageVector = if (mostrarContrasena) Icons.Default.Visibility
-                                else Icons.Default.VisibilityOff,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                )
-                if (errorContrasena.isNotEmpty()) {
-                    Text(
-                        text = errorContrasena,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                    )
-                }
-            }
-
-            // Botón Ingresar
-            Button(
-                onClick = {
-                    errorCorreo = when {
-                        correoUsuario.isBlank() -> context.getString(R.string.el_correo_es_requerido)
-                        !correoUsuario.contains("@") -> context.getString(R.string.ingresa_un_correo_valido)
-                        else -> ""
-                    }
-                    errorContrasena = if (contrasena.isBlank()) context.getString(R.string.la_contrasena_es_requerida) else ""
-
-                    if (errorCorreo.isEmpty() && errorContrasena.isEmpty()) {
-                        if (!hayInternet) {
-                            // En lugar de asignar el texto largo a errorContrasena:
-                            Toast.makeText(context, R.string.sin_internet_mensaje, Toast.LENGTH_SHORT).show()
-                        } else {
-                            viewModel.validateUser(correoUsuario, contrasena)
-                        }
-                    }
+        // ── CONTENIDO DE LA PANTALLA ──
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 48.dp, end = 48.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, gris),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+            contentAlignment = Alignment.Center
+        ) {
+            // Banner sin internet
+            AnimatedVisibility(
+                visible = !hayInternet,
+                modifier = Modifier.align(Alignment.TopCenter),
+                enter = slideInVertically() + fadeIn(),
+                exit = slideOutVertically() + fadeOut()
             ) {
-                Text(stringResource(R.string.ingresar), color = MaterialTheme.colorScheme.onBackground)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFE53935))
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.WifiOff,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.sin_internet_mensaje),
+                        color = Color.White,
+                        fontSize = 13.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
-            // Botones Facebook y Google
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_clear_counts),
+                    contentDescription = "Logo de Clear Counts"
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = stringResource(R.string.ingrese_a_su_cuenta),
+                    fontSize = 25.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                // ── CAMPO CORREO ──
+                Column {
+                    Text(
+                        text = stringResource(R.string.correo),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(bottom = 6.dp)
+                            .align(Alignment.Start)
+                    )
+                    OutlinedTextField(
+                        value = correoUsuario,
+                        onValueChange = {
+                            correoUsuario = it
+                            if (it.isNotBlank()) errorCorreo = ""
+                        },
+                        placeholder = { Text(stringResource(R.string.ingrese_su_correo_electr_nico)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = coloresOutlined,
+                        isError = errorCorreo.isNotEmpty(),
+                        enabled = !isLoadingAny
+                    )
+                    if (errorCorreo.isNotEmpty()) {
+                        Text(
+                            text = errorCorreo,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
+                    }
+                }
+
+                // ── CAMPO CONTRASEÑA ──
+                Column {
+                    Text(
+                        text = stringResource(R.string.contrasena),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(bottom = 2.dp)
+                            .align(Alignment.Start)
+                    )
+                    OutlinedTextField(
+                        value = contrasena,
+                        onValueChange = {
+                            contrasena = it
+                            if (it.isNotBlank()) errorContrasena = ""
+                        },
+                        placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a)) },
+                        visualTransformation = if (mostrarContrasena) VisualTransformation.None
+                        else PasswordVisualTransformation(),
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = coloresOutlined,
+                        isError = errorContrasena.isNotEmpty(),
+                        enabled = !isLoadingAny,
+                        trailingIcon = {
+                            IconButton(onClick = { mostrarContrasena = !mostrarContrasena }) {
+                                Icon(
+                                    imageVector = if (mostrarContrasena) Icons.Default.Visibility
+                                    else Icons.Default.VisibilityOff,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+                    if (errorContrasena.isNotEmpty()) {
+                        Text(
+                            text = errorContrasena,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
+                    }
+                }
+
+                // ── BOTÓN INGRESAR CON EMAIL ──
                 Button(
-                    onClick = { loginLauncher.launch(listOf("email", "public_profile")) },
-                    modifier = Modifier.border(
-                        border = BorderStroke(1.dp, color = Color(0xFF1877F2)),
-                        shape = ButtonDefaults.shape
-                    ),
+                    onClick = {
+                        errorCorreo = when {
+                            correoUsuario.isBlank() -> context.getString(R.string.el_correo_es_requerido)
+                            !correoUsuario.contains("@") -> context.getString(R.string.ingresa_un_correo_valido)
+                            else -> ""
+                        }
+                        errorContrasena = if (contrasena.isBlank())
+                            context.getString(R.string.la_contrasena_es_requerida) else ""
+
+                        if (errorCorreo.isEmpty() && errorContrasena.isEmpty()) {
+                            if (!hayInternet) {
+                                Toast.makeText(context, R.string.sin_internet_mensaje, Toast.LENGTH_SHORT).show()
+                            } else {
+                                viewModel.validateUser(correoUsuario, contrasena)
+                            }
+                        }
+                    },
+                    enabled = !isLoadingAny,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 48.dp, end = 48.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, gris),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.facebook_logo),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
+                    if (isLoadingEmail) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 2.dp
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Facebook", color = MaterialTheme.colorScheme.onBackground)
+                    } else {
+                        Text(
+                            stringResource(R.string.ingresar),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Button(
-                    onClick = { viewModel.signInWithGoogle(context) },
-                    modifier = Modifier.border(
-                        border = BorderStroke(1.dp, gris),
-                        shape = ButtonDefaults.shape
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
+                // ── BOTONES FACEBOOK Y GOOGLE ──
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.google_logo),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
+                    // Facebook
+                    Button(
+                        onClick = {
+                            loginLauncher.launch(listOf("email", "public_profile"))
+                        },
+                        enabled = !isLoadingAny,
+                        modifier = Modifier.border(
+                            border = BorderStroke(1.dp, color = Color(0xFF1877F2)),
+                            shape = ButtonDefaults.shape
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Google", color = MaterialTheme.colorScheme.onBackground)
+                    ) {
+                        if (isLoadingFacebook) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = Color(0xFF1877F2),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.facebook_logo),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Facebook", color = MaterialTheme.colorScheme.onBackground)
+                            }
+                        }
+                    }
+
+                    // Google
+                    Button(
+                        onClick = { viewModel.signInWithGoogle(context) },
+                        enabled = !isLoadingAny,
+                        modifier = Modifier.border(
+                            border = BorderStroke(1.dp, gris),
+                            shape = ButtonDefaults.shape
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
+                    ) {
+                        if (isLoadingGoogle) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = Color(0xFF4285F4),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.google_logo),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Google", color = MaterialTheme.colorScheme.onBackground)
+                            }
+                        }
                     }
                 }
-            }
 
-            Row(horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = stringResource(R.string.olvido_su_clave),
-                    modifier = Modifier.clickable { navegarOlvidoContrasena() },
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.width(42.dp))
-                Text(
-                    text = stringResource(R.string.no_tiene_cuenta_reg_strese_aqu),
-                    modifier = Modifier.clickable { navegarRegistroUsuario() },
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp
-                )
+                // ── LINKS OLVIDÉ CONTRASEÑA / REGISTRARSE ──
+                Row(horizontalArrangement = Arrangement.Center) {
+                    Text(
+                        text = stringResource(R.string.olvido_su_clave),
+                        modifier = Modifier.clickable(enabled = !isLoadingAny) {
+                            navegarOlvidoContrasena()
+                        },
+                        color = if (isLoadingAny)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                        else MaterialTheme.colorScheme.primary,
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.width(42.dp))
+                    Text(
+                        text = stringResource(R.string.no_tiene_cuenta_reg_strese_aqu),
+                        modifier = Modifier.clickable(enabled = !isLoadingAny) {
+                            navegarRegistroUsuario()
+                        },
+                        color = if (isLoadingAny)
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                        else MaterialTheme.colorScheme.primary,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
+
+        // ── OVERLAY DE CARGA ──
+        LoadingOverlay(
+            visible = isLoadingGoogle,
+            mensaje = stringResource(R.string.iniciando_con_google)
+        )
+        LoadingOverlay(
+            visible = isLoadingFacebook,
+            mensaje = stringResource(R.string.iniciando_con_facebook)
+        )
+        LoadingOverlay(
+            visible = isLoadingEmail,
+            mensaje = stringResource(R.string.iniciando_sesion)
+        )
     }
 
     if (showLoginErrorDialog) {
@@ -392,7 +460,6 @@ fun PantallaInicioSesion(
         )
     }
 }
-
 @Composable
 fun LoginError(onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
@@ -436,15 +503,6 @@ fun LoginError(onDismiss: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-fun LoadingScreen() {
-    CircularProgressIndicator(
-        modifier = Modifier.size(64.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-    )
 }
 
 fun isInternetAvailable(context: Context): Boolean {

@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material3.MaterialTheme
@@ -52,6 +53,7 @@ fun NavigationDrawer(
 ) {
     val context = LocalContext.current
     val currentUser by viewModel.currentUser.collectAsState()
+    val esCorreoReal = currentUser?.correo?.contains("@") == true
     val avatarActual = currentUser?.avatar ?: "cacatuaninfa"
     val avatarId = remember(avatarActual) {
         context.resources.getIdentifier(avatarActual, "drawable", context.packageName)
@@ -113,8 +115,19 @@ fun NavigationDrawer(
                     }
                 }
                 Column {
-                    Text(text = name, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 15.dp, top = 10.dp))
-                    Text(text = email, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 15.dp, bottom = 5.dp))
+                    Text(
+                        text = name, style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(start = 15.dp, top = 10.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(text = if (esCorreoReal) currentUser?.correo ?: "-" else "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 15.dp, bottom = 5.dp)
+                    )
                 }
             }
 

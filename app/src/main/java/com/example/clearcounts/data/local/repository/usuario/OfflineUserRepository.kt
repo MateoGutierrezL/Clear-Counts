@@ -94,31 +94,40 @@ class OfflineUserRepository @Inject constructor(
             val credential = FacebookAuthProvider.getCredential(token)
             val result = auth.signInWithCredential(credential).await()
             val email = result.user?.email
+            val uid = result.user?.uid ?: ""
+            val displayName = result.user?.displayName ?: "Usuario"
+
             if (email != null) {
                 guardarUsuarioEnSession(email, proveedor = "facebook")
+                syncManager.sincronizarDesdeFirestore(emailUsuario = email)
             } else {
-                val uid = result.user?.uid ?: ""
-                val displayName = result.user?.displayName ?: "Usuario"
-                val usuarioLocal = userDao.getAllUsers().firstOrNull()
-                    ?.find { it.nombre == displayName }
-                if (usuarioLocal == null) {
+                val existente = userDao.getByEmailOnce(uid)
+                if (existente == null) {
                     val nuevoUsuario = UserEntity(
                         id = 0,
                         nombre = displayName,
                         numero = "",
                         correo = uid,
                         contrasena = "",
-                        avatar = "perro"
+                        avatar = "cacatuaninfa",
+                        proveedor = "facebook"
                     )
-                    userDao.insert(nuevoUsuario)
-                    userDao.getByEmail(uid).firstOrNull()?.let { user ->
-                        sessionDataStore.setLoggedInUserId(user.id)
+                    val newId = userDao.insertAndGetId(nuevoUsuario)
+                    if (newId != -1L) {
+                        sessionDataStore.setLoggedInUserId(newId.toInt())
+                    } else {
+                        userDao.getByEmailOnce(uid)?.let { user ->
+                            sessionDataStore.setLoggedInUserId(user.id)
+                        }
                     }
                 } else {
-                    sessionDataStore.setLoggedInUserId(usuarioLocal.id)
+                    if (existente.proveedor != "facebook") {
+                        userDao.update(existente.copy(proveedor = "facebook"))
+                    }
+                    sessionDataStore.setLoggedInUserId(existente.id)
                 }
             }
-            syncManager.sincronizarDesdeFirestore(emailUsuario = email)
+
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

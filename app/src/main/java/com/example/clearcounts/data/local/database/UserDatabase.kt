@@ -69,7 +69,7 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso", esDefault = true),
                 CategoryEntity(nombre = "Inversiones", icono = "alcancia", tipo = "ingreso", esDefault = true),
                 CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso", esDefault = true),
-                CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Reembolso", icono = "efectivo", tipo = "ingreso", esDefault = true),
             )
             val DEFAULT_PAYMENT_METHODS = listOf(
                 PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),

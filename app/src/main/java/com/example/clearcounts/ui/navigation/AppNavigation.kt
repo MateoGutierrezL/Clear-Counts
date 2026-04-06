@@ -1,32 +1,17 @@
 package com.example.clearcounts.ui.navigation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material.icons.filled.VerifiedUser
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,13 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,13 +34,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.clearcounts.R
 import com.example.clearcounts.ui.screens.Ajustes.Ajustes
 import com.example.clearcounts.ui.screens.Ajustes.LocaleManager
 import com.example.clearcounts.ui.screens.Ajustes.SeleccionarIdioma
+import com.example.clearcounts.ui.screens.Ajustes.TerminosCondiciones
 import com.example.clearcounts.ui.screens.Ajustes.ThemeViewModel
-import com.example.clearcounts.ui.screens.Ajustes.idiomasDisponibles
 import com.example.clearcounts.ui.screens.graficas.Graficas
 import com.example.clearcounts.ui.screens.Barras.CustomBottomAppBar
 import com.example.clearcounts.ui.screens.Barras.DrawerItem
@@ -66,6 +47,7 @@ import com.example.clearcounts.ui.screens.Barras.NavigationDrawer
 import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.screens.Categorias.crearCategoria
 import com.example.clearcounts.ui.screens.Contactos.Contactos
+import com.example.clearcounts.ui.screens.Contactos.PoliticasPrivacidad
 import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
@@ -82,12 +64,14 @@ import com.example.clearcounts.ui.screens.Notificaciones.Notificaciones
 import com.example.clearcounts.ui.screens.Notificaciones.NotificacionesViewModel
 import com.example.clearcounts.ui.screens.Perfil.CambiarContrasena
 import com.example.clearcounts.ui.screens.Perfil.Perfil
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarContrasena
-import com.example.clearcounts.ui.screens.RecuperarContrasena.RecuperarCorreoEnviado
 import com.example.clearcounts.ui.screens.Recurrentes.CrearRecurrente
+import com.example.clearcounts.ui.screens.Recurrentes.EditarRecurrente
 import com.example.clearcounts.ui.screens.Recurrentes.Recurrentes
+import com.example.clearcounts.ui.screens.Recurrentes.RecurringViewModel
+import com.example.clearcounts.utils.LoadingOverlay
 import kotlinx.coroutines.launch
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(
@@ -97,6 +81,7 @@ fun AppNavigation(
     themeViewModel: ThemeViewModel
 
 ) {
+
     val isLoggingOut by viewModel.isLoggingOut.collectAsStateWithLifecycle()
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
@@ -193,6 +178,7 @@ fun AppNavigation(
                 startDestination = Pantallas.Inicio.pantalla,
                 modifier = Modifier.padding(paddingValues)
             ) {
+
 
                 composable(Pantallas.Inicio.pantalla) {
 
@@ -425,12 +411,10 @@ fun AppNavigation(
                     val allBudgets by viewModelMetas.allBudgets.collectAsState()
                     val budgetAEditar = allBudgets.find { it.firestoreId == budgetId }
 
-                    val context = LocalContext.current
-
                     val (tituloFinal, iconoFinal) = when (tipo) {
-                        TipoBudget.DEUDA -> context.getString(R.string.tab_deudas) to Icons.Default.ErrorOutline
-                        TipoBudget.TE_DEBEN -> context.getString(R.string.te_deben) to Icons.Default.VerifiedUser
-                        else -> context.getString(R.string.tab_metas) to Icons.Default.TrackChanges
+                        TipoBudget.DEUDA -> stringResource(R.string.tab_deudas) to Icons.Default.ErrorOutline
+                        TipoBudget.TE_DEBEN -> stringResource(R.string.te_deben) to Icons.Default.VerifiedUser
+                        else -> stringResource(R.string.tab_metas) to Icons.Default.TrackChanges
                     }
 
                     DisposableEffect(Unit) {
@@ -472,6 +456,9 @@ fun AppNavigation(
                     }
 
                     Ajustes(
+                        navegarTerminosCondiciones = {
+                            navigationController.navigate(Pantallas.TerminosCondiciones.pantalla)
+                        },
                         navegarContacto = {
                             navigationController.navigate(Pantallas.Contactos.pantalla)
                         },
@@ -550,6 +537,11 @@ fun AppNavigation(
                     Recurrentes(
                         onBotonCrear = {
                             navigationController.navigate(Pantallas.CrearRecurrente.pantalla)
+                        },
+                        onEditar = { recurrente ->
+                            navigationController.navigate(
+                                Pantallas.EditarRecurrente.createRoute(recurrente.firestoreId)
+                            )
                         }
                     )
                 }
@@ -565,6 +557,33 @@ fun AppNavigation(
                     )
                 }
 
+                composable(
+                    route = Pantallas.EditarRecurrente.pantalla,
+                    arguments = listOf(navArgument("firestoreId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    val firestoreId = backStackEntry.arguments?.getString("firestoreId") ?: ""
+                    val viewModelRecurrente: RecurringViewModel = hiltViewModel()
+                    val todosLosRecurrentes by viewModelRecurrente.ingresos.collectAsState()
+                    val todosLosGastos by viewModelRecurrente.gastos.collectAsState()
+                    val item = (todosLosRecurrentes + todosLosGastos).find { it.firestoreId == firestoreId }
+
+                    if (item != null) {
+                        EditarRecurrente(
+                            item = item,
+                            onGuardar = { actualizado ->
+                                viewModelRecurrente.actualizar(actualizado)
+                                navigationController.popBackStack()
+                            },
+                            onVolver = { navigationController.popBackStack() }
+                        )
+                    }
+                }
+
                 composable(Pantallas.Contactos.pantalla) {
 
                     DisposableEffect(Unit) {
@@ -578,6 +597,38 @@ fun AppNavigation(
                             if (navigationController.previousBackStackEntry != null) {
                                 navigationController.popBackStack()
                             }
+                        },
+                        navegarPoliticasPrivacidad = {
+                            navigationController.navigate(Pantallas.PoliticasPrivacidad.pantalla)
+                        }
+                    )
+                }
+
+
+                composable(Pantallas.TerminosCondiciones.pantalla) {
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    TerminosCondiciones(
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null)
+                                navigationController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(Pantallas.PoliticasPrivacidad.pantalla) {
+                    DisposableEffect(Unit) {
+                        bottomBarVisible.value = false
+                        topBarVisible.value = false
+                        onDispose {}
+                    }
+                    PoliticasPrivacidad(
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null)
+                                navigationController.popBackStack()
                         }
                     )
                 }
@@ -588,44 +639,9 @@ fun AppNavigation(
 
         }
     }
-
-    AnimatedVisibility(
+    LoadingOverlay(
         visible = isLoggingOut,
-        modifier = Modifier.fillMaxSize(),
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.6f))
-                .clickable(enabled = false) {},
-            contentAlignment = Alignment.Center
-        ) {
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(48.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
-                    )
-                    Text(
-                        text = stringResource(R.string.cerrando_sesion),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            }
-        }
-    }
+        mensaje = stringResource(R.string.cerrando_sesion)
+    )
+
 }

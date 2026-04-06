@@ -334,7 +334,156 @@
     <string name="sabado">Sábado</string>
     <string name="domingo">Domingo</string>
     <string name="dia_ajustado_mes_corto">Ajustado ao último dia nos meses curtos</string>
+    <string name="sin_correo_facebook">Conta do Facebook sem e-mail associado</string>
+    <string name="iniciando_con_google">Iniciando com o Google…</string>
+    <string name="iniciando_con_facebook">Iniciando com o Facebook…</string>
+    <string name="iniciando_sesion">Iniciando sessão…</string>
+    <string name="ej_salario">Ex. Salário</string>
 
+    <!-- Cabeçalhos -->
+    <string name="politicas_privacidad">Política de Privacidade</string>
+    <string name="ultima_actualizacion_terminos">Última atualização: Março 2025 · Versão 1.0</string>
+    <string name="ultima_actualizacion_politicas">Última atualização: Março 2025 · Versão 1.0</string>
+
+    <!-- Introdução -->
+    <string name="terminos_intro">Bem-vindo ao ClearCounts. Os seguintes Termos e Condições regem o acesso e uso de nossos serviços. Ao se registrar e usar este aplicativo, você concorda em estar legalmente vinculado a estes termos em sua totalidade.</string>
+    <string name="politicas_intro">Na ClearCounts valorizamos profundamente sua privacidade e estamos comprometidos com a proteção de suas informações pessoais e financeiras. Esta Política descreve como coletamos, usamos, compartilhamos e protegemos seus dados.</string>
+
+    <!-- Termos - Títulos das seções -->
+    <string name="terminos_s1_titulo">Aceitação dos Termos</string>
+    <string name="terminos_s2_titulo">Descrição do Serviço</string>
+    <string name="terminos_s3_titulo">Uso Aceitável do Serviço</string>
+    <string name="terminos_s4_titulo">Funções e Responsabilidades</string>
+    <string name="terminos_s5_titulo">Criação de Conta e Segurança</string>
+    <string name="terminos_s6_titulo">Privacidade e Tratamento de Dados</string>
+    <string name="terminos_s7_titulo">Propriedade Intelectual</string>
+    <string name="terminos_s8_titulo">Exportação de Documentos</string>
+    <string name="terminos_s9_titulo">Limitação de Responsabilidade</string>
+    <string name="terminos_s10_titulo">Cancelamento e Rescisão</string>
+    <string name="terminos_s11_titulo">Modificações do Serviço</string>
+    <string name="terminos_s12_titulo">Lei Aplicável</string>
+    <string name="terminos_s13_titulo">Entre em Contato</string>
+
+    <!-- Termos - Conteúdos -->
+    <string name="terminos_s1_contenido">Ao acessar e usar o ClearCounts, você confirma que leu, compreendeu e concorda em estar legalmente vinculado a estes Termos e Condições, bem como à nossa Política de Privacidade. Se você discordar, deverá se abster de usar o aplicativo.</string>
+    <string name="terminos_s2_item1">Registro e acompanhamento de receitas e despesas pessoais</string>
+    <string name="terminos_s2_item2">Criação e gestão de categorias de receitas e despesas</string>
+    <string name="terminos_s2_item3">Geração de relatórios financeiros em formato PDF e CSV</string>
+    <string name="terminos_s2_item4">Visualização de gráficos e análises financeiras comparativas</string>
+    <string name="terminos_s2_item5">Planejamento de orçamentos e metas de economia</string>
+    <string name="terminos_s2_item6">Sistema de notificações e alertas financeiros</string>
+    <string name="terminos_s2_item7">Adição de notas contextuais aos registros</string>
+    <string name="terminos_s3_item1">Usar o aplicativo de forma que possa danificar ou sobrecarregar os servidores</string>
+    <string name="terminos_s3_item2">Tentar obter acesso não autorizado a qualquer parte do sistema</string>
+    <string name="terminos_s3_item3">Usar a plataforma para transmitir conteúdo ofensivo ou fraudulento</string>
+    <string name="terminos_s3_item4">Compartilhar suas credenciais de acesso com terceiros</string>
+    <string name="terminos_s3_item5">Realizar engenharia reversa ou tentar extrair o código-fonte</string>
+    <string name="terminos_s3_item6">Usar ferramentas automatizadas ou bots sem autorização prévia</string>
+    <string name="terminos_s3_item7">Inserir dados falsos que afetem a integridade do sistema</string>
+    <string name="terminos_s4_1_titulo">4.1 Usuário / Cliente</string>
+    <string name="terminos_s4_1_contenido">O usuário principal que gerencia suas finanças diárias. Responsável por registrar corretamente receitas e despesas, manter a confidencialidade da senha e notificar qualquer uso não autorizado da conta.</string>
+    <string name="terminos_s4_2_titulo">4.2 Administrador</string>
+    <string name="terminos_s4_2_contenido">Tem controle total sobre a plataforma, incluindo gestão de usuários e supervisão do sistema. Compromete-se a exercer esses poderes exclusivamente para o correto funcionamento do aplicativo.</string>
+    <string name="terminos_s4_3_titulo">4.3 Suporte Técnico</string>
+    <string name="terminos_s4_3_contenido">Pode acessar dados de desempenho para resolver incidentes técnicos. Não terá acesso a dados pessoais ou financeiros dos usuários e deverá manter estrita confidencialidade.</string>
+    <string name="terminos_s5_item1">Fornecer informações precisas durante o registro</string>
+    <string name="terminos_s5_item2">Manter suas informações pessoais atualizadas no perfil</string>
+    <string name="terminos_s5_item3">Manter a confidencialidade de sua senha</string>
+    <string name="terminos_s5_item4">Notificar imediatamente qualquer acesso não autorizado</string>
+    <string name="terminos_s5_nota">Dica de segurança: Recomendamos usar uma senha única e ativar a autenticação multifator (MFA) disponível nas configurações da sua conta.</string>
+    <string name="terminos_s6_contenido">Sua privacidade é fundamental para nós. O ClearCounts coleta, usa e protege suas informações pessoais de acordo com nossa Política de Privacidade. Ao usar o aplicativo, você consente com o tratamento de seus dados para os fins descritos.</string>
+    <string name="terminos_s6_nota">Para saber em detalhes como coletamos, usamos e protegemos seus dados, revise nossa Política de Privacidade disponível na seção Legal das configurações do aplicativo.</string>
+    <string name="terminos_s7_contenido">Todo o conteúdo, marcas, logotipos, código-fonte e materiais disponíveis no ClearCounts são de propriedade exclusiva da equipe de desenvolvimento. É expressamente proibido copiar, modificar, distribuir ou reproduzir qualquer conteúdo sem consentimento prévio por escrito.</string>
+    <string name="terminos_s8_item1">Os documentos exportados são de uso exclusivamente pessoal</string>
+    <string name="terminos_s8_item2">O ClearCounts não se responsabiliza pelo uso de documentos fora da plataforma</string>
+    <string name="terminos_s8_item3">Os relatórios refletem apenas os dados inseridos pelo usuário</string>
+    <string name="terminos_s9_item1">Danos decorrentes do uso ou impossibilidade de uso do aplicativo</string>
+    <string name="terminos_s9_item2">Perda de dados causada por falhas no dispositivo do usuário</string>
+    <string name="terminos_s9_item3">Decisões financeiras baseadas em relatórios gerados pelo aplicativo</string>
+    <string name="terminos_s9_item4">Interrupções de serviço por manutenção, falhas de terceiros ou força maior</string>
+    <string name="terminos_s10_item1">Seus dados financeiros serão excluídos após um período de retenção de 90 dias</string>
+    <string name="terminos_s10_item2">Relatórios exportados anteriormente permanecerão no dispositivo até serem excluídos</string>
+    <string name="terminos_s10_item3">As informações não podem ser recuperadas após o período de retenção</string>
+    <string name="terminos_s11_contenido">A equipe ClearCounts reserva-se o direito de modificar funcionalidades a qualquer momento. Notificaremos sobre mudanças significativas via notificação no aplicativo ou por e-mail com pelo menos 15 dias de antecedência.</string>
+    <string name="terminos_s11_nota">Se você atualizar o aplicativo pela Google Play Store, verifique se há alterações nos termos antes de continuar usando o serviço.</string>
+    <string name="terminos_s12_contenido">Estes Termos são regidos pela legislação colombiana, em particular a Lei 1581 de 2012 de Proteção de Dados Pessoais e a Lei 1266 de 2008. Qualquer controvérsia será resolvida perante os tribunais competentes da República da Colômbia.</string>
+
+    <!-- Política - Títulos -->
+    <string name="politicas_s1_titulo">Informações que Coletamos</string>
+    <string name="politicas_s2_titulo">Como Usamos suas Informações</string>
+    <string name="politicas_s3_titulo">Compartilhamento de Dados</string>
+    <string name="politicas_s4_titulo">Armazenamento Local e Cache</string>
+    <string name="politicas_s5_titulo">Segurança dos Dados</string>
+    <string name="politicas_s6_titulo">Seus Direitos sobre seus Dados</string>
+    <string name="politicas_s7_titulo">Retenção de Dados</string>
+    <string name="politicas_s8_titulo">Menores de Idade</string>
+    <string name="politicas_s9_titulo">Alterações nesta Política</string>
+    <string name="politicas_s10_titulo">Entre em Contato</string>
+
+    <!-- Política - Conteúdos -->
+    <string name="politicas_s1_1_titulo">1.1 Informações Pessoais de Registro</string>
+    <string name="politicas_s1_1_item1">Nome completo</string>
+    <string name="politicas_s1_1_item2">Endereço de e-mail</string>
+    <string name="politicas_s1_1_item3">Número de telefone</string>
+    <string name="politicas_s1_1_item4">Senha (armazenada criptografada com algoritmos seguros)</string>
+    <string name="politicas_s1_1_item5">Função atribuída na plataforma</string>
+    <string name="politicas_s1_2_titulo">1.2 Informações Financeiras</string>
+    <string name="politicas_s1_2_item1">Registros de receitas: valores, categorias, datas e notas</string>
+    <string name="politicas_s1_2_item2">Registros de despesas: valores, categorias, datas e notas</string>
+    <string name="politicas_s1_2_item3">Metas de economia e orçamentos configurados</string>
+    <string name="politicas_s1_2_item4">Histórico de ações e transações registradas</string>
+    <string name="politicas_s1_3_titulo">1.3 Dados de Uso e Dispositivo</string>
+    <string name="politicas_s1_3_item1">Tipo e versão do dispositivo Android</string>
+    <string name="politicas_s1_3_item2">Versão do sistema operacional</string>
+    <string name="politicas_s1_3_item3">Identificadores únicos do dispositivo</string>
+    <string name="politicas_s1_3_item4">Recursos utilizados e tempo de uso</string>
+    <string name="politicas_s1_3_item5">Logs de erros e desempenho do sistema</string>
+    <string name="politicas_s1_4_titulo">1.4 Notificações e Comunicações</string>
+    <string name="politicas_s1_4_contenido">Com seu consentimento, coletamos informações necessárias para enviar notificações via Firebase Cloud Messaging, incluindo alertas financeiros, lembretes de orçamento e atualizações do aplicativo.</string>
+    <string name="politicas_s2_item1">Fornecer, manter e melhorar as funcionalidades do ClearCounts</string>
+    <string name="politicas_s2_item2">Processar e exibir com precisão seus registros de receitas e despesas</string>
+    <string name="politicas_s2_item3">Gerar relatórios financeiros personalizados e análises de padrões de gastos</string>
+    <string name="politicas_s2_item4">Calcular automaticamente percentuais de economia e projeções</string>
+    <string name="politicas_s2_item5">Enviar notificações e alertas sobre sua atividade financeira</string>
+    <string name="politicas_s2_item6">Exportar documentos financeiros em PDF ou CSV</string>
+    <string name="politicas_s2_item7">Gerenciar sua conta, função e permissões na plataforma</string>
+    <string name="politicas_s2_item8">Detectar, prevenir e resolver problemas técnicos ou de segurança</string>
+    <string name="politicas_s2_item9">Cumprir obrigações legais e regulatórias na Colômbia</string>
+    <string name="politicas_s2_nota">O ClearCounts NÃO usa suas informações financeiras para fins publicitários nem as compartilha com terceiros para fins comerciais.</string>
+    <string name="politicas_s3_1_titulo">3.1 Provedores de Serviços Tecnológicos</string>
+    <string name="politicas_s3_1_item1">Firebase (Google) — para notificações push e autenticação segura</string>
+    <string name="politicas_s3_1_item2">Serviços de hospedagem em nuvem — para armazenamento seguro do banco de dados</string>
+    <string name="politicas_s3_1_item3">GitHub Actions — para integração e implantação contínuas (CI/CD)</string>
+    <string name="politicas_s3_2_titulo">3.2 Requisitos Legais</string>
+    <string name="politicas_s3_2_contenido">Podemos divulgar suas informações quando exigido pela lei colombiana, por ordem judicial, ou quando necessário para proteger os direitos ou a segurança do ClearCounts ou de seus usuários.</string>
+    <string name="politicas_s3_3_titulo">3.3 Transferência Empresarial</string>
+    <string name="politicas_s3_3_contenido">Em caso de fusão ou transferência do projeto, seus dados poderão ser transferidos ao novo responsável pelo tratamento, que estará sujeito aos mesmos padrões de privacidade descritos nesta política.</string>
+    <string name="politicas_s4_item1">Últimos registros de receitas e despesas consultados</string>
+    <string name="politicas_s4_item2">Preferências de exibição e configurações do aplicativo</string>
+    <string name="politicas_s4_item3">Dados de sessão ativa (token de autenticação)</string>
+    <string name="politicas_s4_pie">Você pode limpar o armazenamento local a qualquer momento nas configurações do seu dispositivo Android ou na seção de configuração do aplicativo.</string>
+    <string name="politicas_s5_item1">Criptografia de dados sensíveis em trânsito (HTTPS/TLS) e em repouso (AES-256)</string>
+    <string name="politicas_s5_item2">Autenticação multifator (MFA) disponível para maior proteção</string>
+    <string name="politicas_s5_item3">Controle de acesso baseado em funções com permissões diferenciadas</string>
+    <string name="politicas_s5_item4">Logs completos de auditoria de ações críticas</string>
+    <string name="politicas_s5_item5">Avaliações e atualizações regulares de segurança</string>
+    <string name="politicas_s5_item6">Validação estrita de entradas para prevenir injeções SQL e ataques XSS</string>
+    <string name="politicas_s5_nota">Embora implementemos medidas robustas de segurança, nenhum sistema é 100% seguro. Não compartilhe sua senha e faça logout ao usar dispositivos compartilhados.</string>
+    <string name="politicas_s6_item1">Acesso: Solicitar uma cópia de seus dados pessoais e financeiros</string>
+    <string name="politicas_s6_item2">Correção: Atualizar informações incorretas no seu perfil</string>
+    <string name="politicas_s6_item3">Exclusão: Solicitar a exclusão da sua conta e dados associados</string>
+    <string name="politicas_s6_item4">Portabilidade: Receber seus dados financeiros em formato CSV ou PDF</string>
+    <string name="politicas_s6_item5">Retirada do consentimento: Desativar notificações nas configurações</string>
+    <string name="politicas_s6_item6">Oposição: Opor-se ao tratamento de seus dados para determinadas finalidades</string>
+    <string name="politicas_s6_pie">Para exercer qualquer um desses direitos, entre em contato conosco. Responderemos em no máximo 15 dias úteis.</string>
+    <string name="politicas_s7_item1">Dados de conta ativa: mantidos durante toda a vigência da sua conta</string>
+    <string name="politicas_s7_item2">Registros financeiros: mantidos enquanto a conta estiver ativa</string>
+    <string name="politicas_s7_item3">Dados após exclusão: eliminados ou anonimizados em no máximo 90 dias</string>
+    <string name="politicas_s7_item4">Logs de auditoria de segurança: mantidos por até 1 ano por obrigação legal</string>
+    <string name="politicas_s7_item5">Dados de suporte técnico: excluídos 30 dias após a resolução do incidente</string>
+    <string name="politicas_s8_contenido">O ClearCounts não é destinado a menores de 14 anos. Se como pai ou responsável legal você souber que um menor criou uma conta, entre em contato conosco imediatamente para excluir a conta e os dados associados.</string>
+    <string name="politicas_s9_contenido">Reservamo-nos o direito de atualizar esta Política quando necessário. Notificaremos sobre mudanças significativas via notificação no aplicativo ou por e-mail com pelo menos 15 dias de antecedência.</string>
+    <string name="politicas_s10_pie">Responderemos à sua solicitação dentro de 15 dias úteis após o recebimento, em conformidade com a Lei 1581 de 2012.</string>
 
 
 

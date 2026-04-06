@@ -88,7 +88,7 @@ fun RecuperarContrasena(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
                 title = {
                     Box(
@@ -98,7 +98,7 @@ fun RecuperarContrasena(
                         Text(
                             modifier = Modifier.padding(top = 8.dp, end = 14.dp),
                             text = "ClearCounts",
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 30.sp
                         )
                     }
@@ -135,7 +135,7 @@ fun RecuperarContrasena(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 thickness = 1.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primaryContainer
             )
 
             Spacer(modifier = Modifier.height(42.dp))
@@ -152,7 +152,7 @@ fun RecuperarContrasena(
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, top = 24.dp, bottom = 24.dp),
                 thickness = 1.dp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primaryContainer
             )
 
             Text(
@@ -241,12 +241,12 @@ fun RecuperarContrasena(
                     .padding(horizontal = 15.dp, vertical = 24.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
                 Text(
                     text = stringResource(R.string.enviar_correo),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }
