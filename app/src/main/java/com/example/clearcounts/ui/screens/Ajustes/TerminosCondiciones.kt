@@ -60,14 +60,7 @@ fun TerminosCondiciones(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.85f)
-                            )
-                        )
-                    )
+                    .background(color = MaterialTheme.colorScheme.background)
                     .padding(vertical = 12.dp, horizontal = 4.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
