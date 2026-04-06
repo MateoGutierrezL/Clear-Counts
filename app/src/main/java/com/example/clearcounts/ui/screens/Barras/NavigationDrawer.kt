@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -115,6 +116,7 @@ fun NavigationDrawer(
                     }
                 }
                 Column {
+                    Spacer(modifier = Modifier.height(18.dp))
                     Text(
                         text = name, style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp),
