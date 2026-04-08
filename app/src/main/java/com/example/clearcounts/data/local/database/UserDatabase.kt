@@ -59,7 +59,7 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Salud", icono = "hospital", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Deporte", icono = "balon", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Educación", icono = "birrete", tipo = "gasto", esDefault = true),
-                CategoryEntity(nombre = "Ropa", icono = "ropa", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Ropa", icono = "camisa", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto", esDefault = true),
@@ -69,7 +69,7 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Comision", icono = "cartera", tipo = "ingreso", esDefault = true),
                 CategoryEntity(nombre = "Inversiones", icono = "alcancia", tipo = "ingreso", esDefault = true),
                 CategoryEntity(nombre = "Regalo", icono = "regalo", tipo = "ingreso", esDefault = true),
-                CategoryEntity(nombre = "Reembolso", icono = "efectivo", tipo = "ingreso", esDefault = true),
+                CategoryEntity(nombre = "Reembolso", icono = "reembolso", tipo = "ingreso", esDefault = true),
             )
             val DEFAULT_PAYMENT_METHODS = listOf(
                 PaymentMethodEntity(nombre = "Efectivo", icono = "efectivo", esDefault = true),

@@ -610,7 +610,7 @@ fun BotonesInferiores(
 
     ) {
         Text(
-            stringResource(R.string.crear),
+            stringResource(R.string.aceptar),
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 15.sp
         )

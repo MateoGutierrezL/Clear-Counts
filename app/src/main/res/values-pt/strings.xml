@@ -484,7 +484,8 @@
     <string name="politicas_s8_contenido">O ClearCounts não é destinado a menores de 14 anos. Se como pai ou responsável legal você souber que um menor criou uma conta, entre em contato conosco imediatamente para excluir a conta e os dados associados.</string>
     <string name="politicas_s9_contenido">Reservamo-nos o direito de atualizar esta Política quando necessário. Notificaremos sobre mudanças significativas via notificação no aplicativo ou por e-mail com pelo menos 15 dias de antecedência.</string>
     <string name="politicas_s10_pie">Responderemos à sua solicitação dentro de 15 dias úteis após o recebimento, em conformidade com a Lei 1581 de 2012.</string>
-
+    <string name="el_numero_es_demasiado_largo">O número é muito longo</string>
+    <string name="este_correo_ya_est_registrado_intenta_con_otro_o_inicia_sesi_n">Este e-mail já está registrado. Tente outro ou faça login.</string>
 
 
 </resources>
