@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -170,25 +172,30 @@ fun PantallaExportarGrafico(
             //Caja invisible solo para captura — siempre blanca
             Box(
                 modifier = Modifier
-                    .size(1.dp)
-                    .background(Color.White)
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints.copy(minHeight = 0))
+                        layout(0, 0) {
+                            placeable.place(0, 0)
+                        }
+                    }
                     .drawWithContent {
                         graphicsLayer.record {
                             this@drawWithContent.drawContent()
                         }
-                        drawLayer(graphicsLayer)
                     }
             ) {
-                ContenidoPDF(
-                    mesFiltro = mesFiltro,
-                    ingresosTotales = ingresosTotales,
-                    gastosTotales = gastosTotales,
-                    ingresosPorMes = ingresosPorMes,
-                    gastosPorCategoria = gastosPorCategoria,
-                    comparacionMensual = comparacionMensual,
-                    totalIngresoVsGasto = totalIngresoVsGasto,
-                    isDarkTheme = false
-                )
+                Box(modifier = Modifier.background(Color.White)) {
+                    ContenidoPDF(
+                        mesFiltro = mesFiltro,
+                        ingresosTotales = ingresosTotales,
+                        gastosTotales = gastosTotales,
+                        ingresosPorMes = ingresosPorMes,
+                        gastosPorCategoria = gastosPorCategoria,
+                        comparacionMensual = comparacionMensual,
+                        totalIngresoVsGasto = totalIngresoVsGasto,
+                        isDarkTheme = false
+                    )
+                }
             }
         }else{
             VistaPreviaCSV(movimientos)
@@ -271,6 +278,12 @@ fun PantallaExportarGrafico(
 // --- FUNCIONES DE SOPORTE PARA PDF ---
 
 fun guardarPdfEnUri(context: Context, sourceBitmap: Bitmap, uri: Uri) {
+
+
+    if (sourceBitmap.width <= 1 || sourceBitmap.height <= 1) {
+        // Si el bitmap es diminuto, algo salió mal en la captura
+        return
+    }
     // CLAVE: Convertir Hardware Bitmap a Software Bitmap
     val softwareBitmap = if (sourceBitmap.config == Bitmap.Config.HARDWARE) {
         sourceBitmap.copy(Bitmap.Config.ARGB_8888, false)

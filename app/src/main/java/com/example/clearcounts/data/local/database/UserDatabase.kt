@@ -59,7 +59,7 @@ abstract class UserDatabase: RoomDatabase() {
                 CategoryEntity(nombre = "Salud", icono = "hospital", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Deporte", icono = "balon", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Educación", icono = "birrete", tipo = "gasto", esDefault = true),
-                CategoryEntity(nombre = "Ropa", icono = "camisa", tipo = "gasto", esDefault = true),
+                CategoryEntity(nombre = "Ropa", icono = "ropa", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Alquiler", icono = "casa", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Libros", icono = "libros", tipo = "gasto", esDefault = true),
                 CategoryEntity(nombre = "Maquillaje", icono = "maquillaje", tipo = "gasto", esDefault = true),

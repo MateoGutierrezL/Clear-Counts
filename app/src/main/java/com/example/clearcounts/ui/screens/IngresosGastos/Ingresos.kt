@@ -79,6 +79,7 @@ import com.example.clearcounts.R
 import com.example.clearcounts.data.local.database.entities.ExpenseEntity
 import com.example.clearcounts.data.local.database.entities.IncomeEntity
 import com.example.clearcounts.utils.CategoryTranslator.traducirCategoria
+import com.example.clearcounts.utils.ThousandSeparatorTransformation
 
 const val MAX_LENGHT_OF_AMOUNT = 10
 const val MAX_LENGHT_OF_NOTE = 200
@@ -434,10 +435,12 @@ fun CampoCantidad(
     modifier: Modifier = Modifier,
     isError: Boolean = false
 ) {
+    val moneyTransformation = remember { ThousandSeparatorTransformation() }
     Column(modifier = modifier) {
         OutlinedTextField(
             value = cantidad,
             singleLine = true,
+            visualTransformation = moneyTransformation,
             onValueChange = onCantidadChange,
             shape = RoundedCornerShape(20.dp),
             label = { Text(stringResource(R.string.cantidad)) },

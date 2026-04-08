@@ -78,6 +78,7 @@ import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.utils.CategoryTranslator
 import com.example.clearcounts.utils.CategoryTranslator.getNombreTraducido
 import com.example.clearcounts.utils.PaymentMethodTranslator.getNombreTraducido
+import com.example.clearcounts.utils.ThousandSeparatorTransformation
 
 @Composable
 fun ItemRecurrente(
@@ -407,6 +408,7 @@ fun EditarRecurrente(
     paymentViewModel: PaymentMethodViewModel = hiltViewModel(),
     categoriasViewModel: CategoriasViewModel = hiltViewModel()
 ) {
+    val moneyTransformation = remember { ThousandSeparatorTransformation() }
     val metodosPago by paymentViewModel.metodosPago.collectAsState()
     val ingresos by categoriasViewModel.ingresos.collectAsState()
     val gastos by categoriasViewModel.gastos.collectAsState()
@@ -508,6 +510,7 @@ fun EditarRecurrente(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
+                visualTransformation = moneyTransformation,
                 shape = RoundedCornerShape(16.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,

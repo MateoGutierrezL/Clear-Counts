@@ -907,27 +907,27 @@ fun TransaccionesPorMetodo(
 
     // Filtra solo los del método de pago seleccionado
     val movimientosPorMetodo = remember(movimientosFiltrados, metodoPago) {
-        movimientosFiltrados.filter { item ->
-            when (item) {
-                is InicioViewModel.MovimientoItem.Header -> {
-                    // Incluir header solo si tiene transacciones del método
-                    true
-                }
-                is InicioViewModel.MovimientoItem.Transaccion -> {
-                    when (val mov = item.movimiento) {
-                        is IncomeEntity -> mov.metodoPago == metodoPago
-                        is ExpenseEntity -> mov.metodoPago == metodoPago
-                        else -> false
-                    }
+        val transaccionesLimpias = movimientosFiltrados
+            .filterIsInstance<InicioViewModel.MovimientoItem.Transaccion>()
+            .filter { item ->
+                when (val mov = item.movimiento) {
+                    is IncomeEntity -> mov.metodoPago == metodoPago
+                    is ExpenseEntity -> mov.metodoPago == metodoPago
+                    else -> false
                 }
             }
-        }.filterIndexed { index, item ->
-            // Eliminar headers que no tienen transacciones después
-            if (item is InicioViewModel.MovimientoItem.Header) {
-                val siguiente = movimientosFiltrados.getOrNull(index + 1)
-                siguiente is InicioViewModel.MovimientoItem.Transaccion
-            } else true
-        }
+
+        transaccionesLimpias
+            .groupBy { item ->
+                when (val mov = item.movimiento) {
+                    is IncomeEntity -> mov.fecha
+                    is ExpenseEntity -> mov.fecha
+                    else -> ""
+                }
+            }
+            .flatMap { (fecha, items) ->
+                listOf(InicioViewModel.MovimientoItem.Header(fecha)) + items
+            }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -967,7 +967,10 @@ fun TransaccionesPorMetodo(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "No hay registros para ${context.traducirMetodoPago(metodoPago)}",
+                        text = stringResource(
+                            R.string.no_hay_registros_para,
+                            context.traducirMetodoPago(metodoPago)
+                        ),
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                     )
                 }

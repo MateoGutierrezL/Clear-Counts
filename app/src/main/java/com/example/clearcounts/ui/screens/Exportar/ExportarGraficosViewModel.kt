@@ -120,7 +120,7 @@ class ExportarGraficosViewModel @Inject constructor(
     fun setMesFiltro(nuevoMesAnio: String) { _mesSeleccionado.value = nuevoMesAnio }
 
     fun generarCsvString(movimientos: List<Any>): String {
-        val csvHeader = "Tipo;Categoría;Cantidad;Fecha;Hora;Nota\n"
+        val csvHeader = "Tipo;Categoria;Cantidad;Fecha;Hora;Nota\n"
         val csvBody = movimientos.joinToString("\n") { mov ->
             when (mov) {
                 is IncomeEntity -> "Ingreso;${mov.categoria};${mov.cantidad};${mov.fecha};${mov.hora};${mov.nota ?: ""}"
