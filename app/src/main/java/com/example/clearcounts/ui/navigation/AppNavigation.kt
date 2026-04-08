@@ -1,6 +1,9 @@
 package com.example.clearcounts.ui.navigation
 
+import android.R.attr.onClick
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -48,6 +51,7 @@ import com.example.clearcounts.ui.screens.Barras.TopBar
 import com.example.clearcounts.ui.screens.Categorias.crearCategoria
 import com.example.clearcounts.ui.screens.Contactos.Contactos
 import com.example.clearcounts.ui.screens.Contactos.PoliticasPrivacidad
+import com.example.clearcounts.ui.screens.Contactos.abrirUrl
 import com.example.clearcounts.ui.screens.Exportar.PantallaExportarGrafico
 import com.example.clearcounts.ui.screens.IngresosGastos.ingresos
 import com.example.clearcounts.ui.screens.PreguntasComentarios.PreguntasComentarios
@@ -81,7 +85,7 @@ fun AppNavigation(
     themeViewModel: ThemeViewModel
 
 ) {
-
+    val context = LocalContext.current
     val isLoggingOut by viewModel.isLoggingOut.collectAsStateWithLifecycle()
     val navigationController = rememberNavController()
     val selectedIcon = remember { mutableStateOf("home") }
@@ -120,7 +124,11 @@ fun AppNavigation(
                             navigationController.navigate(Pantallas.Contactos.pantalla)
                         }
 
-                        DrawerItem.TUTORIAL -> {}
+                        DrawerItem.TUTORIAL -> {
+                            val url = "https://www.youtube.com/watch?v=D2MrZOgBaQ8"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            context.startActivity(intent)
+                        }
                         DrawerItem.LOG_OUT -> {
                             viewModel.logOut {
                                 rootNavController.navigate("InicioSesion") {
