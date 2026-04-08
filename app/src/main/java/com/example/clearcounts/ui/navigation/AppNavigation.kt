@@ -428,7 +428,10 @@ fun AppNavigation(
                         tipoOriginal = tipo,
                         icono = iconoFinal,
                         budgetAEditar = budgetAEditar,
-                        botonVolver = { navigationController.popBackStack() }
+                        botonVolver = {
+                            if (navigationController.previousBackStackEntry != null) {
+                            navigationController.popBackStack()
+                        } }
                     )
                 }
 
@@ -553,7 +556,9 @@ fun AppNavigation(
                         onDispose {}
                     }
                     CrearRecurrente(
-                        botonVolver = { navigationController.popBackStack() }
+                        botonVolver = { if (navigationController.previousBackStackEntry != null) {
+                            navigationController.popBackStack()
+                        } }
                     )
                 }
 
@@ -579,7 +584,9 @@ fun AppNavigation(
                                 viewModelRecurrente.actualizar(actualizado)
                                 navigationController.popBackStack()
                             },
-                            onVolver = { navigationController.popBackStack() }
+                            onVolver = { if (navigationController.previousBackStackEntry != null) {
+                                navigationController.popBackStack()
+                            } }
                         )
                     }
                 }

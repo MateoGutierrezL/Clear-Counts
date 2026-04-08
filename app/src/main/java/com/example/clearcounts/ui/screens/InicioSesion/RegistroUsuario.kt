@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,6 +92,7 @@ fun PantallaRegistro(
             delay(3000) // Verifica cada 3 segundos
         }
     }
+    var mensajeErrorDialog by remember { mutableStateOf("") }
     var nombreUsuario by remember { mutableStateOf("") }
     var numero by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -99,13 +101,11 @@ fun PantallaRegistro(
     var errorNombre by remember { mutableStateOf("") }
     var errorNumero by remember { mutableStateOf("") }
     var errorCorreo by remember { mutableStateOf("") }
-
-
     var showSuccesDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
-
     val focusManager = LocalFocusManager.current
     val registerStatus by viewModel.registerStatus.collectAsState()
+    val isLoading = registerStatus is RegistroUsuarioUiState.Loading
     val rojoPersonalizado = Color(0xFFC95050)
     val coloresOutlined = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -140,6 +140,7 @@ fun PantallaRegistro(
         errorNumero = when {
             numero.isBlank() -> context.getString(R.string.el_numero_es_requerido)
             numero.length < 7 -> context.getString(R.string.ingresa_un_numero_valido)
+            numero.length > 15 -> context.getString(R.string.el_numero_es_demasiado_largo)
             else -> ""
         }
         errorCorreo = when {
@@ -151,10 +152,18 @@ fun PantallaRegistro(
                 errorCorreo.isEmpty()
     }
 
-    LaunchedEffect(key1 = registerStatus) {
+    LaunchedEffect(registerStatus) {
         when (registerStatus) {
             is RegistroUsuarioUiState.Success -> showSuccesDialog = true
-            is RegistroUsuarioUiState.Error -> showErrorDialog = true
+            is RegistroUsuarioUiState.Error -> {
+                val error = (registerStatus as RegistroUsuarioUiState.Error).mensaje
+
+                mensajeErrorDialog = when(error) {
+                    "EMAIL_EXISTS" -> context.getString(R.string.este_correo_ya_est_registrado_intenta_con_otro_o_inicia_sesi_n)
+                    else -> context.getString(R.string.ocurri_un_error_inesperado_por_favor_intenta_de_nuevo)
+                }
+                showErrorDialog = true
+            }
             else -> {}
         }
     }
@@ -269,9 +278,12 @@ fun PantallaRegistro(
                     )
                     OutlinedTextField(
                         value = numero,
-                        onValueChange = {
-                            numero = it
-                            if (it.isNotBlank()) errorNumero = ""
+                        onValueChange = { it ->
+                            val soloNumeros = it.filter { char -> char.isDigit() }
+                            if (soloNumeros.length <= 15) {
+                                numero = soloNumeros
+                                if (soloNumeros.isNotBlank()) errorNumero = ""
+                            }
                         },
                         placeholder = {
                             Text(
@@ -279,11 +291,20 @@ fun PantallaRegistro(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         colors = coloresOutlined,
-                        isError = errorNumero.isNotEmpty()
+                        isError = errorNumero.isNotEmpty(),
+                        supportingText = {
+                            if (numero.isNotEmpty()) {
+                                Text(
+                                    text = "${numero.length} / 15",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
                     )
                     if (errorNumero.isNotEmpty()) {
                         Text(
@@ -336,17 +357,16 @@ fun PantallaRegistro(
                 // Campo Contraseña
                 val esError = contrasena.isNotEmpty() && contrasena.length < 6
 
-                Column {
+                Column{
                     Text(
                         text = stringResource(R.string.contrasena),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.Start),
+                            .padding(bottom = 6.dp)
+                            .align(Alignment.Start)
                     )
-
                     OutlinedTextField(
                         value = contrasena,
                         onValueChange = { contrasena = it },
@@ -361,6 +381,7 @@ fun PantallaRegistro(
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
                         isError = esError,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
                         colors = coloresOutlinedcontrasena,
                         trailingIcon = {
                             IconButton(onClick = { mostrarContrasena = !mostrarContrasena }) {
@@ -372,17 +393,19 @@ fun PantallaRegistro(
                             }
                         }
                     )
-
-
                     if (esError) {
                         Text(
                             text = stringResource(R.string.contrasena_minimo_6),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 4.dp)
+                                .align(Alignment.CenterHorizontally)
                         )
                     }
                 }
+
+
 
                 // Botón Registrarme
                 Button(
@@ -400,12 +423,23 @@ fun PantallaRegistro(
                             viewModel.signUp(newUser, contrasena)
                         }
                     },
+                    enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.White
                     )
                 ) {
-                    Text(stringResource(R.string.registrarme))
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(stringResource(R.string.registrarme))
+                    }
                 }
 
                 val annotatedString = buildAnnotatedString {
@@ -469,7 +503,7 @@ fun PantallaRegistro(
     }
 
     @Composable
-    fun RegisterError(onDismiss: () -> Unit) {
+    fun RegisterError(mensaje: String, onDismiss: () -> Unit) {
         Dialog(onDismissRequest = onDismiss) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
@@ -482,7 +516,7 @@ fun PantallaRegistro(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.registro_fallido),
+                        contentDescription = null,
                         tint = Color.Red,
                         modifier = Modifier.size(60.dp)
                     )
@@ -490,21 +524,19 @@ fun PantallaRegistro(
                     Text(
                         text = stringResource(R.string.registro_fallido),
                         style = MaterialTheme.typography.headlineSmall,
-                        textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.error
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
-                        text = stringResource(R.string.ocurri_un_error_inesperado_por_favor_intenta_de_nuevo),
+                        text = mensaje,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = onDismiss,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                     ) {
                         Text(stringResource(R.string.aceptar))
                     }
@@ -517,6 +549,7 @@ fun PantallaRegistro(
         RegisterSucces(
             onDismiss = {
                 showSuccesDialog = false
+                viewModel.resetStatus()
                 navegarBotonRegistrarme()
             },
             title = stringResource(R.string.registro_exitoso),
@@ -525,7 +558,13 @@ fun PantallaRegistro(
     }
 
     if (showErrorDialog) {
-        RegisterError(onDismiss = { showErrorDialog = false })
+        RegisterError(
+            mensaje = mensajeErrorDialog,
+            onDismiss = {
+                showErrorDialog = false
+                viewModel.resetStatus()
+            }
+        )
     }
 
 

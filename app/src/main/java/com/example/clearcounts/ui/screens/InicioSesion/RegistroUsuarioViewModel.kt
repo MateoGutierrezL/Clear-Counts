@@ -1,7 +1,9 @@
 package com.example.clearcounts.ui.screens.InicioSesion
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.clearcounts.R
 import com.example.clearcounts.data.local.database.entities.UserEntity
 import com.example.clearcounts.data.local.repository.usuario.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,33 +19,47 @@ class RegistroUsuarioViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
 
-    private val _registerStatus = MutableStateFlow<RegistroUsuarioUiState>(RegistroUsuarioUiState.Loading)
-    val registerStatus : StateFlow<RegistroUsuarioUiState> = _registerStatus
+
+
+    // En tu ViewModel
+    private val _registerStatus = MutableStateFlow<RegistroUsuarioUiState>(RegistroUsuarioUiState.Idle)
+    val registerStatus: StateFlow<RegistroUsuarioUiState> = _registerStatus
 
     fun signUp(userEntity: UserEntity, contrasenaOriginal: String) {
-        viewModelScope.launch {
-            _registerStatus.value = RegistroUsuarioUiState.Loading
-            val result = userRepository.signUp(userEntity.correo, contrasenaOriginal) // Firebase recibe la original
-            result.onSuccess {
-                _registerStatus.value = RegistroUsuarioUiState.Success
-            }.onFailure {
-                _registerStatus.value = RegistroUsuarioUiState.Error
-            }
-        }
+        if (_registerStatus.value is RegistroUsuarioUiState.Loading) return
 
         viewModelScope.launch {
-            try {
-                userRepository.insertUser(userEntity) // Room guarda el hash
-                userRepository.guardarSesion(userEntity.correo)
-            } catch(e: Exception) {
-                println("Error al ingresar el usuario")
+            _registerStatus.value = RegistroUsuarioUiState.Loading
+
+            val result = userRepository.signUp(userEntity.correo, contrasenaOriginal)
+
+            result.onSuccess {
+                try {
+                    userRepository.insertUser(userEntity)
+                    userRepository.guardarSesion(userEntity.correo)
+                    _registerStatus.value = RegistroUsuarioUiState.Success
+                } catch (e: Exception) {
+                    _registerStatus.value = RegistroUsuarioUiState.Error("Error al guardar localmente")
+                }
+            }
+            result.onFailure { exception ->
+                val errorType = when {
+                    exception.message?.contains("ALREADY_EXISTS") == true ||
+                            exception.message?.contains("already in use") == true -> "EMAIL_EXISTS"
+                    else -> "UNKNOWN"
+                }
+                _registerStatus.value = RegistroUsuarioUiState.Error(errorType)
             }
         }
+    }
+    fun resetStatus() {
+        _registerStatus.value = RegistroUsuarioUiState.Idle
     }
 }
 
 sealed interface RegistroUsuarioUiState {
     object Success: RegistroUsuarioUiState
-    object Error : RegistroUsuarioUiState
+    data class Error(val mensaje: String) : RegistroUsuarioUiState
     object Loading : RegistroUsuarioUiState
+    object Idle : RegistroUsuarioUiState
 }

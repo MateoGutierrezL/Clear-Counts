@@ -71,7 +71,7 @@ fun crearCategoria(
     val iconosDisponibles = listOf(
         "alcancia", "barras", "bus", "cajafuerte", "casa", "contrato", "dinero",
         "hospital", "libros", "birrete", "corazon", "gotas","celular", "comida",
-        "regalo", "balon", "bombillo", "cartera", "gasolina","maquillaje"
+        "regalo", "balon", "bombillo", "cartera", "gasolina","maquillaje","camisa", "reembolso", "efectivo"
     )
 
     Box(
