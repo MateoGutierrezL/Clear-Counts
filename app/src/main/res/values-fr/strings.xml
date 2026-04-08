@@ -487,6 +487,10 @@
     <string name="politicas_s10_pie">Nous répondrons à votre demande dans les 15 jours ouvrables suivant sa réception, conformément à la Loi 1581 de 2012.</string>
     <string name="el_numero_es_demasiado_largo">Le nombre est trop long</string>
     <string name="este_correo_ya_est_registrado_intenta_con_otro_o_inicia_sesi_n">Cet e-mail est déjà enregistré. Essayez-en un autre ou connectez-vous.</string>
+    <string name="no_hay_registros_para">Aucun enregistrement trouvé pour %1$s</string>
+    <string name="ya_existe_un_m_todo_de_pago_llamado_por_favor_elige_un_nombre_diferente">Un mode de paiement nommé “%1$s” existe déjà. Veuillez choisir un autre nom.</string>
+    <string name="atencion">Attention !</string>
+    <string name="ya_tienes_una_categor_a_de_llamada_intenta_con_un_nombre_diferente">Vous avez déjà une catégorie de %1$s appelée “%2$s”. Veuillez choisir un autre nom.</string>
 
 
 </resources>

@@ -212,4 +212,5 @@ class InicioViewModel @Inject constructor(
     val metodosPago: StateFlow<List<PaymentMethodEntity>> = userIdFlow
         .flatMapLatest { uid -> paymentMethodRepository.getAllPaymentMethods(uid) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
 }

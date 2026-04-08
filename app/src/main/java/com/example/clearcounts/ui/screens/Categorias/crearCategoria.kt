@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,7 +34,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,8 +74,14 @@ fun crearCategoria(
     val iconosDisponibles = listOf(
         "alcancia", "barras", "bus", "cajafuerte", "casa", "contrato", "dinero",
         "hospital", "libros", "birrete", "corazon", "gotas","celular", "comida",
-        "regalo", "balon", "bombillo", "cartera", "gasolina","maquillaje","camisa", "reembolso", "efectivo"
+        "regalo", "balon", "bombillo", "cartera", "gasolina","maquillaje","ropa", "reembolso", "efectivo"
     )
+
+    var showDuplicadoError by remember { mutableStateOf(false) }
+
+
+    val categoriasIngreso by viewModel.ingresos.collectAsState()
+    val categoriasGasto by viewModel.gastos.collectAsState()
 
     Box(
         modifier = Modifier
@@ -310,13 +319,21 @@ fun crearCategoria(
                 BotonesInferiores(
                     onCancelChange = botonVolver,
                     onCreateChange = {
-                        nombreError = nombre.isBlank()
+                        val nombreLimpio = nombre.trim()
+                        nombreError = nombreLimpio.isBlank()
                         iconoError = iconoSeleccionado.isEmpty()
 
                         if (!nombreError && !iconoError) {
-                            viewModel.insertCategoria(nombre, iconoSeleccionado, tipoSeleccionado)
-                            botonVolver()
-                            true
+                            val listaAComparar = if (tipoSeleccionado == "ingreso") categoriasIngreso else categoriasGasto
+                            val existeDuplicado = listaAComparar.any { it.nombre.equals(nombreLimpio, ignoreCase = true) }
+                            if (existeDuplicado) {
+                                showDuplicadoError = true
+                                false
+                            } else {
+                                viewModel.insertCategoria(nombreLimpio, iconoSeleccionado, tipoSeleccionado)
+                                botonVolver()
+                                true
+                            }
                         } else {
                             false
                         }
@@ -324,5 +341,25 @@ fun crearCategoria(
                 )
             }
         }
+    }
+    if (showDuplicadoError) {
+        AlertDialog(
+            onDismissRequest = { showDuplicadoError = false },
+            title = { Text(stringResource(R.string.atencion)) },
+            text = {
+                Text(
+                    stringResource(
+                        R.string.ya_tienes_una_categor_a_de_llamada_intenta_con_un_nombre_diferente,
+                        if (tipoSeleccionado == "ingreso") "ingreso" else "gasto",
+                        nombre
+                    ))
+            },
+            confirmButton = {
+                TextButton(onClick = { showDuplicadoError = false }) {
+                    Text(stringResource(R.string.aceptar))
+                }
+            },
+            shape = RoundedCornerShape(16.dp)
+        )
     }
 }

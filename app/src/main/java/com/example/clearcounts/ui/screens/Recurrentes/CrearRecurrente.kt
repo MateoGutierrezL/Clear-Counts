@@ -67,6 +67,7 @@ import com.example.clearcounts.ui.screens.Categorias.CategoriasViewModel
 import com.example.clearcounts.ui.screens.IngresosGastos.BotonesInferiores
 import com.example.clearcounts.utils.PaymentMethodTranslator
 import com.example.clearcounts.utils.PaymentMethodTranslator.getNombreTraducido
+import com.example.clearcounts.utils.ThousandSeparatorTransformation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +77,7 @@ fun CrearRecurrente(
     paymentViewModel: PaymentMethodViewModel = hiltViewModel(),
     categoriasViewModel: CategoriasViewModel = hiltViewModel()
 ) {
+    val moneyTransformation = remember { ThousandSeparatorTransformation() }
     var diaReferencia by remember { mutableStateOf(1) }
     val metodosPago by paymentViewModel.metodosPago.collectAsState()
     var metodoPago by remember { mutableStateOf("Efectivo") }
@@ -197,6 +199,7 @@ fun CrearRecurrente(
                 placeholder = { Text("0") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
+                visualTransformation = moneyTransformation,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 isError = cantidadError,

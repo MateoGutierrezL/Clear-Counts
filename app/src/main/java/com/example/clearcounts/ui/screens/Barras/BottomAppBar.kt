@@ -195,6 +195,7 @@ fun CustomBottomAppBar(
                 sheetState = sheetState,
                 onDismissRequest = { isSheetOpen = false }
             ) {
+                var showErrorDialog by rememberSaveable { mutableStateOf(false) }
                 val categoriasViewModel: CategoriasViewModel = hiltViewModel()
                 val paymentViewModel: PaymentMethodViewModel = hiltViewModel()
 
@@ -480,13 +481,20 @@ fun CustomBottomAppBar(
                         confirmButton = {
                             TextButton(onClick = {
                                 if (nuevoMetodoNombre.isNotBlank()) {
-                                    paymentViewModel.insertMetodoPago(
-                                        nombre = nuevoMetodoNombre,
-                                        icono = iconoSeleccionado
-                                    )
-                                    nuevoMetodoNombre = ""
-                                    iconoSeleccionado = "efectivo"
-                                    showCrearMetodoDialog = false
+
+                                    val existe = metodosPago.any { it.nombre.equals(nuevoMetodoNombre.trim(), ignoreCase = true) }
+
+                                    if (existe) {
+                                        showErrorDialog = true // Activamos la alerta
+                                    } else {
+                                        paymentViewModel.insertMetodoPago(
+                                            nombre = nuevoMetodoNombre.trim(),
+                                            icono = iconoSeleccionado
+                                        )
+                                        nuevoMetodoNombre = ""
+                                        iconoSeleccionado = "efectivo"
+                                        showCrearMetodoDialog = false
+                                    }
                                 }
                             }) { Text(stringResource(R.string.aceptar)) }
                         },
@@ -499,6 +507,25 @@ fun CustomBottomAppBar(
                         },
                         shape = RoundedCornerShape(16.dp)
                     )
+                    if (showErrorDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showErrorDialog = false },
+                            title = {
+                                Text(context.getString(R.string.atencion))
+                            },
+                            text = { Text(
+                                context.getString(
+                                    R.string.ya_existe_un_m_todo_de_pago_llamado_por_favor_elige_un_nombre_diferente,
+                                    nuevoMetodoNombre
+                                )) },
+                            confirmButton = {
+                                TextButton(onClick = { showErrorDialog = false }) {
+                                    Text(stringResource(R.string.aceptar))
+                                }
+                            },
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                    }
                 }
 
 

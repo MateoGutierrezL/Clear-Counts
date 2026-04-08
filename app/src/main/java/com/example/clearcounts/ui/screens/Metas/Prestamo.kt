@@ -57,6 +57,7 @@ import com.example.clearcounts.ui.screens.IngresosGastos.CampoNota
 import com.example.clearcounts.ui.screens.IngresosGastos.DatePickerDialogComposable
 import com.example.clearcounts.ui.screens.IngresosGastos.MAX_LENGHT_OF_AMOUNT
 import com.example.clearcounts.ui.screens.IngresosGastos.MAX_LENGHT_OF_NOTE
+import com.example.clearcounts.utils.ThousandSeparatorTransformation
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -404,6 +405,7 @@ fun MontoInput(
     modifier: Modifier = Modifier,
     isError: Boolean = false
 ) {
+    val moneyTransformation = remember { ThousandSeparatorTransformation() }
     Column(modifier = modifier) {
         Text(
             text = label,
@@ -415,6 +417,7 @@ fun MontoInput(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
+            visualTransformation = moneyTransformation,
             modifier = Modifier.fillMaxWidth(),
             isError = isError,
             supportingText = {
