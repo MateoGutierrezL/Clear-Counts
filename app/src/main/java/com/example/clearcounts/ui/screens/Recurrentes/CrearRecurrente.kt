@@ -187,9 +187,12 @@ fun CrearRecurrente(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = cantidad,
-                onValueChange = {
-                    cantidad = it
-                    cantidadError = false
+                onValueChange = { nuevaEntrada ->
+                    val soloNumeros = nuevaEntrada.filter { it.isDigit() }
+                    if (soloNumeros.length <= 20) {
+                        cantidad = soloNumeros
+                        cantidadError = false
+                    }
                 },
                 placeholder = { Text("0") },
                 modifier = Modifier.fillMaxWidth(),
